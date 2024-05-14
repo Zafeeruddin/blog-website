@@ -3,7 +3,6 @@
 // const useAI=({prompt}:any)=>{
 
 //     const getResponse=async()=>{
-
 //         const headers={
 //             headers:{
 //                 'Content-Type':"application/json",
