@@ -3,7 +3,7 @@
 // const useAI=({prompt}:any)=>{
 
 //     const getResponse=async()=>{
-//         const API_KEY=""
+
 //         const headers={
 //             headers:{
 //                 'Content-Type':"application/json",
