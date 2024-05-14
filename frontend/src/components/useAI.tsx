@@ -3,7 +3,7 @@
 // const useAI=({prompt}:any)=>{
 
 //     const getResponse=async()=>{
-//         const API_KEY="sk-proj-VEbMLYJF3NphRkU7FvTAT3BlbkFJ8jcjDJB2WX6xQxvEBOdV"
+//         const API_KEY=""
 //         const headers={
 //             headers:{
 //                 'Content-Type':"application/json",
