@@ -7,6 +7,7 @@ import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms
 import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { userSignUp } from "../service/apiAuthSignup"
 
 
 export default function Signup() {
@@ -20,6 +21,7 @@ export default function Signup() {
 
   const sendUser=async ()=>{
     console.log("sigining in" )
+    await userSignUp(username,email,password,setUsername,setToken,navigate)
     // const parseUser=signupParams.safeParse({
     //   username:username,
     //   email:email,
@@ -32,21 +34,9 @@ export default function Signup() {
     //   setMessage("invalid params")
     //   return 
     // }
-    try{
-      const signupUser=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signup",{name:username,email:email,password:password})
-      console.log("data", signupUser.data)
-      setMessage(signupUser.data.msg)
-      if(!signupUser.data.token){
-        return 
-      }
-      setToken(signupUser.data.token)
-      console.log("token",signupUser.data.token)
-      navigate("/signin")
-    }catch(e){
-      return 
-    }
+    
     //setInterval(()=>{setMessage("")},3000)
-    return 
+     
   }
   return (
     <div className="flex max-w-4xl mx-auto my-12">

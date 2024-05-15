@@ -13,6 +13,7 @@
     "@coreui/coreui": "^5.0.1",
     "@coreui/react": "^5.0.0",
     "@tinymce/tinymce-react": "^5.0.1",
+    "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
@@ -23,6 +24,8 @@
     "react-html-parser": "^2.0.2",
     "react-icons": "^5.2.0",
     "react-router-dom": "^6.22.3",
+    "recoil": "^0.7.7",
+    "sonner": "^1.4.41",
     "zod": "^3.22.5"
   },
   "devDependencies": {

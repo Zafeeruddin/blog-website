@@ -8,6 +8,7 @@ import { blogOpen } from "./store/atoms/post";
 import { WriteBlog } from "./components/WriteBlog";
 import { Suspense } from "react";
 import BlogStats from "./pages/stats";
+import { Toaster } from "sonner";
 
 export default function App(){
   const blog=useRecoilValue(blogOpen)
@@ -15,6 +16,7 @@ export default function App(){
   return (
     <>
       <BrowserRouter>
+      <Toaster richColors/>
         <RecoilRoot>
           <Routes>
             <Route path="/stats" element={<BlogStats/>}/>

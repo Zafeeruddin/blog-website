@@ -5,8 +5,9 @@ import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms
 
 
 import { Suspense, useState } from "react"
-import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { userSignIn } from "../service/apiAuthSignin"
+import { toast } from "sonner"
 
 
 export default function Signin() {
@@ -14,12 +15,13 @@ export default function Signin() {
   
   const [password,setPassword]=useRecoilState(passwordAtom);
   const [email,setEmail]=useRecoilState(emailAtom)
-  const [message,setMessage]=useState("")
   const setToken=useSetRecoilState(tokenAtom)
   const setUsername=useSetRecoilState(usernameAtom)
   const navigate=useNavigate()
 
   const sendUser=async ()=>{
+    await userSignIn(email,password,setUsername,setToken,navigate)
+
     // const parseUser=signupParams.safeParse({
     //   username:username,
     //   email:email,
@@ -32,23 +34,9 @@ export default function Signin() {
     //   setMessage("invalid params")
     //   return 
     // }
-    try{
-      const signinUser=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signin",{email:email,password:password})
-      setMessage(signinUser.data.msg)
-      if(!signinUser.data.token){
-        return 
-      }
-      setToken(signinUser.data.token)
-      setUsername(signinUser.data.name)
-      
-      console.log("token set",signinUser.data.token)
-      console.log("data ",signinUser.data)
-      navigate("/blogs")
-    }catch(e){
-      return 
-    }
+    
     //setInterval(()=>{setMessage("")},3000)
-    return 
+     
   }
   return (
     <div className="flex max-w-4xl mx-auto my-12">
@@ -68,7 +56,6 @@ export default function Signin() {
           <input className="border-2 pl-2 border-slate-500 w-48 h-8  ml-4 rounded-md border-blackborder-black focus:border-black" onChange={(e)=>setPassword(e.target.value)} type="password" id="password"></input>
         </div>
         <Suspense fallback={"loading..."}> <button onClick={sendUser} className="w-full bg-black text-white h-10 rounded-lg   hover:m-1 ease-in-out transition delay-100">Sign In</button></Suspense>
-        <div>{message}</div>
       </div>
       <div className="hidden ml-12 space-y-4 lg:block w-80">
         <blockquote className="text-lg font-semibold italic text-gray-600">

@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client/edge'
+import {PrismaClient,Prisma} from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 //import { createHash, randomBytes } from 'crypto'
 import { Hono } from 'hono'
@@ -118,24 +118,35 @@ userRouter.use('/signup',async (c,next)=>{
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-
     const body=await c.req.json();
+
+
+    const signinParams=signupParams.safeParse({
+        username:body.name,
+        email:body.email,
+        password:body.password
+    })
+    if(!signinParams.success){
+        console.log("sigin failed",signinParams.error.errors)
+        c.status(400)
+        return c.json({msg:"Inputs are incorrect"})
+    }
+    const encodedPassword=new TextEncoder().encode(body.password)
+    const myDigest=await crypto.subtle.digest(
+        {
+            name:"SHA-256"
+        },
+        encodedPassword
+    )
+    const decoder=new TextDecoder();
+    const decodedPassword=decoder.decode(myDigest)
+    console.log("passwrod to be ", new Uint8Array(myDigest))
   
-    //const hashedPassword=bcrypt.hashSync(password,10)
+
   
     try {
-        console.log("inside signup")
         //easier way triying
-        const encodedPassword=new TextEncoder().encode(body.password)
-        const myDigest=await crypto.subtle.digest(
-            {
-                name:"SHA-256"
-            },
-            encodedPassword
-        )
-        const decoder=new TextDecoder();
-        const decodedPassword=decoder.decode(myDigest)
-        console.log("passwrod to be ", new Uint8Array(myDigest))
+        
         const user=await prisma.user.create({
             data:{
                 name:body.name,
@@ -146,8 +157,7 @@ userRouter.use('/signup',async (c,next)=>{
         console.log(user, "user is ")
         const payload={
         id:user.id,
-        exp:Math.floor(Date.now()/1000)+60*5
-        }
+        exp:Math.floor(Date.now()/1000)+60*5}
         const token= await sign(payload,c.env.JWT_SECRET)
         console.log("token",token)
 
@@ -176,59 +186,69 @@ userRouter.use('/signup',async (c,next)=>{
     })
     if(!signinParams.success){
         console.log("sigin failed",signinParams.error.errors)
-        return c.json({"msg":signinParams.error.errors})
+        c.status(400)
+        return c.json({msg:"Inputs are incorrect"})
     }
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
 
-    const signinValid=loginParams.safeParse({
-        email:body.email,
-        password:body.password
-    })
-    if(!signinValid.success){
-        return c.json({"msg":"error signing in",error:signinValid.error})
-    }
-    const getUser=await prisma.user.findUnique({
-      where:{
-        email:body.email
-      }
-    })
-    
-    if(!getUser){
-      return c.json({"msg":"User doesn't exists"})  
-    }
-   
-    
-
-    const encodedPassword=new TextEncoder().encode(body.password)
-    const myDigest=await crypto.subtle.digest(
-            {
-                name:"SHA-256"
-            },
-            encodedPassword
-        )
-    const decoder=new TextDecoder();
-    const decodedPassword=decoder.decode(myDigest)
-    if(decodedPassword!=getUser.password){
-        console.log("decoded pwd",decodedPassword)
-        console.log("pwd in db",getUser.password)
-        c.status(404)
-        return c.json({
-            "msg":"incorrect password"
+    try{
+        const getUser=await prisma.user.findUnique({
+        where:{
+            email:body.email
+        }
         })
-    }
+        
+        if(!getUser){
+            c.status(403)
+            return c.json({msg:"Incorrect email and password"})  
+        }
     
-  
-    const token=await sign({id:getUser.id},c.env.JWT_SECRET)
-    c.header("Authorization",token)
-    c.status(201)
-    console.log("header set",c.req.header("Authorization"))
-    return c.json({
-        "msg":"Signup successfully",
-        "token":token,
-        "name": getUser.name
-      })
+        
+
+        const encodedPassword=new TextEncoder().encode(body.password)
+        const myDigest=await crypto.subtle.digest(
+                {
+                    name:"SHA-256"
+                },
+                encodedPassword
+            )
+        const decoder=new TextDecoder();
+        const decodedPassword=decoder.decode(myDigest)
+        if(decodedPassword!=getUser.password){
+            console.log("decoded pwd",decodedPassword)
+            console.log("pwd in db",getUser.password)
+            c.status(404)
+            return c.json({
+                "msg":"incorrect password"
+            })
+        }
+        
+    
+        const token=await sign({id:getUser.id},c.env.JWT_SECRET)
+        c.header("Authorization",token)
+        c.status(201)
+        console.log("header set",c.req.header("Authorization"))
+        return c.json({
+            msg:"Signup successfully",
+            "token":token,
+            "name": getUser.name
+        })
+    }catch(e){
+        if (e instanceof Prisma.PrismaClientKnownRequestError){
+            if(e.code === 'P2002' ){
+                console.error("Email already exists")
+                return c.json({msg:"Email already exists"})
+            }else{
+                console.error("Prisma error: ",e);
+                return c.json({e})
+            }
+        }else{
+            console.error("Unexpected error: ",e)
+            return c.json({e})
+        }
+    }
     
   })
   
