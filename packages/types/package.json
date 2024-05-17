@@ -1,0 +1,21 @@
+{
+  "name": "@repo/types",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports":{
+    "./types":"./src/types.ts"
+  },
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.21.2",
+    "zod": "^3.23.8"
+  }
+}
