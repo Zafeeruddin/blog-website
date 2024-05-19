@@ -13,6 +13,12 @@ export type blog={
     }
 }
 
+
+export interface blogType{
+    blog:blog
+}
+
+
 export interface Notification{
     "comments":comment[],
     "replies":Reply[]

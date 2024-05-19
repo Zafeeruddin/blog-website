@@ -1,10 +1,10 @@
 
-import Label from "./ui/label"
+import Label from "../components/ui/label.js"
 import { useRecoilState, useSetRecoilState } from "recoil"
-import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
+import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user.js"
 
 import { useNavigate } from "react-router-dom"
-import { userSignUp } from "../service/apiAuthSignup"
+import { userSignUp } from "../service/apiAuthSignup.js"
 import { signupParams } from "@repo/types/types"
 import { toast } from "sonner"
 

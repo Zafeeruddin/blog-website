@@ -6,25 +6,8 @@ import { blogOpen } from "../store/atoms/post"
 import parse from "html-react-parser"
 import { useEffect, useState } from "react"
 import { MdBookmarkAdd } from "react-icons/md"
+import { blogType } from "../utils/types"
 
-
-type Props={
-    authorId:string,
-    title:string,
-    published:boolean,
-    content:string,
-    id:string,
-    likes:number,
-    date:Date,
-    author:{
-        id:string,
-        name:string,
-    }
-}
-
-interface blogType{
-    blog:Props
-}
 
 export const Blog=({blog}:blogType)=>{
     const setOpenBlog=useSetRecoilState(blogOpen)
@@ -84,7 +67,7 @@ export const Blog=({blog}:blogType)=>{
     
     return (
         <>
-           <div className="lg:m-12 lg:pr-60 lg:pl-60 md:m-10 md:pr-20 md:pl-20 m-4 mb-4 mt-8 border-b pb-4 " >
+           <div className="lg:m-12 lg:pr-20 lg:pl-20 md:m-10 md:pr-20 md:pl-20 m-2 mb-4 mt-8 border-b pb-4 " >
                 <div className="mb-4 flex items-center space-x-4">
                     <div className="bg-gray-500 text-white rounded-full h-8 w-8 flex items-center justify-center"> 
                         <span className="uppercase">{blog.author.name ? blog.author.name[0] : "A"}</span>

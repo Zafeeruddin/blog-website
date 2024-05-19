@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from "recoil"
 import { blogOpen } from "../store/atoms/post"
-import { Layout } from "./ui/layout"
+import { Layout } from "../components/ui/layout"
 import { AiOutlineLike,AiFillLike,} from "react-icons/ai";
 import {MdBookmarks,MdOutlineBookmarks } from "react-icons/md"
 
@@ -8,7 +8,7 @@ import ReactHtmlParser from "react-html-parser";
 import { useEffect, useState } from "react";
 import { likedBlogs, savedBlogs, tokenAtom } from "../store/atoms/user";
 import axios from "axios";
-import { Comments } from "./comments/Comments";
+import { Comments } from "../components/comments/Comments";
 
 export const OpenBlog=()=>{
     const [flag,setFlag]=useState(true)
