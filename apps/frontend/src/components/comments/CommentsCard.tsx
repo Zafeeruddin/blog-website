@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { tokenAtom } from "../../store/atoms/user"
-import { blogOpen, cancelComment, currentCommentId, handleReply, replies, usernameReply } from "../../store/atoms/post"
+import { blogOpen, cancelComment, currentCommentId, replies, usernameReply } from "../../store/atoms/post"
 import { formatDate } from "../../utils/formatDate"
 import { clapOnce } from "../../service/apiClapComment"
 import { PiHandsClappingDuotone } from "react-icons/pi"
@@ -17,7 +17,6 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
     const blog=useRecoilValue(blogOpen)
     const [cancel,setCancel]=useRecoilState(cancelComment)
     const [clapped,setClapped]=useState(clap)
-    const [handleReplies,setHanleReplies]=useRecoilState(handleReply)
     const commentReply=useRecoilValue(replies)
     const [currentComment,setCurrentComment]=useRecoilState(currentCommentId)
     const [currentReplies,setCurrentReplies]=useRecoilState(replies)

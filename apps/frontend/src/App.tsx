@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Signup from "./components/Signup";
+import Signup from "./pages/Signup";
 import { RecoilRoot, useRecoilValue } from "recoil";
-import Signin from "./components/Signin";
-import { Blogs } from "./components/Blogs";
-import { OpenBlog } from "./components/OpenBlog";
+import Signin from "./pages/Signin";
+import { Blogs } from "./pages/Blogs";
+import { OpenBlog } from "./pages/OpenBlog";
 import { blogOpen } from "./store/atoms/post";
-import { WriteBlog } from "./components/WriteBlog";
+import { WriteBlog } from "./pages/WriteBlog";
 import { Suspense } from "react";
 import BlogStats from "./pages/stats";
 import { Toaster } from "sonner";

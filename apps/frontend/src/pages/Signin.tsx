@@ -1,5 +1,5 @@
 
-import Label from "./ui/label"
+import Label from "../components/ui/label"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
 import {loginParams} from "@repo/types/types"
