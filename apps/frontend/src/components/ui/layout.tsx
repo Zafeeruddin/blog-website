@@ -76,15 +76,15 @@ export const Layout=()=>{
         
                
         <div className="flex justify-end lg:space-x-8 space-x-4">   
-        <TfiWrite className={`w-5 h-5 lg:w-7 lg:h-7 text-gray-500 mt-2 `} onClick={()=>navigate("/write")}></TfiWrite>
+        <TfiWrite className={`w-5 h-5 lg:w-7 lg:h-7 text-gray-500 mt-2 cursor-pointer`} onClick={()=>navigate("/write")}></TfiWrite>
         
         <div className="cursor-pointer mt-1" onClick={()=>{setHandleNotification(!handleNotification); updateNotifications()}}>
             <IoMdNotificationsOutline className={`w-7 h-7 text-gray-500 bg-white lg:w-10 lg:h-10`}/>
         { handleNotification &&    
-            <div className="shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 min-h-10  max-h-screen/2 overflow-auto  right-4  absolute top-16 bg-gray-200">
+            <div className="shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 min-h-10  max-h-screen/2  right-4  absolute top-16 bg-gray-200  ">
                  
                     {/* <div className="p-2 mb-3  font-serif text-gray-500 border-b border-gray-300"> You don't have notifications </div> */}
-                     <NotificationCard notification={userNotifications}/>
+                     <NotificationCard  notification={userNotifications}/>
                 
             </div> }
         </div>

@@ -32,7 +32,7 @@ const NotificationBar=({content,postId,user,date,isComment,flagNotified}:{conten
     const navigate=useNavigate()
     return (
         <>
-        <div onClick={()=>navigate(`/blogs/${postId}`)} className={`flex justify-start space-x-4 cursor-pointer text-md font-serif border-b border-gray-300 p-4  ${flagNotified ? "bg-gray-200" :"bg-gray-300"}`}>
+        <div onClick={()=>navigate(`/blogs/${postId}`)} className={`flex justify-start space-x-4 cursor-pointer text-md font-serif border-b  border-gray-400 p-4  ${flagNotified ? "bg-gray-200" :"bg-gray-300"}`}>
             {flagNotified===false ?  <div className="rounded-full bg-blue-600 min-h-2 max-h-2 min-w-2 max-w-2 mt-5"></div> :""}
             <div className="rounded-full bg-orange-700 min-h-8  max-h-8 min-w-8  max-w-8 mt-2  text-white text-center text-lg">{user[0]}</div>
             <div className="">

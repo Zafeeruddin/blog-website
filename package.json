@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "react-quill": "^2.0.0",
+    "react-spinners": "^0.13.8"
+  }
 }

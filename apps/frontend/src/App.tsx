@@ -5,10 +5,10 @@ import Signin from "./pages/Signin";
 import { Blogs } from "./pages/Blogs";
 import { OpenBlog } from "./pages/OpenBlog";
 import { blogOpen } from "./store/atoms/post";
-import { WriteBlog } from "./pages/WriteBlog";
 import { Suspense } from "react";
 import BlogStats from "./pages/stats";
 import { Toaster } from "sonner";
+import { Write } from "./pages/Write";
 
 export default function App(){
   const blog=useRecoilValue(blogOpen)
@@ -25,7 +25,7 @@ export default function App(){
             <Route path="/signin" element={<Signin/>}/>
             <Route path="/blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs/></Suspense>}/>
             <Route path={`blogs/:id`} element={<OpenBlog />} />
-            <Route path="/write" element={<WriteBlog/>}/>
+            <Route path="/write" element={<Write/>}/>
             {/* <Route path="/comments" element={<Comments/>}></Route> */}
           </Routes>
         </RecoilRoot>

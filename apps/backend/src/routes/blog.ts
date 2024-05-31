@@ -2,8 +2,7 @@ import { Hono } from "hono"
 import {PrismaClient} from "@prisma/client/edge"
 import { withAccelerate } from "@prisma/extension-accelerate"
 import { decode, verify } from "hono/jwt"
-import {postParams} from "../../../common/dist/index"
-
+import { postParams } from "@repo/types/types"
 export const blogRouter=new Hono<{
     Bindings:{
         JWT_SECRET:string,
@@ -198,7 +197,7 @@ blogRouter.get("/blogs/bulk",async (c)=>{
         
         return c.json(posts)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
     
 })
@@ -217,7 +216,7 @@ blogRouter.get("/user/getAuthor",async (c)=>{
         })
         return c.json(user)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 
 })
@@ -244,7 +243,7 @@ blogRouter.get("/like/posts",async(c)=>{
         console.log("posts",user.likedPosts)
         return c.json(user.likedPosts)
     }catch(E){
-        return c.json(E)
+        return c.json({E})
     }
 })
 
@@ -270,7 +269,7 @@ blogRouter.get("/save/posts",async(c)=>{
         console.log("posts",user.savedPosts)
         return c.json(user.savedPosts)
     }catch(E){
-        return c.json(E)
+        return c.json({E})
     }
 })
 
@@ -444,7 +443,7 @@ blogRouter.post("/post/comments",async(c)=>{
         })
         return c.json(comments)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 })
 
@@ -504,7 +503,7 @@ blogRouter.put("/post/comments",async(c)=>{
 
         return c.json(updateClap)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 })
 
@@ -592,7 +591,7 @@ blogRouter.post("/post/replies",async(c)=>{
         }
         return c.json({"comment":parentComment,"replies":getReplies})
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 })
 
@@ -617,7 +616,7 @@ blogRouter.get("/post/replies",async (c)=>{
         }
         return c.json(allReplies)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 })
 
@@ -655,7 +654,7 @@ blogRouter.put("/post/replies",async(c)=>{
 
         return c.json(updateClap)
     }catch(e){
-        return c.json(e)
+        return c.json({e})
     }
 })
 
