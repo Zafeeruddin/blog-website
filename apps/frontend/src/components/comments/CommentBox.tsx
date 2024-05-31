@@ -4,6 +4,8 @@ import {  blogOpen, comments, currentCommentId, replies, userComment, usernameRe
 import { useEffect, useRef, useState } from "react"
 import { publishComment } from "../../utils/postComment"
 import { publishReply } from "../../service/apiPostReply"
+import ClipLoader from "react-spinners/ClipLoader";
+
 
 export const CommentBox=({isMain}:{isMain:boolean})=>{
     const user=useRecoilValue(usernameAtom)
@@ -18,22 +20,31 @@ export const CommentBox=({isMain}:{isMain:boolean})=>{
     const [commentId,]=useRecoilState(currentCommentId)
     const replyUsername=useRecoilValue(usernameReply)
 
-    const sendComment=()=>{
-        publishComment(token,blog,comment,setUserComments)
+    const [loadingComment ,setLoadingComment]=useState(false)
+    const [loadingReply ,setLoadingReply]=useState(false)
+
+    const sendComment=async ()=>{
+        await publishComment(token,blog,comment,setUserComments)
+        setLoadingComment(false)
     }
 
-    const sendReply=()=>{
+    const sendReply=async ()=>{
         console.log("replying...")
-        publishReply(token,comment,commentId,setUserReplies,setUserComments,userComments)
+       await publishReply(token,comment,commentId,setUserReplies,setUserComments,userComments)
+       setLoadingReply(false)
     }
 
     const send=()=>{
         if(ref.current){
             ref.current.value=""
         }
+
         if(isMain){
+            setLoadingComment(true)
             sendComment()
         }else{
+            setLoadingReply(true)
+            console.log("loaidng now ",loadingReply)
             sendReply()
         }
     }
@@ -62,7 +73,9 @@ export const CommentBox=({isMain}:{isMain:boolean})=>{
                 <textarea ref={ref} onClick={()=>{setCancel(false)}} onChange={(e)=>setComment(e.target.value)} placeholder={ isMain ? `What are your thoughts?` : `You are replying to ${replyUsername}`} className="mx-4 mt-2 pt-3 pl-1 pb-1  resize-none w-11/12 outline-none focus:border-b-2 focus:border-black" ></textarea>
                 {!cancel && <div className={`transition-transform  duration-1000 ease-in-out transform-${cancel ? 'translate-y-full pb-1' : 'translate-y-0 pb-4'} flex justify-end space-x-8 m-4 `}>
                     <button onClick={()=>setCancel(true)} className="text-md hover:bg-gray-200 rounded-full w-24 p-1 ml-0 text-gray-400 hover:text-slate-950 font-semibold" >Cancel</button>
-                    <button onClick={send}  className={`text-md rounded-full text-white mr-0 w-24 p-1 ${write ? " bg-green-600 text-white font-semibold hover:bg-green-800": "bg-green-400"}`} disabled={!write}>Respond</button>
+                    {!loadingReply && !loadingComment && <button onClick={send}  className={`text-md rounded-full text-white mr-0 w-24 p-1 ${write ? " bg-green-600 text-white font-semibold hover:bg-green-800": "bg-green-400"}`} disabled={!write}>Respond</button>}
+                    <ClipLoader className="mr-10" color="rgba(15,2,28,1)" loading={loadingReply} size={26}/>
+                    <ClipLoader className="mr-10" color="rgba(15,2,28,1)" loading={loadingComment} size={26}/>
                 </div>}
             </div>
 
