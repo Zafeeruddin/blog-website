@@ -73,14 +73,21 @@ export const Blog=({blog}:blogType)=>{
                         <span className="uppercase">{blog.author.name ? blog.author.name[0] : "A"}</span>
                     </div>
                     <div className="font-serif text-lg text-slate-950">{blog.author.name}</div>
-                    <div>.</div>
+                    <div className="flex justify-center content-center mb-2 text-gray-400">.</div>
                     <div className="text-gray-400">Uploaded {date}</div>
                 </div>
-                <h3 className="pb-3 font-bold  text-lg text-slate-700 lg:text-3xl cursor-pointer" onClick={openBlog}>{blog.title}</h3>
-                <p className="font-mono text-sm lg:text-lg"> {parse(blog.content.substring(0,150))}...</p>
-                <div className="flex space-x-8">
-                    <div className="text-gray-400 text-sm">{Math.floor(duration) == 0 ? 1 : Math.floor(duration)} mins read</div>
-                    <MdBookmarkAdd onClick={saveBlog}  className="mt-1 w-4 h-4 cursor-pointer"/>
+                <div className="flex ">
+                    <div className="w-2/3">
+                        <div className="pb-3 font-bold  text-sm text-black lg:text-xl cursor-pointer" onClick={openBlog}>{blog.title}</div>
+                        <p className="text-sm lg:text-lg text-gray-400"> {parse(blog.content.substring(0,150))}...</p>
+                        <div className="flex space-x-8">
+                            <div className="text-gray-400 text-sm">{Math.floor(duration) == 0 ? 1 : Math.floor(duration)} mins read</div>
+                            <MdBookmarkAdd onClick={saveBlog}  className="mt-1 w-4 h-4 cursor-pointer"/>
+                        </div>
+                    </div>
+                    <div className="w-1/4 mt-2 ml-10 ">
+                        <img  src="https://news.mit.edu/sites/default/files/images/202308/MIT_Astrocyte-Transformer-01-press.jpg" className="h-20"/>
+                    </div>
                 </div>
             </div>               
         </>

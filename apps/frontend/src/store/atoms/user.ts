@@ -1,6 +1,6 @@
 import axios from "axios";
 import { atom, selector, useRecoilValue } from "recoil";
-import {  Notification, blog } from "../../utils/types";
+import {  Notification, UnifiedNotification, blog } from "../../utils/types";
 
 export const allBlogs=atom<blog[]>({
     key:"allBlogs",
@@ -8,6 +8,15 @@ export const allBlogs=atom<blog[]>({
 })
 
 
+export const filteredBlogs=atom<blog[]>({
+    key:"filterBlogs",
+    default:[]
+})
+
+export const searchBlog=atom<string>({
+    key:"search",
+    default:""
+})
 
 
 export  const usernameAtom=atom<string>({
@@ -108,4 +117,9 @@ export const getUserNotifications=selector<Notification>({
 export const notifications=atom<Notification>({
     key:"notification",
     default:getUserNotifications
+})
+
+export const unifiedNotificationsAtom=atom<UnifiedNotification[]>({
+    key:"unifiedNotificaiton",
+    default:[]
 })

@@ -2,24 +2,30 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { formatDate } from "../utils/formatDate"
 import { useNavigate } from "react-router-dom"
 import { Notification, UnifiedNotification } from "../utils/types"
+import { unifiedNotificationsAtom } from "../store/atoms/user"
+import { useRecoilState } from "recoil"
 
 export const NotificationCard=({notification}:{notification:Notification})=>{
-    const [unifiedNotification,setUnifiedNotification]=useState<UnifiedNotification[]>([])
+    const [unifiedNotification,setUnifiedNotification]=useRecoilState<UnifiedNotification[]>(unifiedNotificationsAtom)
     useEffect(()=>{
-        transformNotification(notification,setUnifiedNotification)
+        console.log("notifications are ",notification)
+        console.log("unified notifications are",unifiedNotification)
+        if (unifiedNotification.length==0){
+            transformNotification(notification,setUnifiedNotification)
+        }
     },[])
     
     
 
     return (
-        <>
+        <div className="">
             {
                 unifiedNotification.map(notification=>{
                     return < NotificationBar content={notification.content} postId={notification.postId} user={notification.user} date={notification.date}
                     isComment={notification.isComment} flagNotified={notification.flagNotified}/>        
             })
             }
-        </>
+        </div>
     )
 }
 
@@ -47,8 +53,9 @@ const NotificationBar=({content,postId,user,date,isComment,flagNotified}:{conten
 
 const transformNotification = (notification: Notification,setUnifiedNotification:Dispatch<SetStateAction<UnifiedNotification[]>>) => {
     const transformedContent: UnifiedNotification[] = [];
-
+    console.log("notifiacation comments",notification)
     // Transform comments
+    if(notification.comments){
     for (const comment of notification.comments) {
         transformedContent.push({
             content: comment.comment,
@@ -59,6 +66,7 @@ const transformNotification = (notification: Notification,setUnifiedNotification
             flagNotified:comment.flagNotified
         });
     }
+}
 
     
     // Transform replies
