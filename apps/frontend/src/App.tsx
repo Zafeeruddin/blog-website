@@ -9,6 +9,8 @@ import { Suspense } from "react";
 import BlogStats from "./pages/stats";
 import { Toaster } from "sonner";
 import { Write } from "./pages/Write";
+import { FilteredPosts } from "./pages/FilteredPosts";
+import { SearchBlogs } from "./pages/Search";
 
 export default function App(){
   const blog=useRecoilValue(blogOpen)
@@ -26,6 +28,8 @@ export default function App(){
             <Route path="/blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs/></Suspense>}/>
             <Route path={`blogs/:id`} element={<OpenBlog />} />
             <Route path="/write" element={<Write/>}/>
+            <Route path="/filteredBlogs" element={<FilteredPosts/>}/>
+            <Route path="/search" element={<SearchBlogs/>}/>
             {/* <Route path="/comments" element={<Comments/>}></Route> */}
           </Routes>
         </RecoilRoot>

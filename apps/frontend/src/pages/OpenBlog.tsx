@@ -3,8 +3,8 @@ import { blogOpen } from "../store/atoms/post"
 import { Layout } from "../components/ui/layout"
 import { AiOutlineLike,AiFillLike,} from "react-icons/ai";
 import {MdBookmarks,MdOutlineBookmarks } from "react-icons/md"
-
-import ReactHtmlParser from "react-html-parser";
+import ReactHTMLParser from "react-html-parser"
+import {convert} from "html-to-text"
 import { useEffect, useState } from "react";
 import { likedBlogs, savedBlogs, tokenAtom } from "../store/atoms/user";
 import axios from "axios";
@@ -106,7 +106,7 @@ export const OpenBlog=()=>{
                         </div>
                         <div onClick={saveBlog} className="cursor-pointer">{bookmark ? <MdBookmarks/> :<MdOutlineBookmarks/> }</div>
                 </div>
-                {ReactHtmlParser(blog.content)}
+                {ReactHTMLParser(blog.content)}
                 <Comments ></Comments>
                 {/* <div className=" md:text-lg lg:text-lg text-sm" dangerouslySetInnerHTML={{__html:blog.content}}/> */}
             </div>

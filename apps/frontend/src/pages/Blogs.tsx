@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import {  allBlogs, tokenAtom } from "../store/atoms/user"
 import { Blog } from "../components/Blog"
@@ -8,6 +8,7 @@ import { getAllBlogs } from "../service/apiFetchBlogs"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { blogOpen } from "../store/atoms/post"
+import { handleNotificationAtom, handleProfileAtom } from "../store/atoms/handles"
 
 export const Blogs=()=>{
     const token=useRecoilValue(tokenAtom)
@@ -21,6 +22,14 @@ export const Blogs=()=>{
 
     const [blogs,setBlogs]=useRecoilState(allBlogs)
     const [trendingBlogs,setTrendingBlogs]=useState<blog[]>([])
+    
+    // Close all handles if clicked outside
+    const setHandleNotification=useSetRecoilState(handleNotificationAtom)
+    const setHandleProfile= useSetRecoilState(handleProfileAtom)
+    const closeAllHandles=()=>{
+        setHandleNotification(false)
+        setHandleProfile(false)
+    }
 
     useEffect(() => {
         // Function to fetch all blogs
@@ -54,7 +63,7 @@ export const Blogs=()=>{
         <>
         
     <Layout/> 
-    <div className="lg:flex">
+    <div className="lg:flex"  onClick={closeAllHandles}>
         
         <div className="border-r">
             {blogs.map(blog=>{
