@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { Write } from "./pages/Write";
 import { FilteredPosts } from "./pages/FilteredPosts";
 import { SearchBlogs } from "./pages/Search";
+import { Home } from "./pages/Home";
 
 export default function App(){
   const blog=useRecoilValue(blogOpen)
@@ -23,6 +24,7 @@ export default function App(){
           <Routes>
             <Route path="/stats" element={<BlogStats/>}/>
             <Route path="/" element={<Signup/>}/>
+            <Route path="/home" element={<Home/>}/>
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/signin" element={<Signin/>}/>
             <Route path="/blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs/></Suspense>}/>

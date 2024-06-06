@@ -16,7 +16,7 @@ export const userSignIn=async (email:string,password:string,setUsername:SetterOr
           toast.success("Sign-in successful");
           setToken(response.data.token)
           setUsername(response.data.name)
-          navigate("/blogs")
+          navigate("/home")
         }else{
           console.log("throwing err",response.data.e)
           toast.dismiss(loadingToastId);

@@ -2,7 +2,6 @@ import {  useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import {  allBlogs, tokenAtom } from "../store/atoms/user"
 import { Blog } from "../components/Blog"
-import { Layout } from "../components/ui/layout"
 import { blog,  } from "../utils/types"
 import { getAllBlogs } from "../service/apiFetchBlogs"
 import { useNavigate } from "react-router-dom"
@@ -26,6 +25,10 @@ export const Blogs=()=>{
 
     // Fetch blogs
     useEffect(() => {
+        if(blogs!=null){
+            setLoading(false)
+            return
+        }
         // Function to fetch all blogs
         const getBlogs = async () => {
             // Replace with actual fetch call
@@ -47,7 +50,6 @@ export const Blogs=()=>{
     return ( 
         <>
         
-    <Layout/>
     { loading ? <List/> : 
     <div className="lg:flex"  onClick={closeAllHandles}>
         

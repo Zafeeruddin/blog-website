@@ -4,9 +4,9 @@ import { IoMdNotificationsOutline } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
 import { useNavigate } from "react-router-dom"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
-import { areNotifications, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
+import { areNotifications, isSearch, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
 import { NotificationCard } from "../Notification"
 import { updateNotification } from "../../service/apiUpdateNotifications"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
@@ -22,8 +22,9 @@ export const Layout=()=>{
     const [handleUpdate,setHandleUpdate]=useState(false)
     const unifiedNotification = useRecoilValue(unifiedNotificationsAtom)
     const [loading,setLoading]=useState(true)
-    const setSearchBlog = useSetRecoilState(searchBlog)
+    const [searchBlogs,setSearchBlog] = useRecoilState(searchBlog)
     const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
+    const [isSearchBlog,setIsSearch]=useRecoilState(isSearch)
 
     // Fetch notifications
     useEffect(()=>{
@@ -37,6 +38,16 @@ export const Layout=()=>{
         console.log("check in ",areNotificationsIn)
         console.log("getting notifciations with",userNotifications)
     },[])
+
+    useEffect(()=>{
+        if(searchBlogs===""){
+            setIsSearch(false)
+            console.log("now ",isSearchBlog)
+        }else{
+            console.log("now ",isSearchBlog)
+            setIsSearch(true)
+        }  
+    },[searchBlogs])
 
     const updateNotifications=()=>{
         if(!areNotificationsIn){
@@ -73,15 +84,12 @@ export const Layout=()=>{
         updateNotifications();   
     }
 
-    
-    
-
     return (
         <>
     <div className={`flex items-center justify-between p-4 space-x-2 border-b  border-gray-300 lg:justify-between `}>
         
         <div className="flex items-center">
-            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
+            <img className="w-12 cursor-pointer" onClick={()=>navigate("/home")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
         </div>
     
 
@@ -92,7 +100,7 @@ export const Layout=()=>{
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
                 </div>
-                <input onClick={()=>navigate("/search")} onChange={(e)=>setSearchBlog(e.target.value)}  type="search" id="default-search" className="block w-full py-2 pl-10 pr-3 text-sm text-gray-900 border border-gray-300 rounded-3xl focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+                <input onChange={(e)=>{setSearchBlog(e.target.value)}}  type="search" id="default-search" className="block w-full py-2 pl-10 pr-3 text-sm text-gray-900 border border-gray-300 rounded-3xl focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
             </div>
         </form>
                
