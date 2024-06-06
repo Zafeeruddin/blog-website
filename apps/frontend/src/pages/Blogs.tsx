@@ -9,20 +9,13 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { blogOpen } from "../store/atoms/post"
 import { handleNotificationAtom, handleProfileAtom } from "../store/atoms/handles"
+import { List } from "../components/ui/skeletons/listBlogs"
 
 export const Blogs=()=>{
     const token=useRecoilValue(tokenAtom)
-    // const [filter,setFilter]=useState("")
-    // const [filteredBlogs,setFilteredBlogs]=useState([
-    //     { authorId:"",
-    //     title:"",
-    //     published:false,
-    //     content:"",
-    //     id:""}])
-
     const [blogs,setBlogs]=useRecoilState(allBlogs)
     const [trendingBlogs,setTrendingBlogs]=useState<blog[]>([])
-    
+    const [loading,setLoading]=useState(true)
     // Close all handles if clicked outside
     const setHandleNotification=useSetRecoilState(handleNotificationAtom)
     const setHandleProfile= useSetRecoilState(handleProfileAtom)
@@ -31,38 +24,31 @@ export const Blogs=()=>{
         setHandleProfile(false)
     }
 
+    // Fetch blogs
     useEffect(() => {
         // Function to fetch all blogs
         const getBlogs = async () => {
             // Replace with actual fetch call
-            await getAllBlogs(token,setBlogs);        };
-
+            await getAllBlogs(token,setBlogs);
+            setLoading(false)        
+        };
         // Call the function to fetch blogs
-        getBlogs();
+        getBlogs();     
     }, []);
 
+    // Sort blogs for setting trending blogs
     useEffect(() => {
-        // Sort and set the trending blogs once blogs state is updated
         if (blogs.length > 0) {
             const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
             setTrendingBlogs(sortedBlogs.slice(0, 3));
         }
     }, [blogs]);
 
-    useEffect(() => {
-        // Log trending blogs whenever they are updated
-        console.log("trending blogs", trendingBlogs);
-    }, [trendingBlogs]);
-
-
-    // const getFilteredBlogs=()=>{
-    //     const getAllBlogs=blogs.forEach((blog)=>{if(blog.title.includes(filter)){filteredBlogs.push(blog)}})
-    // }
-
-    return (
+    return ( 
         <>
         
-    <Layout/> 
+    <Layout/>
+    { loading ? <List/> : 
     <div className="lg:flex"  onClick={closeAllHandles}>
         
         <div className="border-r">
@@ -75,7 +61,7 @@ export const Blogs=()=>{
             {trendingBlogs.map((blog)=>{return <TrendBlog blog={blog} key={blog.id}/> })}
         </div>
     </div>
-    
+}
  </>
     )
 }

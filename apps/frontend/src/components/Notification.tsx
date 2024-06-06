@@ -2,11 +2,13 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { formatDate } from "../utils/formatDate"
 import { useNavigate } from "react-router-dom"
 import { Notification, UnifiedNotification } from "../utils/types"
-import { unifiedNotificationsAtom } from "../store/atoms/user"
+import {  unifiedNotificationsAtom } from "../store/atoms/user"
 import { useRecoilState } from "recoil"
 
 export const NotificationCard=({notification}:{notification:Notification})=>{
     const [unifiedNotification,setUnifiedNotification]=useRecoilState<UnifiedNotification[]>(unifiedNotificationsAtom)
+    
+
     useEffect(()=>{
         console.log("notifications are ",notification)
         console.log("unified notifications are",unifiedNotification)
@@ -19,12 +21,11 @@ export const NotificationCard=({notification}:{notification:Notification})=>{
 
     return (
         <div className="">
-            {
-                unifiedNotification.map(notification=>{
+            {unifiedNotification.map(notification=>{
                     return < NotificationBar content={notification.content} postId={notification.postId} user={notification.user} date={notification.date}
                     isComment={notification.isComment} flagNotified={notification.flagNotified}/>        
-            })
-            }
+            })}
+            
         </div>
     )
 }

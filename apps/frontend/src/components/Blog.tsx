@@ -23,6 +23,8 @@ export const Blog=({blog}:blogType)=>{
     const [bookmarkBlogs,setBookMarkBlogs]=useRecoilState(savedBlogs)
     const [,setBookmark]=useState(false)
     const [,setMessage]=useState("")
+    const [isImage,setIsImage]=useState(false)
+
     const saveBlog=async ()=>{
             if(bookmarkBlogs.includes(blog.id)){
                 setBookmark(true) 
@@ -38,6 +40,25 @@ export const Blog=({blog}:blogType)=>{
             setMessage("Saved Blog!") 
         }
 
+    // check for image
+    const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
+
+    useEffect(() => {
+        const checkImage = async () => {
+        try {
+            const response = await fetch(imageUrl);
+            if (response.ok) {
+            setIsImage(true);
+            } else {
+            setIsImage(false);
+            }
+        } catch (error) {
+            setIsImage(false);
+        }
+        };
+
+        checkImage();
+    }, [imageUrl]);
     
     
     useEffect(()=>{
@@ -85,9 +106,13 @@ export const Blog=({blog}:blogType)=>{
                             <MdBookmarkAdd onClick={saveBlog}  className="mt-1 w-4 h-4 cursor-pointer"/>
                         </div>
                     </div>
+                    {isImage && 
                     <div className="w-1/4 mt-2 ml-10 ">
-                        <img  src="https://news.mit.edu/sites/default/files/images/202308/MIT_Astrocyte-Transformer-01-press.jpg" className="h-20"/>
+                        {/* <img src={`https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%${blog.id}.jpeg`}   className="h-20"/> */}
+                
+                        <img src={imageUrl} className=" h-20 w-20"/>
                     </div>
+                    }
                 </div>
             </div>               
         </>

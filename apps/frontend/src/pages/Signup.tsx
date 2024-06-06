@@ -28,7 +28,8 @@ export default function Signup() {
     console.log("parse msg",parseUser.success)
     if(!parseUser.success){
       console.log("erros",parseUser.error.errors)
-      toast.error("Incorrect user types")
+      let refinedMessage = parseUser.error.errors[0]?.message
+      toast.error(refinedMessage)
       return 
     }
     await userSignUp(username,email,password,setUsername,setToken,navigate)
