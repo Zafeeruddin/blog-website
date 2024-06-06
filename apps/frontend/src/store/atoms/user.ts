@@ -129,3 +129,8 @@ export const areNotifications = atom<boolean>({
     key:"notificationIn",
     default:false
 })
+
+export const isSearch = atom<boolean>({
+    key:"isSearch",
+    default:false
+})
