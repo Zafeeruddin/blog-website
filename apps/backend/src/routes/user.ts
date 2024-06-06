@@ -17,34 +17,6 @@ export const userRouter = new Hono<{
     }
   }>()
 
-// key creation in encryption/decryption
-/*
-let key:CryptoKey|null=null;
-userRouter.use("*",async (c,next)=>{
-    console.log("checking key value:",key)
-    if(key!=null){
-        const keyCheck=c.get("key")
-        console.log("key good brah",keyCheck)
-        console.log("key is not null",key)
-        c.set("key",key)
-        await next()
-    }else{
-        console.log("key init")
-        key = await crypto.subtle.generateKey(
-            {
-            name: "AES-GCM",
-            length: 256,
-            },
-            true,
-            ["encrypt", "decrypt"],
-        );
-    
-    c.set("key",key)
-    console.log("key initialized ",key)
-    await next()
-   }
-})
-*/
 
 //Middleware for verification of tokens
 userRouter.use("/getNotification",async (c,next)=>{
@@ -67,7 +39,7 @@ userRouter.use("/getNotification",async (c,next)=>{
             const decodedToken= decode(token)
             console.log("decoded header", decodedToken.header)
             console.log("decoded payload", decodedToken.payload.id)
-            c.set("id",decodedToken.payload.id)
+            c.set("id",decodedToken.payload.id as string)
            await next()
         }catch(e){
             console.log("errors",e)
@@ -202,11 +174,11 @@ userRouter.use('/signup',async (c,next)=>{
         
         if(!getUser){
             c.status(403)
-            return c.json({msg:"Incorrect email and password"})  
+            return c.json({msg:"User doesn't exists"})  
         }
     
         
-
+        console.log("user does eixistws")
         const encodedPassword=new TextEncoder().encode(body.password)
         const myDigest=await crypto.subtle.digest(
                 {
@@ -221,7 +193,7 @@ userRouter.use('/signup',async (c,next)=>{
             console.log("pwd in db",getUser.password)
             c.status(404)
             return c.json({
-                "msg":"incorrect password"
+                "msg":"Incorrect password"
             })
         }
         
@@ -236,18 +208,7 @@ userRouter.use('/signup',async (c,next)=>{
             "name": getUser.name
         })
     }catch(e){
-        if (e instanceof Prisma.PrismaClientKnownRequestError){
-            if(e.code === 'P2002' ){
-                console.error("Email already exists")
-                return c.json({msg:"Email already exists"})
-            }else{
-                console.error("Prisma error: ",e);
-                return c.json({e})
-            }
-        }else{
-            console.error("Unexpected error: ",e)
-            return c.json({e})
-        }
+        return c.json({msg:"Email already exists",e:e})
     }
     
   })

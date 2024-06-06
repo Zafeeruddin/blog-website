@@ -3,10 +3,16 @@ import {PrismaClient} from "@prisma/client/edge"
 import { withAccelerate } from "@prisma/extension-accelerate"
 import { decode, verify } from "hono/jwt"
 import { postParams } from "@repo/types/types"
+import AWS from "aws-sdk"
+import { string } from "zod"
+import { sha256 } from "hono/utils/crypto"
+import { detectType } from "../utils"
 export const blogRouter=new Hono<{
     Bindings:{
         JWT_SECRET:string,
         DATABASE_URL:string,
+        MY_BUCKET:R2Bucket,
+        AUTH_SECRET:string
     },
     Variables:{
         id:string,
@@ -35,7 +41,7 @@ blogRouter.use("/*",async (c,next)=>{
             const decodedToken= decode(token)
             console.log("decoded header", decodedToken.header)
             console.log("decoded payload", decodedToken.payload.id)
-            c.set("id",decodedToken.payload.id)
+            c.set("id",decodedToken.payload.id as string)
            await next()
         }catch(e){
             console.log("errors",e)
@@ -68,42 +74,58 @@ blogRouter.use("/", async(c,next)=>{
 })
 
 
-blogRouter.post("/",async (c)=>{
-    console.log("in blog")
-    
-    const prisma=new PrismaClient({
+blogRouter.post("/post",async (c)=>{
+    const primsa =new  PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-    const body=await c.req.json()
-    const id=c.get("id")
-    console.log("id in blog",id)
+
+    console.log("a")
+    const formData = await c.req.formData()
+    console.log("formdata",formData)
+    const file = formData.get("file")
+    const title = formData.get("title") as string
+    const content = formData.get("content") as string
+
+    console.log("data",file)
+   
     try{
-        const user=await prisma.user.findUnique({
+        const id = c.get("id")
+        const user=await primsa.user.findUnique({
             where:{
                 id:id
             }
         })
-        console.log("user in blog",user)
         if(!user){
             return c.json({
                 "msg":"No user exists"
             })
         }
         
-        const blog=await prisma.post.create({
+        const blog=await primsa.post.create({
             data:{
-                title:body.title,
-                content:body.content,
+                title:title,
+                content:content,
                 published:true,
-                authorId:user.id
+                authorId:user.id,                
             }
         })
-        console.log("blog",blog)
+        let path;
+        if (file instanceof File && blog) {
+            const fileBuffer = await file.arrayBuffer()
+            const fullName = file.name
+            const ext = fullName.split('.').pop()
+            path = `blog-website/${blog.id}`
+            await c.env.MY_BUCKET.put(path, fileBuffer)
+            console.log("saved")
+        } else {
+            return c.text('Invalid file', 400)
+        }
 
-    return c.json({"msg":"blog posted",})
-  }catch(e){
-    return c.json({"msg":"error posting blog","e":e})
-  }
+        return c.json({"msg":"blog posted","url":path})
+        
+        }catch(e){
+            return c.json({"msg":"error posting blog","e":e})
+        }
   
 })
 
@@ -184,7 +206,8 @@ blogRouter.get("/blogs/bulk",async (c)=>{
         const prisma=new PrismaClient({
             datasourceUrl:c.env.DATABASE_URL
         }).$extends(withAccelerate())
-        const posts=await prisma.post.findMany({
+        console.log("inside bulk")
+        let posts=await prisma.post.findMany({
             include:{
                 author:{
                     select:{
@@ -194,7 +217,7 @@ blogRouter.get("/blogs/bulk",async (c)=>{
                 }
             }
         })
-        
+        console.log("posts",posts)        
         return c.json(posts)
     }catch(e){
         return c.json({e})
@@ -301,7 +324,7 @@ blogRouter.put("/save",async (c)=>{
     if(body.saved){
         updatedSavedPosts=[...user.savedPosts,blog.id]
     }else{
-         updatedSavedPosts=user.savedPosts.filter(postId=>postId!==blog.id)
+         updatedSavedPosts=user.savedPosts.filter((postId:string)=>postId!==blog.id)
     }
 
     const updatingDB=await prisma.user.update({
@@ -360,7 +383,7 @@ blogRouter.put("/like",async(c)=>{
                     likes:likes-1
                 }
              })
-             updateLikePosts = user?.likedPosts.filter(postId => postId !== blog.id);
+             updateLikePosts = user?.likedPosts.filter((postId:string) => postId !== blog.id);
         }
         const updatedLikesPosts=await prisma.user.update({
             where:{

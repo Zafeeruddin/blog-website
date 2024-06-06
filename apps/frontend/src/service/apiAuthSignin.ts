@@ -9,17 +9,18 @@ export const userSignIn=async (email:string,password:string,setUsername:SetterOr
   try{
         loadingToastId = toast.loading("Signing in...");
         const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signin",{email:email,password:password})
+        // const response=await axios.post("http://127.0.0.1:8787/api/v1/user/signin",{email:email,password:password})
+
         if(response.data.token){
-          console.log("waiting for agreement")
           toast.dismiss(loadingToastId);
           toast.success("Sign-in successful");
           setToken(response.data.token)
           setUsername(response.data.name)
           navigate("/blogs")
         }else{
-          console.log("throwing err")
+          console.log("throwing err",response.data.e)
           toast.dismiss(loadingToastId);
-          toast.error("throwing err")
+          toast.error(response.data.msg)
           return 
         }
       }catch (error: unknown) {

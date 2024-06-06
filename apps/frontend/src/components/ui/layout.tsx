@@ -6,7 +6,7 @@ import { TfiWrite } from "react-icons/tfi"
 import { useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
-import { notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
+import { areNotifications, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
 import { NotificationCard } from "../Notification"
 import { updateNotification } from "../../service/apiUpdateNotifications"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
@@ -17,25 +17,31 @@ export const Layout=()=>{
     const [handleProfile,setHandleProfile]=useRecoilState(handleProfileAtom)
     const [handleNotification,setHandleNotification]=useRecoilState(handleNotificationAtom)
     const username=useRecoilValue(usernameAtom)
-    const token=useRecoilValue(tokenAtom)
+    const [token,setToken]=useRecoilState(tokenAtom)
     const [userNotifications,setUserNotifications ]=useRecoilState(notifications)
     const [handleUpdate,setHandleUpdate]=useState(false)
     const unifiedNotification = useRecoilValue(unifiedNotificationsAtom)
     const [loading,setLoading]=useState(true)
     const setSearchBlog = useSetRecoilState(searchBlog)
+    const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
+
+    // Fetch notifications
     useEffect(()=>{
         console.log("notitficaiton now",userNotifications)
-         const getNotifications=async ()=>{
-            await  getNotification(token,setUserNotifications)
+        const getNotifications=async ()=>{
+            await  getNotification(token,setUserNotifications,setAreNotifications)
             console.log("unified Notificaitons are ",unifiedNotification)
             setLoading(false)
         }
         getNotifications()
+        console.log("check in ",areNotificationsIn)
         console.log("getting notifciations with",userNotifications)
-        
     },[])
 
     const updateNotifications=()=>{
+        if(!areNotificationsIn){
+            return
+        }
         console.log("user notificaitons",userNotifications)
         if(!handleUpdate){
             console.log("in the notifications",handleUpdate)
@@ -51,14 +57,20 @@ export const Layout=()=>{
         }
         setHandleProfile(!handleProfile)
     }
-    
+
+    const signUserOut =()=>{
+        setToken("")
+        setSearchBlog("")
+        navigate("/")
+    }
+
     const clickNotification=()=>{
+        console.log("condition",areNotificationsIn)
         if(handleProfile && !handleNotification){
             setHandleProfile(false)
         }
         setHandleNotification(!handleNotification); 
-        updateNotifications();
-        
+        updateNotifications();   
     }
 
     
@@ -89,12 +101,12 @@ export const Layout=()=>{
         
         <div className="cursor-pointer mt-1" onClick={clickNotification}>
             <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
-        { handleNotification &&   !loading &&
-            <div className="shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 md:w-1/2   h-2/3 overflow-auto  right-4  absolute top-16 bg-gray-200  ">
-                 
+        { handleNotification && !loading && 
+            <div className={`shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 md:w-1/2 min-h-1/5  ${areNotifications ? "h-2/3" :"max-h-2/3" }  overflow-auto  right-4  absolute top-16 bg-gray-200`}> 
                     {/* <div className="p-2 mb-3  font-serif text-gray-500 border-b border-gray-300"> You don't have notifications </div> */}
+                    { !areNotificationsIn ?  <div className="m-2 p-2 text-md font-semibold font-sans">You don't have notifiacations</div> :
                      <NotificationCard  notification={userNotifications}/>
-                 
+                    }   
             </div> }
         </div>
 
@@ -109,7 +121,7 @@ export const Layout=()=>{
                     <IoBookmarks className="mt-1 mr-3 " />
                     <div>Saved Blogs</div>
                 </div>
-                <div className=" rounded-lg p-2 pl-3 flex hover:text-slate-950 cursor-pointer">
+                <div onClick={signUserOut} className=" rounded-lg p-2 pl-3 flex hover:text-slate-950 cursor-pointer">
                     <FaSignOutAlt  className="mt-1 mr-3"/>
                     <div>Sign Out</div>
                 </div>

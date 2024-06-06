@@ -2,7 +2,7 @@ import axios from "axios"
 import { SetterOrUpdater } from "recoil"
 import { Notification, Reply, comment } from "../utils/types"
 
-export const getNotification=async (token:string,setUserNotifications:SetterOrUpdater<Notification>)=>{
+export const getNotification=async (token:string,setUserNotifications:SetterOrUpdater<Notification>,setAreNotifications:SetterOrUpdater<boolean>)=>{
     const headers={
         "Authorization":token,
     }
@@ -14,6 +14,7 @@ export const getNotification=async (token:string,setUserNotifications:SetterOrUp
         if(replies.length===0 && comments.length===0){
             return
         }else{
+            setAreNotifications(true)
             console.log("notifiations set")
             setUserNotifications(response.data)
         }

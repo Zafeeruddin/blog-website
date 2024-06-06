@@ -123,3 +123,9 @@ export const unifiedNotificationsAtom=atom<UnifiedNotification[]>({
     key:"unifiedNotificaiton",
     default:[]
 })
+
+
+export const areNotifications = atom<boolean>({
+    key:"notificationIn",
+    default:false
+})

@@ -26,7 +26,9 @@ export default function Signin() {
     })
     console.log("parse msg",parseUser.success)
     if(!parseUser.success){
-      toast.error("Incorrect user types")
+      let refinedMessage = parseUser.error.errors[0]?.message
+      refinedMessage=refinedMessage?.replace("String","")
+      toast.error(refinedMessage)
       return 
     }
     await userSignIn(email,password,setUsername,setToken,navigate)

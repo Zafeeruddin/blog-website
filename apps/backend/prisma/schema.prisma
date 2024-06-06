@@ -44,6 +44,7 @@ model Post{
   likes     Int    @default(0)
   date      DateTime @default(now())
   comments  Comments[]
+  claps     Int?    @default(0)
 }
 
 model Comments{
