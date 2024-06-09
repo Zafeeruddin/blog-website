@@ -69,6 +69,7 @@ model Replies{
   user            String
   claps           Int       @default(0)
   commentId       String
+  postId          String?   @default("")
   replies         Comments  @relation(fields: [commentId],references: [id])
   date            DateTime  @default(now())
   notification    Notification  @relation(fields: [notificationId],references: [id]) 

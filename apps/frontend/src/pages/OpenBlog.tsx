@@ -22,24 +22,24 @@ export const OpenBlog=()=>{
     const [date,setDate]=useState("")
     const [isImage,setIsImage]=useState(false)
 
-    const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
+    // const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
 
-    useEffect(() => {
-        const checkImage = async () => {
-        try {
-            const response = await fetch(imageUrl);
-            if (response.ok) {
-            setIsImage(true);
-            } else {
-            setIsImage(false);
-            }
-        } catch (error) {
-            setIsImage(false);
-        }
-        };
+    // useEffect(() => {
+    //     const checkImage = async () => {
+    //     try {
+    //         const response = await fetch(imageUrl);
+    //         if (response.ok) {
+    //         setIsImage(true);
+    //         } else {
+    //         setIsImage(false);
+    //         }
+    //     } catch (error) {
+    //         setIsImage(false);
+    //     }
+    //     };
 
-        checkImage();
-    }, [imageUrl]);
+    //     checkImage();
+    // }, [imageUrl]);
     // Convert date into '5 May, 2024' format
     useEffect(()=>{
         const newDate=new Date(blog.date)
@@ -50,6 +50,7 @@ export const OpenBlog=()=>{
     },[])
     
     useEffect(()=>{
+        console.log("blog",blog)
         setFlag(false)
         console.log("set flag now")
     },[])
@@ -132,11 +133,20 @@ export const OpenBlog=()=>{
                         </div>
                         <div onClick={saveBlog} className="cursor-pointer">{bookmark ? <MdBookmarks/> :<MdOutlineBookmarks/> }</div>
                 </div>
-                { isImage &&
+                {/* { isImage &&
                 <div className="flex justify-center content-center">
                     <img src={`https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`} className="w-96 h-96 border"/>
-                </div>}
-                <div className="text-lg border-4 max-w-full break-before-auto ">{ReactHTMLParser(blog.content)}</div>
+                </div>} */}
+                <div className="text-lg  " 
+                 style={{ 
+                    maxWidth: '100%', 
+                    wordWrap: 'break-word', 
+                    overflowWrap: 'break-word', 
+                    whiteSpace: 'pre-wrap',
+                    overflow: 'auto',
+                    boxSizing: 'border-box'
+                  }}
+                >{ReactHTMLParser(blog.content)}</div>
                 <Comments ></Comments>
                 {/* <div className=" md:text-lg lg:text-lg text-sm" dangerouslySetInnerHTML={{__html:blog.content}}/> */}
             </div>

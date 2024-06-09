@@ -7,6 +7,7 @@ import AWS from "aws-sdk"
 import { string } from "zod"
 import { sha256 } from "hono/utils/crypto"
 import { detectType } from "../utils"
+import { getCookie } from "hono/cookie"
 export const blogRouter=new Hono<{
     Bindings:{
         JWT_SECRET:string,
@@ -23,7 +24,8 @@ export const blogRouter=new Hono<{
 
 //Middleware for verification of tokens
 blogRouter.use("/*",async (c,next)=>{
-    var token=c.req.header("Authorization")
+    // var token=c.req.header("Authorization")
+    var token = getCookie(c,"token") || c.req.header("Authorization") || ""
     console.log("token in auth",token)
     if(!token){
         c.status(401)
@@ -405,7 +407,7 @@ blogRouter.post("/post/comments",async(c)=>{
     }).$extends(withAccelerate())
     const body=await c.req.json()
     const userId=c.get("id")
-    console.log("inside comments")
+    console.log("inside comments",body.id)
     try{
         const user= await prisma.user.findUnique({
             where:{
@@ -453,6 +455,7 @@ blogRouter.post("/post/comments",async(c)=>{
             }
         })
 
+        console.log("comment is",comment)
 
         if(!comment){
             return c.json("Unable to post comments")
@@ -586,7 +589,8 @@ blogRouter.post("/post/replies",async(c)=>{
                 reply:body.reply,
                 commentId:getComment.id,
                 user:getUser.name,
-                notificationId:getAuthorNotifications.id
+                notificationId:getAuthorNotifications.id,
+                postId:getBlog.id
             }
         })
         

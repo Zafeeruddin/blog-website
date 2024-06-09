@@ -50,6 +50,7 @@ export interface Reply{
 
 
 export interface UnifiedNotification {
+    id:string,
     content: string; // Either comment or reply
     user: string;
     postId: string;

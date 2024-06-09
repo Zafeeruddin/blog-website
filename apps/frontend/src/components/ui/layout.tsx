@@ -4,12 +4,13 @@ import { IoMdNotificationsOutline } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
 import { useNavigate } from "react-router-dom"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
-import { areNotifications, isSearch, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
+import { areNotifications, isAuthenticated, isSearch, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
 import { NotificationCard } from "../Notification"
 import { updateNotification } from "../../service/apiUpdateNotifications"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
+import { userSignOut } from "../../service/apiAuthSignin"
 
 
 export const Layout=()=>{
@@ -17,7 +18,7 @@ export const Layout=()=>{
     const [handleProfile,setHandleProfile]=useRecoilState(handleProfileAtom)
     const [handleNotification,setHandleNotification]=useRecoilState(handleNotificationAtom)
     const username=useRecoilValue(usernameAtom)
-    const [token,setToken]=useRecoilState(tokenAtom)
+    const [token]=useRecoilState(tokenAtom)
     const [userNotifications,setUserNotifications ]=useRecoilState(notifications)
     const [handleUpdate,setHandleUpdate]=useState(false)
     const unifiedNotification = useRecoilValue(unifiedNotificationsAtom)
@@ -25,6 +26,7 @@ export const Layout=()=>{
     const [searchBlogs,setSearchBlog] = useRecoilState(searchBlog)
     const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
     const [isSearchBlog,setIsSearch]=useRecoilState(isSearch)
+    const setUserAuth = useSetRecoilState(isAuthenticated)
 
     // Fetch notifications
     useEffect(()=>{
@@ -70,9 +72,8 @@ export const Layout=()=>{
     }
 
     const signUserOut =()=>{
-        setToken("")
-        setSearchBlog("")
-        navigate("/")
+        userSignOut(setUserAuth)
+        navigate("/signin")
     }
 
     const clickNotification=()=>{

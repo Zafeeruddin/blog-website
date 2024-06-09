@@ -1,7 +1,7 @@
 
 import Label from "../components/ui/label"
 import { useRecoilState, useSetRecoilState } from "recoil"
-import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
+import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
 import {loginParams} from "@repo/types/types"
 import { Suspense } from "react"
 import { useNavigate } from "react-router-dom"
@@ -17,6 +17,7 @@ export default function Signin() {
   const setToken=useSetRecoilState(tokenAtom)
   const setUsername=useSetRecoilState(usernameAtom)
   const navigate=useNavigate()
+  const setAuth= useSetRecoilState(isAuthenticated)
 
   const sendUser=async ()=>{
     const parseUser=loginParams.safeParse({
@@ -31,7 +32,7 @@ export default function Signin() {
       toast.error(refinedMessage)
       return 
     }
-    await userSignIn(email,password,setUsername,setToken,navigate)
+    await userSignIn(email,password,setUsername,setToken,navigate,setAuth)
      
   }
   return (

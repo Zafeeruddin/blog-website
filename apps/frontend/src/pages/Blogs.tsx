@@ -25,7 +25,9 @@ export const Blogs=()=>{
 
     // Fetch blogs
     useEffect(() => {
-        if(blogs!=null){
+        console.log("ready to take blogs")
+        if(blogs.length!=0){
+            console.log("blogs in",blogs)
             setLoading(false)
             return
         }

@@ -52,7 +52,7 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
     return (
         <>  
             
-            <div className="border-b pb-8 mt-12 pl-4">
+            <div className="border-b pb-8 mt-12 pl-4" id={`${commentId}`}>
                 <div className="flex justify-start space-x-4 -space-y-1">
                     <div className= "flex justify-center items-center rounded-full text-xl capitalize bg-orange-900 w-10 h-10  text-center font-semibold text-white ">{user[0] ? user[0] :"A"}</div>
                     <div>

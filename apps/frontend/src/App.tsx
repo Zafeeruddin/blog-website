@@ -12,6 +12,7 @@ import { Write } from "./pages/Write";
 import { FilteredPosts } from "./pages/FilteredPosts";
 import { SearchBlogs } from "./pages/Search";
 import { Home } from "./pages/Home";
+import ProtectedRoute from "./components/Protected";
 
 export default function App(){
   const blog=useRecoilValue(blogOpen)
@@ -24,14 +25,14 @@ export default function App(){
           <Routes>
             <Route path="/stats" element={<BlogStats/>}/>
             <Route path="/" element={<Signup/>}/>
-            <Route path="/home" element={<Home/>}/>
+            <Route path="/home" element={<ProtectedRoute>  <Home/></ProtectedRoute>}/>
             <Route path="/signup" element={<Signup/>}/>
             <Route path="/signin" element={<Signin/>}/>
-            <Route path="/blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs/></Suspense>}/>
-            <Route path={`blogs/:id`} element={<OpenBlog />} />
-            <Route path="/write" element={<Write/>}/>
-            <Route path="/filteredBlogs" element={<FilteredPosts/>}/>
-            <Route path="/search" element={<SearchBlogs/>}/>
+            <Route path="/blogs" element={<ProtectedRoute><Suspense fallback={<div>loading...</div>}><Blogs/></Suspense></ProtectedRoute>}/>
+            <Route path={`blogs/:id`} element={<ProtectedRoute><OpenBlog /></ProtectedRoute>} />
+            <Route path="/write" element={<ProtectedRoute><Write/></ProtectedRoute>}/>
+            <Route path="/filteredBlogs" element={<ProtectedRoute><FilteredPosts/></ProtectedRoute>}/>
+            <Route path="/search" element={<ProtectedRoute><SearchBlogs/></ProtectedRoute>}/>
             {/* <Route path="/comments" element={<Comments/>}></Route> */}
           </Routes>
         </RecoilRoot>
