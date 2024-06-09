@@ -41,7 +41,7 @@ export const Comments=()=>{
                         <div className={` ${handleRelevant ? "display" :"hidden"}`}><RelvantBox setHandleRelevant={setHandleRelevant}/></div> 
                     </div>
                      {userComments.length!==0 && Array.isArray(userComments) && userComments.map(comment=>{
-                        return <CommentsCard key={comment.id} commentId={comment.id} user={comment.user} date={comment.date} comment={comment.comment} clap={comment.claps} replyCount={comment.replyCount}/>
+                        return <CommentsCard  key={comment.id} commentId={comment.id} user={comment.user} date={comment.date} comment={comment.comment} clap={comment.claps} replyCount={comment.replyCount}/>
                     })
                 } 
                     

@@ -134,3 +134,31 @@ export const isSearch = atom<boolean>({
     key:"isSearch",
     default:false
 })
+
+export const fetchUser=selector<boolean>({
+    key:"fetchUser",
+    get:async ({get})=>{
+        try{
+            const headers={
+                "Authorization":get(tokenAtom)
+            }
+            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog",{withCredentials:true,headers})
+            if (response.status==401){
+                return false
+            }else{
+                return true
+            }
+        }catch(e){
+            return false
+        }
+        
+    }
+})
+
+
+
+
+export const isAuthenticated = atom<boolean>({
+    key:"isAuth",
+    default:fetchUser
+})

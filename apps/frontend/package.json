@@ -13,6 +13,8 @@
     "@coreui/coreui": "^5.0.1",
     "@coreui/react": "^5.0.0",
     "@emotion/css": "^11.11.2",
+    "@tanstack/react-form": "^0.19.2",
+    "@tanstack/react-query": "^5.40.1",
     "@types/slate": "^0.47.15",
     "@types/slate-react": "^0.50.1",
     "axios": "^1.6.8",

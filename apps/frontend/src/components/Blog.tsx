@@ -7,6 +7,7 @@ import parse from "html-react-parser"
 import { useEffect, useState } from "react"
 import { MdBookmarkAdd } from "react-icons/md"
 import { blogType } from "../utils/types"
+import { openBlog } from "../service/apiFetchBlog"
 
 
 export const Blog=({blog}:blogType)=>{
@@ -40,25 +41,25 @@ export const Blog=({blog}:blogType)=>{
             setMessage("Saved Blog!") 
         }
 
-    // check for image
-    const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
+    // // check for image
+    // const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
 
-    useEffect(() => {
-        const checkImage = async () => {
-        try {
-            const response = await fetch(imageUrl);
-            if (response.ok) {
-            setIsImage(true);
-            } else {
-            setIsImage(false);
-            }
-        } catch (error) {
-            setIsImage(false);
-        }
-        };
+    // useEffect(() => {
+    //     const checkImage = async () => {
+    //     try {
+    //         const response = await fetch(imageUrl);
+    //         if (response.ok) {
+    //             setIsImage(true);
+    //         } else {
+    //             setIsImage(false);
+    //         }
+    //     } catch (error) {
+    //         setIsImage(false);
+    //     }
+    //     };
 
-        checkImage();
-    }, [imageUrl]);
+    //     checkImage();
+    // }, [imageUrl]);
     
     
     useEffect(()=>{
@@ -70,19 +71,9 @@ export const Blog=({blog}:blogType)=>{
     },[])
 
 
-    const openBlog=async ()=>{
-        const blogId=blog.id
-        const headers={
-            Authorization:token
-        }
-        try{
-            const response=await axios.get(`https://backend.mohammed-xafeer.workers.dev/api/v1/blog/${blogId}`,{headers})
-            console.log("blog got is ",response.data)
-            setOpenBlog(response.data)
-            navigate(`/blogs/${response.data.id}`)
-        }catch(e){
-            return
-        }
+    const fetchBlog=async ()=>{
+        // Used for both navigating blogs and comments from notification
+        openBlog(blog.id,setOpenBlog,navigate,false,"")
     }
 
     
@@ -99,7 +90,7 @@ export const Blog=({blog}:blogType)=>{
                 </div>
                 <div className="flex ">
                     <div className="w-2/3">
-                        <div className="pb-3 font-bold  text-sm text-black lg:text-xl cursor-pointer" onClick={openBlog}>{blog.title}</div>
+                        <div className="pb-3 font-bold  text-sm text-black lg:text-xl cursor-pointer" onClick={fetchBlog}>{blog.title}</div>
                         <p className="text-sm lg:text-lg text-gray-400"> {parse(blog.content.substring(0,150))}...</p>
                         <div className="flex space-x-8">
                             <div className="text-gray-400 text-sm">{Math.floor(duration) == 0 ? 1 : Math.floor(duration)} mins read</div>
@@ -110,7 +101,7 @@ export const Blog=({blog}:blogType)=>{
                     <div className="w-1/4 mt-2 ml-10 ">
                         {/* <img src={`https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%${blog.id}.jpeg`}   className="h-20"/> */}
                 
-                        <img src={imageUrl} className=" h-20 w-20"/>
+                        {/* <img src={imageUrl} className=" h-20 w-20"/> */}
                     </div>
                     }
                 </div>

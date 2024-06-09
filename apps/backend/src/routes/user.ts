@@ -4,6 +4,7 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { Hono } from 'hono'
 import { decode, verify,sign } from 'hono/jwt'
 import {signupParams,loginParams} from "@repo/types/types"
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 
 export const userRouter = new Hono<{
     Bindings:{
@@ -13,15 +14,15 @@ export const userRouter = new Hono<{
     },
     Variables:{
         key:CryptoKey,
-        id:string
+        id:string,
     }
   }>()
 
 
 //Middleware for verification of tokens
-userRouter.use("/getNotification",async (c,next)=>{
+userRouter.use("/*",async (c,next)=>{
                             
-    var token=c.req.header("Authorization")
+    var token=getCookie(c,"token") || c.req.header("Authorization") || ""
     console.log("token in auth",token)
     if(!token){
         c.status(401)
@@ -34,11 +35,11 @@ userRouter.use("/getNotification",async (c,next)=>{
                 c.status(401)
                 return c.json("The token has been altered")
             }
-            console.log("token",verifiedToken)
 
             const decodedToken= decode(token)
-            console.log("decoded header", decodedToken.header)
-            console.log("decoded payload", decodedToken.payload.id)
+            const prisma=new PrismaClient({
+                datasourceUrl:c.env.DATABASE_URL
+            }).$extends(withAccelerate())
             c.set("id",decodedToken.payload.id as string)
            await next()
         }catch(e){
@@ -199,6 +200,12 @@ userRouter.use('/signup',async (c,next)=>{
         
     
         const token=await sign({id:getUser.id},c.env.JWT_SECRET)
+        setCookie(c,"token",token,{
+            httpOnly:true,
+            path:"/",
+            sameSite:"None",
+            secure:true
+        })
         c.header("Authorization",token)
         c.status(201)
         console.log("header set",c.req.header("Authorization"))
@@ -213,6 +220,19 @@ userRouter.use('/signup',async (c,next)=>{
     
   })
   
+
+  userRouter.post("/signout",async(c)=>{
+    deleteCookie(c, 'token', {
+		path: '/',
+		sameSite: 'None',
+		secure: true,
+		// domain: `${c.env.Domain}`,
+	});
+    c.status(200)
+    return c.json("Signed out successfully")
+  })
+  
+
   
   userRouter.get("/getNotification",async(c)=>{
     const userId=c.get("id")
