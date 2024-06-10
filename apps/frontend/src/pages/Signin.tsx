@@ -52,6 +52,7 @@ export default function Signin() {
         </div>
         <div>
           <div className="flex 500">
+        
             <Label htmlFor="password">Password</Label>
             <div className="flex border-2 border-slate-500 rounded-md ml-3">
                 <input
