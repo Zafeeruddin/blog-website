@@ -3,10 +3,11 @@ import Label from "../components/ui/label"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
 import {loginParams} from "@repo/types/types"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { userSignIn } from "../service/apiAuthSignin"
 import { toast } from "sonner"
+import { IoIosEye, IoIosEyeOff } from "react-icons/io"
 
 
 export default function Signin() {
@@ -18,6 +19,7 @@ export default function Signin() {
   const setUsername=useSetRecoilState(usernameAtom)
   const navigate=useNavigate()
   const setAuth= useSetRecoilState(isAuthenticated)
+  const [passwordVisible,setPasswordVisible]=useState(false)
 
   const sendUser=async ()=>{
     const parseUser=loginParams.safeParse({
@@ -49,8 +51,28 @@ export default function Signin() {
           <input className="border-2 pl-2 border-slate-500 w-48 h-8  ml-11 rounded-md border-blackborder-black focus:border-black" onChange={(e)=>setEmail(e.target.value)} type="email" id="email"></input>
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
-          <input className="border-2 pl-2 border-slate-500 w-48 h-8  ml-4 rounded-md border-blackborder-black focus:border-black" onChange={(e)=>setPassword(e.target.value)} type="password" id="password"></input>
+          <div className="flex 500">
+            <Label htmlFor="password">Password</Label>
+            <div className="flex border-2 border-slate-500 rounded-md ml-3">
+                <input
+                    onChange={(e)=>setPassword(e.target.value)}
+                    type={passwordVisible ? "text" : "password"}
+                    className=" border-none focus:outline-none rounded w-36 h-8 ml-3"
+                    placeholder="******"
+                />
+                <button
+                    type="button"
+                    className=" inset-y-0  flex items-center "
+                    onClick={()=>setPasswordVisible(!passwordVisible)}
+                >
+                    {passwordVisible ? (
+                        <IoIosEyeOff className="h-5 w-5 text-gray-500 mr-2" />
+                    ) : (
+                        <IoIosEye className="h-5 w-5 text-gray-500 mr-2" />
+                    )}
+                </button>
+            </div>
+          </div>
         </div>
         <Suspense fallback={"loading..."}> <button onClick={sendUser} className="w-full bg-black text-white h-10 rounded-lg   hover:m-1 ease-in-out transition delay-100">Sign In</button></Suspense>
       </div>
