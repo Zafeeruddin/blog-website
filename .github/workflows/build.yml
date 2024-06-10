@@ -5,6 +5,8 @@ on:
     branches: #array of branches
       - master
       - work
+      - main
+      
 
 jobs:
   build:
