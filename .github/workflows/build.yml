@@ -5,6 +5,8 @@ on:
     branches: #array of branches
       - master
       - work
+      - main
+        
 
 jobs:
   build:
@@ -21,7 +23,8 @@ jobs:
         run: npm install
 
       - name: Adding DB
-        run: npm run db:generate
+        run:  cd apps/backend && npx prisma generate && cd ../..
+
 
       - name: Build 
-        run: npm run build
+        run: cd apps/frontend && npm run build && cd ../..
