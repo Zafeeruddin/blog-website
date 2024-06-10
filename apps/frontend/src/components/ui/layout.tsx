@@ -3,7 +3,7 @@ import { FaSignOutAlt } from "react-icons/fa"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
-import { useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
 import { areNotifications, isAuthenticated, isSearch, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
@@ -41,6 +41,7 @@ export const Layout=()=>{
         console.log("getting notifciations with",userNotifications)
     },[])
 
+    // change to search blog
     useEffect(()=>{
         if(searchBlogs===""){
             setIsSearch(false)
@@ -48,6 +49,7 @@ export const Layout=()=>{
         }else{
             console.log("now ",isSearchBlog)
             setIsSearch(true)
+            navigate("/search")
         }  
     },[searchBlogs])
 
@@ -90,7 +92,7 @@ export const Layout=()=>{
     <div className={`flex items-center justify-between p-4 space-x-2 border-b  border-gray-300 lg:justify-between `}>
         
         <div className="flex items-center">
-            <img className="w-12 cursor-pointer" onClick={()=>navigate("/home")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
+            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
         </div>
     
 
@@ -138,9 +140,8 @@ export const Layout=()=>{
 
         </div>
         </div>
-
     </div>
-
+<Outlet/>
     
    
         </>

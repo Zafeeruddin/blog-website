@@ -1,6 +1,5 @@
 import { useRecoilState, useRecoilValue } from "recoil"
 import { blogOpen } from "../store/atoms/post"
-import { Layout } from "../components/ui/layout"
 import { AiOutlineLike,AiFillLike,} from "react-icons/ai";
 import {MdBookmarks,MdOutlineBookmarks } from "react-icons/md"
 import ReactHTMLParser from "react-html-parser"
@@ -8,9 +7,10 @@ import { useEffect, useState } from "react";
 import { likedBlogs, savedBlogs, tokenAtom } from "../store/atoms/user";
 import axios from "axios";
 import { Comments } from "../components/comments/Comments";
+import { OpenBlogSkeleton } from "../components/ui/skeletons/blogs";
 
 export const OpenBlog=()=>{
-    
+    const [loading,setLoading]=useState(true)
     const [flag,setFlag]=useState(true)
     const token=useRecoilValue(tokenAtom)
     const blog=useRecoilValue(blogOpen)
@@ -20,7 +20,7 @@ export const OpenBlog=()=>{
     const [likes,setLikes]=useState(()=>{return blog.likes})
     const [bookmark,setBookmark]=useState(()=>{return bookmarkBlogs.includes(blog.id) ? true:false})
     const [date,setDate]=useState("")
-    const [isImage,setIsImage]=useState(false)
+    // const [isImage,setIsImage]=useState(false)
 
     // const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
 
@@ -53,6 +53,7 @@ export const OpenBlog=()=>{
         console.log("blog",blog)
         setFlag(false)
         console.log("set flag now")
+        setLoading(false)
     },[])
 
     const headers={
@@ -110,8 +111,7 @@ export const OpenBlog=()=>{
     })
     
     return (
-        <>
-            <Layout/>
+        <>{ loading ? <OpenBlogSkeleton/>:
             <div className="p-4 lg:p-16 lg:pl-80 lg:pr-80 md:p-20 -z-10 ">
                 <div className="text-4xl md:text-2xl lg:text-5xl font-serif font-bold mb-10 text-slate-950 ">{blog.title}</div>
                 <div className="mb-4  flex items-center space-x-4 pb-10 border-b">
@@ -151,6 +151,6 @@ export const OpenBlog=()=>{
                 {/* <div className=" md:text-lg lg:text-lg text-sm" dangerouslySetInnerHTML={{__html:blog.content}}/> */}
             </div>
 
-        </>
+                }</>
     )
 }
