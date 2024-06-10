@@ -23,7 +23,8 @@ jobs:
         run: npm install
 
       - name: Adding DB
-        run: npm run db:generate
+        run:  cd packages/db && npx prisma generate && cd ../..
+
 
       - name: Build 
         run: npm run build
