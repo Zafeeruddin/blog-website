@@ -1,4 +1,4 @@
-export const OpenBlog=()=>{
+export const OpenBlogSkeleton=()=>{
     return (
         <>
             <div className="p-4 lg:p-16 lg:pl-80 lg:pr-80 md:p-20 -z-10 animate-pulse">
@@ -8,15 +8,15 @@ export const OpenBlog=()=>{
                             <span className="uppercase"></span>
                         </div>
                         <div>
-                            <div className="font-sans text-lg text-slate-950 capitalize"></div>
+                            <div className="font-sans text-lg text-slate-950 capitalize w-32 h-2 bg-gray-200 rounded-full"></div>
                             <div className="flex">
-                                <div className="text-gray-400 text-sm"></div>
-                                <div className="flex justify-center content-center ml-4 mb-2 ">.</div>
-                                <div className="text-gray-400 ml-4 text-sm "></div>
+                                <div className="text-gray-400 text-sm w-32 h-2 bg-gray-200 rounded-full"></div>
+                                <div className="flex justify-center content-center ml-4 mb-2 w-32 h-2 bg-gray-200 rounded-full">.</div>
+                                <div className="text-gray-400 ml-4 text-sm w-32 h-2 bg-gray-200 rounded-full"></div>
                             </div>
                         </div>
 
-                        <div  className="cursor-pointer space-y-1 flex space-x-2">
+                        <div  className="cursor-pointer space-y-1 flex space-x-2 w-32 h-2 bg-gray-200 rounded-full">
                             <div></div>
                             <div> </div>
                         </div>

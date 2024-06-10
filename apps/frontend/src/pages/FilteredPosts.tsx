@@ -1,5 +1,4 @@
 import {  useRecoilValue } from "recoil"
-import { Layout } from "../components/ui/layout"
 import {  allBlogs, savedBlogs, usernameAtom } from "../store/atoms/user"
 import { FaLock } from "react-icons/fa"
 import { Blog } from "../components/Blog"
@@ -17,7 +16,6 @@ export const FilteredPosts=()=>{
     const username=useRecoilValue(usernameAtom)
     return(
         <div className="">
-            <Layout/>
             <div className="flex lg:pl-32 md:pl-32 md:pt-20 lg:pt-20 lg:w-2/3">
                 <div className="rounded-full h-12 w-12 flex justify-center content-center capitalize text-2xl p-2 bg-orange-900 text-white">{username[0]}</div>
                 <div className="ml-4">
@@ -28,7 +26,7 @@ export const FilteredPosts=()=>{
                     </div>
                 </div>
             </div>
-            <div className="text-4xl lg:pl-32 lg:pt-4 border-b pb-8 font-sans font-extrabold mt-4 mb-4">Reading list</div>
+            <div className="text-4xl lg:pl-32 md:pl-32 lg:pt-4 border-b pb-8 font-sans font-extrabold mt-4 mb-4">Reading list</div>
 
             {
                 filteredBlogs.map(blog=>{

@@ -20,7 +20,7 @@ export const userRouter = new Hono<{
 
 
 //Middleware for verification of tokens
-userRouter.use("/*",async (c,next)=>{
+userRouter.use("/getNotification",async (c,next)=>{
                             
     var token=getCookie(c,"token") || c.req.header("Authorization") || ""
     console.log("token in auth",token)
