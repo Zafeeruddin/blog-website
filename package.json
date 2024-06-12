@@ -2,6 +2,9 @@
   "name": "medium",
   "private": true,
   "scripts": {
+    "prisma:docker": "npm run prisma:migrate && npm run db:seed && npm run studio",
+    "dev:docker": "npm run prisma:docker & npm run dev",
+    "prisma:migrate": "prisma migrate deploy",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
