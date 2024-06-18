@@ -48,9 +48,10 @@ jobs:
     - name: Deploy Backend to Cloudflare Workers
       run: |
         cd apps/backend
-        npm uninstall -g @cloudflare/wrangler && npm install -g wrangler
+        npm uninstall -g @cloudflare/wrangler && npm install -g wrangler@latest
         wrangler config --api-key ${{ secrets.CLOUDFLARE_API_TOKEN }}
         wrangler publish
+        CF_EMAIL=${{ secrets.CLOUDFLARE_ACCOUNT_ID }} CF_API_KEY=${{ secrets.CLOUDFLARE_API_TOKEN }} wrangler publish
         cd ../..
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
