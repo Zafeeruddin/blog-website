@@ -13,9 +13,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install Dependencies
-      run: |
-        cd apps/frontend
-        npm install
+      run: npm install
 
     - name: Build 
       run: cd apps/frontend && npm run build && cd ../..
