@@ -45,9 +45,6 @@ jobs:
     - name: Sync Frontend to S3
       run: aws s3 sync ./apps/frontend/dist s3://${{ secrets.S3_BUCKET }} --delete
   
-  deploy-backend:
-    runs-on: ubuntu-latest
-    steps:
     - name: Deploy Backend to Cloudflare Workers
       run: |
         cd apps/backend
