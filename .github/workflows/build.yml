@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: #array of branches
       - master
-      - main
+      - work
         
 
 jobs:
