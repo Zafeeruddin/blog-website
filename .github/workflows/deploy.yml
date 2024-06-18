@@ -45,7 +45,7 @@ jobs:
     - name: Sync Frontend to S3
       run: aws s3 sync ./apps/frontend/dist s3://${{ secrets.S3_BUCKET }} --delete
 
-   deploy:
+  deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: test
