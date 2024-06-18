@@ -48,7 +48,7 @@ jobs:
     - name: Deploy Backend to Cloudflare Workers
       run: |
         cd apps/backend
-        npm install -g @cloudflare/wrangler
+        npm uninstall -g @cloudflare/wrangler && npm install -g wrangler
         wrangler config --api-key ${{ secrets.CLOUDFLARE_API_TOKEN }}
         wrangler publish
         cd ../..
