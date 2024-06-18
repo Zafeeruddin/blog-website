@@ -92,7 +92,9 @@ export const Layout=()=>{
     <div className={`flex items-center justify-between p-4 space-x-2 border-b  border-gray-300 lg:justify-between `}>
         
         <div className="flex items-center">
-            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
+            {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" /> */}
+            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xsxis-a7S4ExWfMQ3fQd4_dv230UjtY5bA&s" alt="Logo" />
+
         </div>
     
 
