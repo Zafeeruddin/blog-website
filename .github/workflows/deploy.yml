@@ -44,3 +44,14 @@ jobs:
   
     - name: Sync Frontend to S3
       run: aws s3 sync ./apps/frontend/dist s3://${{ secrets.S3_BUCKET }} --delete
+
+    - name: Deploy Backend to Cloudflare Workers
+      run: |
+        npm install -g @cloudflare/wrangler
+        echo "Setting up wrangler..."
+        wrangler config --api-key ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        wrangler publish
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_PROJECT_NAME: backend
