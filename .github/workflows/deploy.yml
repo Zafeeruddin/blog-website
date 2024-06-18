@@ -17,10 +17,8 @@ jobs:
         cd apps/frontend
         npm install
 
-    - name: Build Frontend
-      run: |
-        cd apps/frontend
-        npm run build
+    - name: Build 
+      run: cd apps/frontend && npm run build && cd ../..
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
