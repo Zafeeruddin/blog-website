@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      - work
+      - main
 
 jobs:
   build-and-push:
