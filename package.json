@@ -2,9 +2,11 @@
   "name": "medium",
   "private": true,
   "scripts": {
+    "migrate":"cd apps/backend && npx prisma generate && cd ../..",
     "prisma:docker": "npm run prisma:migrate && npm run db:seed && npm run studio",
     "dev:docker": "npm run prisma:docker & npm run dev",
     "prisma:migrate": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
@@ -25,8 +27,10 @@
     "packages/*"
   ],
   "dependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
     "react-cookie": "^1.0.5",
     "react-quill": "^2.0.0",
-    "react-spinners": "^0.13.8"
+    "react-spinners": "^0.13.8",
+    "vite": "^5.3.1"
   }
 }

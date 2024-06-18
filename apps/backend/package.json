@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "build": "echo 'No build step required for backend'"
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^1.0.0",
