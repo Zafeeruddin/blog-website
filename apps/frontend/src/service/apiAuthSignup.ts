@@ -4,25 +4,27 @@ import { SetterOrUpdater } from "recoil"
 import { toast } from "sonner";
 
 
-export const userSignUp=async (username:string,email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction)=>{
+export const userSignUp=async (username:string,email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>)=>{
   let loadingToastId;  
   try{
         loadingToastId = toast.loading("Signing up...");
-        const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signup",{name:username,email:email,password:password})
+        const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signup",{name:username,email:email,password:password},{withCredentials:true})
         if(response.data.token){
-          console.log("waiting for agreement")
           toast.dismiss(loadingToastId);
           toast.success("Sign-in successful");
           setToken(response.data.token)
           setUsername(response.data.name)
-          navigate("/signin")
+          console.log("token being set", response.data.token)
+          setUserAuth(true)
+          navigate("/blogs")
         }else{
-          console.log("throwing err")
+          console.log("throwing err",response.data)
           toast.dismiss(loadingToastId);
           toast.error("Incorrect inputs")
           return 
         }
       }catch (error: unknown) {
+        console.log("err",error)
         if (axios.isAxiosError(error)) {
           // Type assertion to AxiosError
           const axiosError = error as AxiosError;
@@ -34,6 +36,9 @@ export const userSignUp=async (username:string,email:string,password:string,setU
             }else if(status===404){
               toast.dismiss(loadingToastId)
               toast.error("Incorrect password")
+            } else if(status===409){
+              toast.dismiss(loadingToastId)
+              toast.error("Email already exists")
             }
           } else {
             // Something happened in setting up the request that triggered an error

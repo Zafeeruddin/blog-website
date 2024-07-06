@@ -5,12 +5,16 @@
     "build": "echo 'No build step required for backend'"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.609.0",
     "@prisma/extension-accelerate": "^1.0.0",
     "aws-sdk": "^2.1633.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "google-auth-library": "^9.11.0",
     "hone": "^1.1.0",
     "hono": "^4.2.4",
+    "install": "^0.13.0",
+    "npm": "^10.8.1",
     "zod": "^3.22.5"
   },
   "devDependencies": {

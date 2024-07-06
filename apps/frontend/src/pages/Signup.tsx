@@ -1,7 +1,7 @@
 
 import Label from "../components/ui/label.js"
 import { useRecoilState, useSetRecoilState } from "recoil"
-import { emailAtom, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user.js"
+import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user.js"
 
 import { useNavigate } from "react-router-dom"
 import { userSignUp } from "../service/apiAuthSignup.js"
@@ -10,7 +10,7 @@ import { toast } from "sonner"
 
 
 export default function Signup() {
-
+  const setAuth= useSetRecoilState(isAuthenticated)
   const [username,setUsername]=useRecoilState(usernameAtom)
   const [password,setPassword]=useRecoilState(passwordAtom);
   const [email,setEmail]=useRecoilState(emailAtom)
@@ -25,6 +25,7 @@ export default function Signup() {
       password:password,
       
     })
+    console.log("us " + username + "emal " + email + "pass" + password)
     console.log("parse msg",parseUser.success)
     if(!parseUser.success){
       console.log("erros",parseUser.error.errors)
@@ -32,7 +33,7 @@ export default function Signup() {
       toast.error(refinedMessage)
       return 
     }
-    await userSignUp(username,email,password,setUsername,setToken,navigate)
+    await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
 
     
     //setInterval(()=>{setMessage("")},3000)

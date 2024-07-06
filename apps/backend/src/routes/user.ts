@@ -26,6 +26,7 @@ userRouter.use("/getNotification",async (c,next)=>{
     console.log("token in auth",token)
     if(!token){
         c.status(401)
+        console.log("unauthorized")
         return c.json({"error":"unauthorized"})
     }
     if(token){
@@ -79,7 +80,7 @@ userRouter.use('/signup',async (c,next)=>{
     if(!getUserByEmail){
        await next()
     }
-
+    c.status(409)
     return c.json({"msg":"Email already exists"})
 })  
 
@@ -119,7 +120,6 @@ userRouter.use('/signup',async (c,next)=>{
   
     try {
         //easier way triying
-        
         const user=await prisma.user.create({
             data:{
                 name:body.name,
@@ -127,21 +127,33 @@ userRouter.use('/signup',async (c,next)=>{
                 password:decodedPassword      
             }
             })
-        console.log(user, "user is ")
         const payload={
         id:user.id,
         exp:Math.floor(Date.now()/1000)+60*5}
         const token= await sign(payload,c.env.JWT_SECRET)
         console.log("token",token)
 
-        const notification = await prisma.notification.create({
+        await prisma.notification.create({
             data:{
                 userId:user.id
             }
         })
-        console.log(notification)
-        return c.json({token})
-        }    
+
+        setCookie(c,"token",token,{
+            httpOnly:true,
+            path:"/",
+            sameSite:"None",
+            secure:true
+        })
+        c.header("Authorization",token)
+        c.status(201)
+        console.log("header set",c.req.header("Authorization"))
+        return c.json({
+            msg:"Signup successfully",
+            "token":token,
+            "name": user.name
+        })
+    }    
     catch(e){
         c.status(403)
         return c.json({
@@ -149,6 +161,46 @@ userRouter.use('/signup',async (c,next)=>{
             "error" : e
         })
     }   
+  })
+
+  userRouter.post("/googleAuth",async(c)=>{
+    const body= await c.req.json()
+    const prisma=new PrismaClient({
+        datasourceUrl:c.env.DATABASE_URL
+    }).$extends(withAccelerate())
+
+    try{
+        let user=await prisma.user.findUnique({
+        where:{
+            email:body.email
+        }
+        })
+        
+        if(!user){
+            user= await prisma.user.create({data:{
+                email:body.email,
+                googleId:body.googleId,
+                name:body.name,
+            }})
+        }
+        const token=await sign({id:user.id},c.env.JWT_SECRET)
+        setCookie(c,"token",token,{
+            httpOnly:true,
+            path:"/",
+            sameSite:"None",
+            secure:true
+        })
+        c.header("Authorization",token)
+        c.status(201)
+        console.log("header set",c.req.header("Authorization"))
+        return c.json({
+            msg:"Signup successfully",
+            "token":token,
+            "name": user.name
+        })
+    }catch(e){
+        return c.json({msg:"Email already exists",e:e})
+    }
   })
   
   userRouter.post("/signin",async (c)=>{

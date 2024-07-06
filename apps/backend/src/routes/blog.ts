@@ -3,10 +3,6 @@ import {PrismaClient} from "@prisma/client/edge"
 import { withAccelerate } from "@prisma/extension-accelerate"
 import { decode, verify } from "hono/jwt"
 import { postParams } from "@repo/types/types"
-import AWS from "aws-sdk"
-import { string } from "zod"
-import { sha256 } from "hono/utils/crypto"
-import { detectType } from "../utils"
 import { getCookie } from "hono/cookie"
 export const blogRouter=new Hono<{
     Bindings:{
@@ -82,13 +78,10 @@ blogRouter.post("/post",async (c)=>{
     }).$extends(withAccelerate())
 
     console.log("a")
-    const formData = await c.req.formData()
-    console.log("formdata",formData)
-    const file = formData.get("file")
-    const title = formData.get("title") as string
-    const content = formData.get("content") as string
+    const body = await c.req.json()
+    const title = body.title
+    const content = body.content
 
-    console.log("data",file)
    
     try{
         const id = c.get("id")
@@ -111,19 +104,9 @@ blogRouter.post("/post",async (c)=>{
                 authorId:user.id,                
             }
         })
-        let path;
-        if (file instanceof File && blog) {
-            const fileBuffer = await file.arrayBuffer()
-            const fullName = file.name
-            const ext = fullName.split('.').pop()
-            path = `blog-website/${blog.id}`
-            await c.env.MY_BUCKET.put(path, fileBuffer)
-            console.log("saved")
-        } else {
-            return c.text('Invalid file', 400)
-        }
-
-        return c.json({"msg":"blog posted","url":path})
+        console.log("blog",blog)
+        c.status(200)
+        return c.json({"msg":"blog posted",blogId:blog.id})
         
         }catch(e){
             return c.json({"msg":"error posting blog","e":e})

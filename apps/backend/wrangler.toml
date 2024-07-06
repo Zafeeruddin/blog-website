@@ -1,10 +1,13 @@
 name = "backend"
 compatibility_date = "2023-12-01"
+compatibility_flags = [ "nodejs_compat" ]
+
 
 
 [vars]
 DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiYTExNWQ4NTItYWIzZS00ZDIwLWJmN2MtYTcwNDdhNTU4NGZlIiwidGVuYW50X2lkIjoiZTIxODc2ZWZiODI1ODI5MTdhMzY4ZjQ1MDA4YzJkYjZkNjRlNjhlYjhkNGI4ZjExNDMxZmE4YmJlNWE0YWRlYyIsImludGVybmFsX3NlY3JldCI6IjA1MzBlMjUxLTNhYzgtNDc5NC05YTNiLTg4ODY2Y2FkZjg1NiJ9.zmriC-9TuRUZT5IIP4S-kA_H-gMAb59X_HXWJ9PTbME"
 JWT_SECRET="123456"
+GOOGLE_CLIENT_ID="489371249303-9pfsdn6l52bo46qtgt79kpk18scdohnf.apps.googleusercontent.com"
 
 # MY_VAR = "my-variable"
 

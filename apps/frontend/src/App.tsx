@@ -12,9 +12,10 @@ import { FilteredPosts } from "./pages/FilteredPosts";
 import { SearchBlogs } from "./pages/Search";
 import ProtectedRoute from "./components/Protected";
 import { Layout } from "./components/ui/layout";
+// import { isAuthenticated } from "./store/atoms/user";
 
 export default function App(){
-
+  // const auth= useRecoilValue(isAuthenticated)
   return (
     <>
       <BrowserRouter>

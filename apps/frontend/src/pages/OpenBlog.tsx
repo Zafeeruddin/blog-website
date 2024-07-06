@@ -8,9 +8,13 @@ import { likedBlogs, savedBlogs, tokenAtom } from "../store/atoms/user";
 import axios from "axios";
 import { Comments } from "../components/comments/Comments";
 import { OpenBlogSkeleton } from "../components/ui/skeletons/blogs";
+import { getImage } from "../service/apiPutImage";
+import { ClipLoader } from "react-spinners";
 
 export const OpenBlog=()=>{
     const [loading,setLoading]=useState(true)
+    const [loadLike ,setLoadLike] = useState(false)
+    const [loadBookmark,setLoadBookmark] = useState(false)
     const [flag,setFlag]=useState(true)
     const token=useRecoilValue(tokenAtom)
     const blog=useRecoilValue(blogOpen)
@@ -20,26 +24,27 @@ export const OpenBlog=()=>{
     const [likes,setLikes]=useState(()=>{return blog.likes})
     const [bookmark,setBookmark]=useState(()=>{return bookmarkBlogs.includes(blog.id) ? true:false})
     const [date,setDate]=useState("")
-    // const [isImage,setIsImage]=useState(false)
+    const [isImage,setIsImage]=useState(false)
+    const [imageUrl,setImageUrl] = useState<string | null>(null)
 
-    // const imageUrl = `https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`;
 
-    // useEffect(() => {
-    //     const checkImage = async () => {
-    //     try {
-    //         const response = await fetch(imageUrl);
-    //         if (response.ok) {
-    //         setIsImage(true);
-    //         } else {
-    //         setIsImage(false);
-    //         }
-    //     } catch (error) {
-    //         setIsImage(false);
-    //     }
-    //     };
+    useEffect(() => {
+        const checkImage = async () => {
+        try {
+            const url = await getImage(blog.id);
+            if (url) {
+                setIsImage(true);
+                setImageUrl(url)
+            }else {
+                setIsImage(false);
+            }
+        } catch (error) {
+            setIsImage(false);
+        }
+        };
 
-    //     checkImage();
-    // }, [imageUrl]);
+        checkImage();
+    }, []);
     // Convert date into '5 May, 2024' format
     useEffect(()=>{
         const newDate=new Date(blog.date)
@@ -68,6 +73,7 @@ export const OpenBlog=()=>{
             const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save",{id:blog.id,saved:bookmark},{headers})
             console.log("data",response.data)
             setNewBookmarks(response.data)
+            setLoadBookmark(false)
         }
 
         setBookMarkBlogs([...newBookmarks])
@@ -90,19 +96,23 @@ export const OpenBlog=()=>{
             setNewLikeBlogs(data.posts)
             setLikes(data.likes)
             console.log(data.likes)
+            setLoadLike(false)
         }
         
         if(!flag){
             setLikeBlogs([...newLikedBlogs])
             updateLikePosts()
         }
+        
     },[like])
 
     // saving/liking for icons
     const likeBlog= async ()=>{
+        setLoadLike(true)
         setLike(!like)
     }
     const saveBlog=()=>{
+        setLoadBookmark(true)
         setBookmark(!bookmark)
     }
     const [duration]=useState(()=>{const words = blog.content.length;
@@ -126,17 +136,24 @@ export const OpenBlog=()=>{
                                 <div className="text-gray-400 ml-4 text-sm ">{date}</div>
                             </div>
                         </div>
-
+                        
                         <div onClick={likeBlog} className="cursor-pointer space-y-1 flex space-x-2">
                             <div>{blog.likes==0 ? "" :likes}</div>
+                            { loadLike ? <ClipLoader size={20}> </ClipLoader>: 
                             <div> {like==true ?<AiFillLike/> : <AiOutlineLike/>}</div>
+                            }
                         </div>
+                        
+                        
+                         { loadBookmark ? <ClipLoader size={20} ></ClipLoader>:
                         <div onClick={saveBlog} className="cursor-pointer">{bookmark ? <MdBookmarks/> :<MdOutlineBookmarks/> }</div>
+                        }
+                        
                 </div>
-                {/* { isImage &&
+                { isImage && imageUrl &&
                 <div className="flex justify-center content-center">
-                    <img src={`https://pub-1fab6c2575d44e75bf69e0d8827f0a72.r2.dev/blog-website%2F${blog.id}.png`} className="w-96 h-96 border"/>
-                </div>} */}
+                    <img src={imageUrl} className="w-full p-10 mb-8 h-96 border"/>
+                </div>}
                 <div className="text-lg  " 
                  style={{ 
                     maxWidth: '100%', 
