@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaSignOutAlt } from "react-icons/fa"
-import { IoMdNotificationsOutline } from "react-icons/io"
+import { IoMdNotifications, IoMdNotificationsOutline } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
 import { Outlet, useNavigate } from "react-router-dom"
@@ -27,12 +27,43 @@ export const Layout=()=>{
     const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
     const [isSearchBlog,setIsSearch]=useRecoilState(isSearch)
     const setUserAuth = useSetRecoilState(isAuthenticated)
+    const [prevScrollPos, setPrevScrollPos] = useState(0);
+	const [visible, setVisible] = useState(true);
+	const [scrollingDown, setScrollingDown] = useState(false);
+    // const [clickedOutside,setClickedOutside] = useState(false)
+    const ref = useRef<HTMLDivElement>(null)
 
-    // Fetch notifications
+    const debounce = (func: any, delay: any) => {
+		let timeoutId: any;
+		return (...args: any) => {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(() => {
+				func(...args);
+			}, delay);
+		};
+	};
+
+    // scroll layout
+    const debouncedHandleScroll = debounce(() => {
+		const currentScrollPos = window.scrollY;
+		setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 50);
+		setScrollingDown(prevScrollPos < currentScrollPos);
+		setPrevScrollPos(currentScrollPos);
+	}, 80);
+
+	useEffect(() => {
+		window.addEventListener('scroll', debouncedHandleScroll);
+		return () => {
+			window.removeEventListener('scroll', debouncedHandleScroll);
+		};
+	}, [prevScrollPos, debouncedHandleScroll]);
+
+
+        // Fetch notifications
     useEffect(()=>{
         console.log("notitficaiton now",userNotifications)
         const getNotifications=async ()=>{
-            await  getNotification(token,setUserNotifications,setAreNotifications)
+            await  getNotification(setUserNotifications,setAreNotifications)
             console.log("unified Notificaitons are ",unifiedNotification)
             setLoading(false)
         }
@@ -89,7 +120,10 @@ export const Layout=()=>{
 
     return (
         <>
-    <div className={`flex items-center justify-between p-4 space-x-2 border-b  border-gray-300 lg:justify-between `}>
+    <div ref={ref} className={`flex items-center justify-between p-4 space-x-2 border-b  border-gray-300 lg:justify-between 
+        sticky top-0 z-50 transition-transform duration-300 bg-white ${
+            !visible && scrollingDown ? 'transform -translate-y-full ' : ' '
+        }  `}>
         
         <div className="flex items-center">
             {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" /> */}
@@ -113,11 +147,13 @@ export const Layout=()=>{
         <TfiWrite className={`w-5 h-5 lg:w-7 lg:h-7 text-gray-400 mt-2 cursor-pointer hover:text-gray-800`} onClick={()=>navigate("/write")}></TfiWrite>
         
         <div className="cursor-pointer mt-1" onClick={clickNotification}>
-            <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
+            { handleNotification ?
+                <IoMdNotifications className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/> :   
+                <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
+            }
         { handleNotification && !loading && 
-            <div className={`shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 md:w-1/2 min-h-1/5  ${areNotifications ? "h-2/3" :"max-h-2/3" }  overflow-auto  right-4  absolute top-16 bg-gray-200`}> 
-                    {/* <div className="p-2 mb-3  font-serif text-gray-500 border-b border-gray-300"> You don't have notifications </div> */}
-                    { !areNotificationsIn ?  <div className="m-2 p-2 text-md font-semibold font-sans">You don't have notifiacations</div> :
+            <div className={`shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 md:w-1/2   ${areNotificationsIn ? " h-80" :" h-20 w-80 flex justify-center content-center" }   overflow-auto  right-4  absolute top-16 bg-gray-200`}> 
+                    { !areNotificationsIn ? <div className="m-2 p-2 text-lg font-semibold font-sans">You don't have notifications</div> :
                      <NotificationCard  notification={userNotifications}/>
                     }   
             </div> }

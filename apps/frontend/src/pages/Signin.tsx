@@ -1,18 +1,20 @@
 
-import Label from "../components/ui/label"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
 import {loginParams} from "@repo/types/types"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { userSignIn } from "../service/apiAuthSignin"
+import { googleSignIn, userSignIn } from "../service/apiAuthSignin"
 import { toast } from "sonner"
 import { IoIosEye, IoIosEyeOff } from "react-icons/io"
+import {  TokenResponse, useGoogleLogin } from "@react-oauth/google"
+import axios from "axios"
+import { FaGoogle } from "react-icons/fa"
 
 
 export default function Signin() {
-
-  
+  const [user,setUser]=useState<Omit<TokenResponse, "error" | "error_description" | "error_uri">>()
+  const [setGProfile]=useState<any>()
   const [password,setPassword]=useRecoilState(passwordAtom);
   const [email,setEmail]=useRecoilState(emailAtom)
   const setToken=useSetRecoilState(tokenAtom)
@@ -20,6 +22,37 @@ export default function Signin() {
   const navigate=useNavigate()
   const setAuth= useSetRecoilState(isAuthenticated)
   const [passwordVisible,setPasswordVisible]=useState(false)
+
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log('Login Failed:', error)
+});
+
+useEffect(() => {
+      if (user) {
+          console.log("user cred",user)
+          axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+                  headers: {
+                      Authorization: `Bearer ${user.access_token}`,
+                      Accept: 'application/json'
+                  }
+              })
+              .then((res) => {
+                  googleSignIn(user.access_token,res.data.id,res.data.email,res.data.name)
+                  toast.success("Sign-in successful")
+                  setGProfile(res.data);
+                  console.log("response is",res.data)
+                  setUsername(res.data.given_name)
+                  setAuth(true)
+                  console.log("set auth now treu",setAuth)
+                  setToken(user.access_token)
+                  navigate("/blogs")
+                })
+              .catch((err) => console.log(err));
+      }
+  },[ user ]);
+
 
   const sendUser=async ()=>{
     const parseUser=loginParams.safeParse({
@@ -35,30 +68,44 @@ export default function Signin() {
       return 
     }
     await userSignIn(email,password,setUsername,setToken,navigate,setAuth)
-     
   }
+
+//   const logOut = () => {
+//     googleLogout();
+//     setGProfile(null);
+// };
   return (
-    <div className="flex max-w-4xl mx-auto my-12">
-      <div className="flex flex-col w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="flex flex-col space-y-1">
-          <h1 className="text-4xl font-bold">Create an account</h1>
-          <a className="text-sm text-blue-600 hover:underline" href="/signup">
-            Don't have an account? SignUp
-          </a>
+    <div className="flex max-w-4xl mx-auto my-12 ">
+      <div className="flex flex-col w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md md:justify-center md:content-center sm:justify-center sm:content-center">
+        <div className="mx-auto max-w-md space-y-4 ">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">Welcome back!</h1>
+            <p className="text-muted-foreground text-gray-400">Sign in to your account to continue using our blogging platform.</p>
+          </div>
+          <div>
+            <button onClick={() => login()} className="w-full flex justify-center content-center mb-1 border hover:bg-gray-100 rounded-lg p-2">
+              <FaGoogle className="h-4 w-4 mr-4 mt-1" />
+              <div className=" font-serif font-thin font">Sign in with Google</div>
+            </button>
+            <div className="flex items-center justify-center w-full py-4">
+              <div className="border-t border-gray-300 flex-grow mr-3 "></div>
+              <span className="text-gray-400  text-xs  uppercase">Or continue with</span>
+              <div className="border-t border-gray-300 flex-grow ml-3"></div>
+            </div>
+          </div>
+          <div className="flex">
+            <label className="text-lg font-medium " htmlFor="email">Email</label>
+            <input placeholder="john@gmail.com" className="border text-sm border-slate-500 w-2/3  rounded-sm h-8 ml-9 border-blackborder-black focus:border-black pl-3" onChange={(e)=>setEmail(e.target.value)} type="email" id="email"></input>
+          </div>
         </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <input className="border-2 pl-2 border-slate-500 w-48 h-8  ml-11 rounded-md border-blackborder-black focus:border-black" onChange={(e)=>setEmail(e.target.value)} type="email" id="email"></input>
-        </div>
-        <div>
-          <div className="flex 500">
-        
-            <Label htmlFor="password">Password</Label>
-            <div className="flex border-2 border-slate-500 rounded-md ml-3">
+       <div>
+       <div className="flex 500">
+            <label className="font-medium" htmlFor="password">Password</label>
+            <div className="flex border-1 border border-slate-500 w-2/3  rounded-sm h-8 ml-3">
                 <input
                     onChange={(e)=>setPassword(e.target.value)}
                     type={passwordVisible ? "text" : "password"}
-                    className=" border-none focus:outline-none rounded w-36 h-8 ml-3"
+                    className=" border-none focus:outline-none rounded w-full h-7 ml-3 pt-1"
                     placeholder="******"
                 />
                 <button
@@ -67,15 +114,20 @@ export default function Signin() {
                     onClick={()=>setPasswordVisible(!passwordVisible)}
                 >
                     {passwordVisible ? (
-                        <IoIosEyeOff className="h-5 w-5 text-gray-500 mr-2" />
+                        <IoIosEyeOff className="h-4 w-4 text-gray-500 mr-2" />
                     ) : (
-                        <IoIosEye className="h-5 w-5 text-gray-500 mr-2" />
+                        <IoIosEye className="h-4 w-4 text-gray-500 mr-2" />
                     )}
                 </button>
             </div>
           </div>
         </div>
         <Suspense fallback={"loading..."}> <button onClick={sendUser} className="w-full bg-black text-white h-10 rounded-lg   hover:m-1 ease-in-out transition delay-100">Sign In</button></Suspense>
+        <div className="flex flex-col">
+          <a className="text-sm text-black-600 hover:underline" href="/signup">
+            Don't have an account? SignUp
+          </a>
+        </div>  
       </div>
       <div className="hidden ml-12 space-y-4 lg:block w-80">
         <blockquote className="text-lg font-semibold italic text-gray-600">

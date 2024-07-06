@@ -9,6 +9,8 @@ import { formats, modules } from "../utils/editor";
 import { toast } from "sonner";
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // Import a Highlight.js style
+import { getImage, putImage } from "../service/apiPutImage";
+import { ClipLoader } from "react-spinners";
 
 hljs.configure({
   languages: ['javascript', 'python', 'java', 'cpp', 'csharp', 'ruby', 'go', 'php', 'html', 'css', 'json'] // Add languages you want to support
@@ -22,50 +24,64 @@ export const Write = () => {
   const token=useRecoilValue(tokenAtom)
   const refTitle= useRef<HTMLTextAreaElement>(null)
   const quillRef = useRef<ReactQuill>(null);
-  const fileRef = useRef<any>(null)
-  const formRef = useRef<any>(null)
-  const [formData,setFormData]=useState<FormData>()
-
+  const [file,setFile ]= useState<undefined | File>()
+  const [url,setUrl] = useState<string>("")
+  const [loading ,setLoading] = useState(false)
+  const handleFileChange = (e:any)=>{
+    const file = e.target.files[0];
+    if (file) {
+        setFile(file);
+        console.log("set file an image")
+    }
+  }
   
   const publishBlog=async ()=>{
+    setLoading(true)
     const headers={
         "Authorization":token
     }
-    if(!formData){
-      console.log("emoty")
-      return
-    }
     try{
-    formData.append("title",title)
-    formData.append("content",content)
-    // {title:title,content:content,form:formData}
-    console.log("form data is ",formData)
-    // https://backend.mohammed-xafeer.workers.dev
-    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post",formData,{headers})
+    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post",{title:title,content:content},{headers})
     const data=response.data
     console.log(data.error? data.error :"")
-    if(data.msg==="blog posted"){
+    console.log("data",data.status)
+    console.log("data",data)
+
+    if(response.status===200){
+      console.log("data",data)
       toast.success("Blog Posted!")
       console.log("url is ", data.url)
       refTitle.current?.value==""
+      if(data.blogId && file){
+        await putImage(data.blogId,file)
+        const url = await getImage(response.data.blogId)
+        console.log("url is ",url)
+        if(url){
+          setUrl(url)
+        }
+      }
     }
+  
   }catch(E){
     console.log(E)
   }
-    
+    setLoading(false)
   }
   return (
     <>
-    <div className="flex items-center justify-between p-4 space-x-2 border-b border-gray-300 lg:justify-between">
-        
+    <div className="flex items-center justify-between p-4 space-x-2 border-b border-gray-300 lg:justify-between">  
         <div className="flex items-center">
             <img onClick={()=>navigate("/blogs")} className="w-12" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" />
         </div>
     
         
-        <div className="ml-4 flex items-center justify-end space-x-4">       
-            <button onClick={publishBlog} className=" p-2 bg-green-700 rounded-3xl text-center text-white font-mono hover:bg-green-900">publish</button>  
-
+        <div className="ml-4 flex items-center justify-end space-x-4"> 
+            <ClipLoader loading={loading} size={25}></ClipLoader>      
+             {
+                !loading ? 
+                <button onClick={publishBlog} className=" p-2 bg-green-700 rounded-3xl text-center text-white font-mono hover:bg-green-900">publish</button>  
+                : <div></div>
+              }
             <div className="flex items-center space-x-1">
                 <div className="bg-gray-800 text-white rounded-full h-10 w-10 flex items-center justify-center">
                     <span className="uppercase">U</span>
@@ -85,38 +101,8 @@ export const Write = () => {
       className="border  resize-none  focus:outline-none focus:border-transparent focus:ring-0 focus:ring-transparent px-4 py-2 h-full w-full "
     />
   </div>
-
-  {/* Upload Images */}
-  <form
-  ref={formRef}
-  onSubmit={async(e)=>{
-    e.preventDefault()
-    console.log("ready to take on file")
-    const formIn = formRef.current
-    const fileInput = formIn?.elements["file"] as HTMLInputElement; // Access file input correctly
-
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        console.error("No file selected.");
-        return;
-    }
-
-    const file = fileInput.files[0]; 
-    fileRef.current=file
-    const formDataIn = new FormData();
-    console.log("file",file)
-    if (file instanceof File){
-    formDataIn.append("file",file)
-    formDataIn.append("hell","anksjdf")
-    }
-    setFormData(formDataIn)
-    console.log("data to be send",JSON.stringify(formDataIn))
-  }}>
-
-    <input ref={fileRef} type="file" name="file"></input>
-    <button>submit</button>
-  </form>
-  
-
+  <input onChange={handleFileChange}  type="file" name="file"></input>
+  <img src={url}></img>
   <div className="p-1 h-full">
     <div className=' justify-center w-full '>
           <ReactQuill

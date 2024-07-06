@@ -82,3 +82,10 @@ export const isUserAuth =async ()=>{
   }
 
 }
+
+export const googleSignIn =async (googleToken:string,googleId:string,email:string,name:string)=>{
+  console.log("ready to sing in")
+    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/googleAuth",{googleToken:googleToken,googleId:googleId,email:email,name:name},{withCredentials:true})
+    console.log("response after google",response.data)
+    return
+}
