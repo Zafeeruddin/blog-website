@@ -5,18 +5,20 @@ import axios from "axios";
 async function fetchUrl(blogId:string, method: "PUT" | "GET") {
     const command = method ==="GET" ? new GetObjectCommand({Bucket:"blog",Key:`blog/${blogId}`}) :
                                       new PutObjectCommand({ Bucket:"blog", Key:`blog/${blogId}`})
+
+    if (!process.env.secretAccessKey || !process.env.ACCESS_KEY_ID || !process.env.endpoint) {
+       throw new Error("Missing necessary environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, or endpoint.");
+    }
     const S3 = new S3Client({
-        endpoint: "https://cd7ff564fa8b6a378e331b4edae7a57d.r2.cloudflarestorage.com",
+        endpoint: process.env.endpoint,
         credentials: {
-            accessKeyId: "08d2c3c50aa0632c38b09d1b22115800",
-            secretAccessKey:
-                "580695da00afd83f184b65a478b1933ba651de23c57f4922aadff80d3f47b215",
+            accessKeyId: process.env.ACCESS_KEY_ID,
+            secretAccessKey: process.env.secretAccessKey,
         },
         region: "auto",
     });
 
-
-
+    
     const url = await getSignedUrl(
         S3,
         command

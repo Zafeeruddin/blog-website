@@ -2,7 +2,7 @@
   "name": "medium",
   "private": true,
   "scripts": {
-    "migrate":"cd apps/backend && npx prisma generate && cd ../..",
+    "migrate": "cd apps/backend && npx prisma generate && cd ../..",
     "prisma:docker": "npm run prisma:migrate && npm run db:seed && npm run studio",
     "dev:docker": "npm run prisma:docker & npm run dev",
     "prisma:migrate": "prisma migrate deploy",
@@ -27,7 +27,10 @@
     "packages/*"
   ],
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@vitejs/plugin-react": "^4.3.1",
+    "i": "^0.3.7",
+    "npm": "^10.8.1",
     "react-cookie": "^1.0.5",
     "react-quill": "^2.0.0",
     "react-spinners": "^0.13.8",

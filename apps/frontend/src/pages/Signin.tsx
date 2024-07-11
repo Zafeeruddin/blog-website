@@ -25,8 +25,8 @@ export default function Signin() {
 
 
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
-    onError: (error) => console.log('Login Failed:', error)
+    onSuccess: (codeResponse:any) => setUser(codeResponse),
+    onError: (error:any) => console.log('Login Failed:', error)
 });
 
 useEffect(() => {
