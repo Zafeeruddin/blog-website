@@ -10,7 +10,9 @@ export const userRouter = new Hono<{
     Bindings:{
       DATABASE_URL:string,
       JWT_SECRET:string,
-
+      endpoint:string,
+      ACCESS_KEY_ID:string,
+      secretAccessKey:string
     },
     Variables:{
         key:CryptoKey,
@@ -355,4 +357,36 @@ userRouter.use('/signup',async (c,next)=>{
         }
     })
     return c.json(updatedNotifications)
+  })
+
+  import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
+  
+userRouter.get("/pre-signed-url", async(c)=>{
+
+async function fetchUrl(blogId:string, method: "PUT" | "GET") {
+    const command = method ==="GET" ? new GetObjectCommand({Bucket:"blog",Key:`blog/${blogId}`}) :
+                                      new PutObjectCommand({ Bucket:"blog", Key:`blog/${blogId}`})
+
+    
+    const S3 = new S3Client({
+        endpoint: c.env.endpoint,
+        credentials: {
+            accessKeyId: c.env.ACCESS_KEY_ID,
+            secretAccessKey: c.env.secretAccessKey,
+        },
+        region: "auto",
+    });
+
+    
+    const url = await getSignedUrl(
+        S3,
+        command
+    )
+    return url;
+}
+    const blogId = c.req.header("blogId") as string
+    const method = c.req.header("method") as "PUT" | "GET"
+   const url = await fetchUrl(blogId,method)
+    return c.json(url)
   })

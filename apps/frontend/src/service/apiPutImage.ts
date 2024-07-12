@@ -1,28 +1,8 @@
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
 import axios from "axios";
 
 async function fetchUrl(blogId:string, method: "PUT" | "GET") {
-    const command = method ==="GET" ? new GetObjectCommand({Bucket:"blog",Key:`blog/${blogId}`}) :
-                                      new PutObjectCommand({ Bucket:"blog", Key:`blog/${blogId}`})
-
-    if (!process.env.secretAccessKey || !process.env.ACCESS_KEY_ID || !process.env.endpoint) {
-       throw new Error("Missing necessary environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, or endpoint.");
-    }
-    const S3 = new S3Client({
-        endpoint: process.env.endpoint,
-        credentials: {
-            accessKeyId: process.env.ACCESS_KEY_ID,
-            secretAccessKey: process.env.secretAccessKey,
-        },
-        region: "auto",
-    });
-
-    
-    const url = await getSignedUrl(
-        S3,
-        command
-    )
+    const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/pre-signed-url",{headers:{"blogId":blogId,"method":method}})
+    const url = response.data
     return url;
 }
 
