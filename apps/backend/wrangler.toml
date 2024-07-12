@@ -5,6 +5,9 @@ compatibility_flags = [ "nodejs_compat" ]
 
 
 [vars]
+ACCESS_KEY_ID="08d2c3c50aa0632c38b09d1b22115800"
+secretAccessKey="580695da00afd83f184b65a478b1933ba651de23c57f4922aadff80d3f47b215"
+endpoint="https://cd7ff564fa8b6a378e331b4edae7a57d.r2.cloudflarestorage.com"
 DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiYTExNWQ4NTItYWIzZS00ZDIwLWJmN2MtYTcwNDdhNTU4NGZlIiwidGVuYW50X2lkIjoiZTIxODc2ZWZiODI1ODI5MTdhMzY4ZjQ1MDA4YzJkYjZkNjRlNjhlYjhkNGI4ZjExNDMxZmE4YmJlNWE0YWRlYyIsImludGVybmFsX3NlY3JldCI6IjA1MzBlMjUxLTNhYzgtNDc5NC05YTNiLTg4ODY2Y2FkZjg1NiJ9.zmriC-9TuRUZT5IIP4S-kA_H-gMAb59X_HXWJ9PTbME"
 JWT_SECRET="123456"
 GOOGLE_CLIENT_ID="489371249303-9pfsdn6l52bo46qtgt79kpk18scdohnf.apps.googleusercontent.com"

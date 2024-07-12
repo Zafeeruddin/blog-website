@@ -102,8 +102,8 @@ export const Blog=({blog}:blogType)=>{
                         </div>
                     </div>
                     {isImage && imageUrl &&
-                        <div className="w-1/4 mt-2 ml-10 ">
-                            <img src={imageUrl} className=" h-20 w-20"/>
+                        <div className="w-1/4 ml-10 ">
+                            <img src={imageUrl} className="h-20 w-20 md:h-32 md:w-32 lg:h-40 lg:w-40"/>
                         </div>
                     }
                 </div>
