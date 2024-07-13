@@ -14,7 +14,7 @@ import { FaGoogle } from "react-icons/fa"
 
 export default function Signin() {
   const [user,setUser]=useState<Omit<TokenResponse, "error" | "error_description" | "error_uri">>()
-  const [setGProfile]=useState<any>()
+  // const [setGProfile]=useState<any>()
   const [password,setPassword]=useRecoilState(passwordAtom);
   const [email,setEmail]=useRecoilState(emailAtom)
   const setToken=useSetRecoilState(tokenAtom)
@@ -39,14 +39,14 @@ useEffect(() => {
                   }
               })
               .then((res) => {
-                  googleSignIn(user.access_token,res.data.id,res.data.email,res.data.name)
-                  toast.success("Sign-in successful")
-                  setGProfile(res.data);
+                  googleSignIn(setToken,user.access_token,res.data.id,res.data.email,res.data.name)
+                  // setGProfile(res.data);
                   console.log("response is",res.data)
                   setUsername(res.data.given_name)
                   setAuth(true)
                   console.log("set auth now treu",setAuth)
-                  setToken(user.access_token)
+                  toast.success("Sign-in successful")
+
                   navigate("/blogs")
                 })
               .catch((err) => console.log(err));

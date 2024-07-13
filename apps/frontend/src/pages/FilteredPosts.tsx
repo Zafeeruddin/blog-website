@@ -10,8 +10,14 @@ export const FilteredPosts=()=>{
     const [filteredBlogs,setFilteredBlogs]=useState<blog[]>([])
     const blogs=useRecoilValue(allBlogs)
     useEffect(()=>{
-        const newBlogs = blogs.filter(blog => savedBlogsTitles.includes(blog.id));
-        setFilteredBlogs(newBlogs);
+        if (savedBlogsTitles.length===0){
+            const newBlogs:blog[] = []
+            setFilteredBlogs(newBlogs)
+        }else{
+            console.log("saved are",savedBlogsTitles)
+            const newBlogs = blogs.filter(blog => savedBlogsTitles.includes(blog.id));
+            setFilteredBlogs(newBlogs);
+        }
     },[blogs,savedBlogs])
     const username=useRecoilValue(usernameAtom)
     return(

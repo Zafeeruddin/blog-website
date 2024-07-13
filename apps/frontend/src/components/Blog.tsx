@@ -83,7 +83,7 @@ export const Blog=({blog}:blogType)=>{
     
     return (
         <>
-           <div className="lg:m-12 lg:pr-20 lg:pl-20 md:m-10 md:pr-20 md:pl-20 m-2 mb-4 mt-8 border-b pb-4 " >
+           <div className="lg:m-12 lg:pr-4 lg:pl-4 md:m-10 md:pr-4 md:pl-4 m-2 mb-4 mt-8 border-b pb-4 " >
                 <div className="mb-4 flex items-center space-x-4">
                     <div className="bg-gray-500 text-white rounded-full h-8 w-8 flex items-center justify-center"> 
                         <span className="uppercase">{blog.author.name ? blog.author.name[0] : "A"}</span>
@@ -102,8 +102,8 @@ export const Blog=({blog}:blogType)=>{
                         </div>
                     </div>
                     {isImage && imageUrl &&
-                        <div className="w-1/4 ml-10 ">
-                            <img src={imageUrl} className="h-20 w-20 md:h-32 md:w-32 lg:h-40 lg:w-40"/>
+                        <div className=" ml-20  ">
+                            <img src={imageUrl} className="h-32 w-40 md:h-32 md:w-32 lg:h-48 lg:w-60"/>
                         </div>
                     }
                 </div>

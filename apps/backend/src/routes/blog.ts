@@ -21,7 +21,10 @@ export const blogRouter=new Hono<{
 //Middleware for verification of tokens
 blogRouter.use("/*",async (c,next)=>{
     // var token=c.req.header("Authorization")
-    var token = getCookie(c,"token") || c.req.header("Authorization") || ""
+    var token =   c.req.header("Authorization") || getCookie(c,"token") || ""
+    console.log("token in cookie",getCookie(c,"token"))
+    console.log("token in cookie",c.req.header("Authorization"))
+    // console.log("token in cookie",getCookie(c,"token"))
     console.log("token in auth",token)
     if(!token){
         c.status(401)

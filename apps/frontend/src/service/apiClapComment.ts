@@ -12,7 +12,7 @@ export const clapOnce=async (token:string,blog:blog,commentId:string,setClapped:
         "commentId":commentId
     }
     try{
-        const response = await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",body,{headers})
+        const response = await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",body,{withCredentials:true,headers})
         console.log("rspon",response.data)
         setClapped(response.data.claps)
     }catch(e){

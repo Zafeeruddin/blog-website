@@ -24,13 +24,14 @@ export const userRouter = new Hono<{
 //Middleware for verification of tokens
 userRouter.use("/getNotification",async (c,next)=>{
                             
-    var token=getCookie(c,"token") || c.req.header("Authorization") || ""
+    var token= c.req.header("Authorization") || getCookie(c,"token") || ""
     console.log("token in auth",token)
     if(!token){
         c.status(401)
         console.log("unauthorized")
         return c.json({"error":"unauthorized"})
     }
+    console.log("token got is",token)
     if(token){
         try{
             const verifiedToken=await verify(token,c.env.JWT_SECRET)
@@ -40,9 +41,6 @@ userRouter.use("/getNotification",async (c,next)=>{
             }
 
             const decodedToken= decode(token)
-            const prisma=new PrismaClient({
-                datasourceUrl:c.env.DATABASE_URL
-            }).$extends(withAccelerate())
             c.set("id",decodedToken.payload.id as string)
            await next()
         }catch(e){
@@ -79,7 +77,7 @@ userRouter.use('/signup',async (c,next)=>{
     if(!signupValid.success){
         return c.json({"msg":"error signing in","error":signupValid.error})
     }
-    if(!getUserByEmail){
+    if(!getUserByEmail || getUserByEmail && !getUserByEmail.googleId){
        await next()
     }
     c.status(409)
@@ -107,6 +105,13 @@ userRouter.use('/signup',async (c,next)=>{
         c.status(400)
         return c.json({msg:"Inputs are incorrect"})
     }
+
+    let user = await prisma.user.findUnique({
+        where:{
+            email:body.email
+        }
+    })
+
     const encodedPassword=new TextEncoder().encode(body.password)
     const myDigest=await crypto.subtle.digest(
         {
@@ -122,16 +127,28 @@ userRouter.use('/signup',async (c,next)=>{
   
     try {
         //easier way triying
-        const user=await prisma.user.create({
-            data:{
-                name:body.name,
-                email:body.email,
-                password:decodedPassword      
-            }
+        if(user){
+            user = await prisma.user.update({
+                where:{
+                    email:body.email
+                },data:{
+                    password:decodedPassword
+                }
             })
+        }else{
+            user=await prisma.user.create({
+                data:{
+                    name:body.name,
+                    email:body.email,
+                    password:decodedPassword      
+                }
+            })
+        }
         const payload={
-        id:user.id,
-        exp:Math.floor(Date.now()/1000)+60*5}
+                id:user.id,
+                exp:Math.floor(Date.now()/1000)+60*60*24
+            }
+
         const token= await sign(payload,c.env.JWT_SECRET)
         console.log("token",token)
 
@@ -184,8 +201,30 @@ userRouter.use('/signup',async (c,next)=>{
                 googleId:body.googleId,
                 name:body.name,
             }})
+            await prisma.notification.create({
+                data:{
+                    userId:user.id
+                }
+            })
+        }else{
+            if (!user.googleId){
+                user = await prisma.user.update({
+                    where:{
+                        id:user.id
+                    },
+                    data:{
+                        googleId:body.googleId
+                    }
+                })
+            }
         }
-        const token=await sign({id:user.id},c.env.JWT_SECRET)
+        const payload={
+            id:user.id,
+            exp:Math.floor(Date.now()/1000)+60*60*24
+        }
+        
+        const token= await sign(payload,c.env.JWT_SECRET)
+        console.log("token",token)
         setCookie(c,"token",token,{
             httpOnly:true,
             path:"/",
@@ -205,7 +244,7 @@ userRouter.use('/signup',async (c,next)=>{
     }
   })
   
-  userRouter.post("/signin",async (c)=>{
+userRouter.post("/signin",async (c)=>{
     const body=await c.req.json()
     const signinParams=loginParams.safeParse({
         email:body.email,
@@ -220,60 +259,59 @@ userRouter.use('/signup',async (c,next)=>{
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
 
-    try{
-        const getUser=await prisma.user.findUnique({
-        where:{
-            email:body.email
-        }
-        })
-        
-        if(!getUser){
-            c.status(403)
-            return c.json({msg:"User doesn't exists"})  
-        }
+try{
+    const getUser=await prisma.user.findUnique({
+    where:{
+        email:body.email
+    }
+    })
     
-        
-        console.log("user does eixistws")
-        const encodedPassword=new TextEncoder().encode(body.password)
-        const myDigest=await crypto.subtle.digest(
-                {
-                    name:"SHA-256"
-                },
-                encodedPassword
-            )
-        const decoder=new TextDecoder();
-        const decodedPassword=decoder.decode(myDigest)
-        if(decodedPassword!=getUser.password){
-            console.log("decoded pwd",decodedPassword)
-            console.log("pwd in db",getUser.password)
-            c.status(404)
-            return c.json({
-                "msg":"Incorrect password"
-            })
-        }
-        
+    if(!getUser){
+        c.status(403)
+        return c.json({msg:"User doesn't exists"})  
+    }
+
     
-        const token=await sign({id:getUser.id},c.env.JWT_SECRET)
-        setCookie(c,"token",token,{
-            httpOnly:true,
-            path:"/",
-            sameSite:"None",
-            secure:true
-        })
-        c.header("Authorization",token)
-        c.status(201)
-        console.log("header set",c.req.header("Authorization"))
+    console.log("user does eixistws")
+    const encodedPassword=new TextEncoder().encode(body.password)
+    const myDigest=await crypto.subtle.digest(
+            {
+                name:"SHA-256"
+            },
+            encodedPassword
+        )
+    const decoder=new TextDecoder();
+    const decodedPassword=decoder.decode(myDigest)
+    if(decodedPassword!=getUser.password){
+        console.log("decoded pwd",decodedPassword)
+        console.log("pwd in db",getUser.password)
+        c.status(404)
         return c.json({
-            msg:"Signup successfully",
-            "token":token,
-            "name": getUser.name
+            "msg":"Incorrect password"
         })
-    }catch(e){
-        return c.json({msg:"Email already exists",e:e})
     }
     
-  })
-  
+
+    const token=await sign({id:getUser.id},c.env.JWT_SECRET)
+    setCookie(c,"token",token,{
+        httpOnly:true,
+        path:"/",
+        sameSite:"None",
+        secure:true
+    })
+    c.header("Authorization",token)
+    c.status(201)
+    return c.json({
+        msg:"Signup successfully",
+        "token":token,
+        "name": getUser.name
+    })
+}catch(e){
+    return c.json({msg:"Email already exists",e:e})
+}
+
+})
+
 
   userRouter.post("/signout",async(c)=>{
     deleteCookie(c, 'token', {
