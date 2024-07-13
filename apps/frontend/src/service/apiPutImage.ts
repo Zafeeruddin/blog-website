@@ -1,7 +1,7 @@
 import axios from "axios";
 
 async function fetchUrl(blogId:string, method: "PUT" | "GET") {
-    const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/pre-signed-url",{headers:{"blogId":blogId,"method":method}})
+    const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/pre-signed-url",{withCredentials:true,headers:{"blogId":blogId,"method":method}})
     const url = response.data
     return url;
 }

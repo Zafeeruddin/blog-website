@@ -41,12 +41,14 @@ export const tokenAtom=atom({
 
 export const defaultSavedBlogs=selector<string[]>({
     key:"defaultSavedPosts",
-    get:async ({get})=>{
+    get:async ()=>{
         try{
-            const headers={
-                "Authorization":get(tokenAtom)
-            }
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save/posts",{headers})
+            // const headers={
+            //     "Authorization":get(tokenAtom)
+            // }
+            // https://backend.mohammed-xafeer.workers.dev
+            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save/posts",{withCredentials:true})
+            console.log("response data",response.data)
             return response.data
         }catch(e){
             return []
@@ -58,14 +60,15 @@ export const defaultSavedBlogs=selector<string[]>({
 
 export const defaultLikedBlogs=selector<string[]>({
     key:"defaultLikedPosts",
-    get:async ({get})=>{
+    get:async ()=>{
         try{
             const token=useRecoilValue(tokenAtom)
             console.log("token got is ",token)
-            const headers={
-                "Authorization":get(tokenAtom)
-            }
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/like/posts",{headers})
+            // const headers={
+            //     "Authorization":get(tokenAtom)
+            // }
+            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/like/posts",{withCredentials:true})
+            console.log("liked are",response.data)
             return response.data
         }catch(e){
             return []
@@ -96,12 +99,10 @@ export const filtered=atom<blog[]>({
 
 export const getUserNotifications=selector<Notification>({
     key:"defualtNotifications",
-    get:async ({get})=>{
+    get:async ()=>{
         try{
-            const headers={
-                "Authorization":get(tokenAtom)
-            }
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/getNotification",{headers})
+            
+            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/getNotification",{withCredentials:true})
             console.log("notifications are ",response.data)
             const isArray= Array.isArray(response.data)
             if(isArray){

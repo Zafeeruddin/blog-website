@@ -14,7 +14,7 @@ export const NotificationCard=({notification}:{notification:Notification})=>{
     useEffect(()=>{
         console.log("notifications are ",notification)
         console.log("unified notifications are",unifiedNotification)
-        if (unifiedNotification.length==0){
+        if (unifiedNotification.length!=0){
             console.log("ready to unite")
             transformNotification(notification,setUnifiedNotification)
         }

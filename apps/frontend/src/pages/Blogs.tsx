@@ -80,7 +80,7 @@ const TrendBlog=({blog}:{blog:blog})=>{
             Authorization:token
         }
         try{
-            const response=await axios.get(`https://backend.mohammed-xafeer.workers.dev/api/v1/blog/${blogId}`,{headers})
+            const response=await axios.get(`https://backend.mohammed-xafeer.workers.dev/api/v1/blog/${blogId}`,{withCredentials:true,headers})
             console.log("blog got is ",response.data)
             setOpenBlog(response.data)
             navigate(`/blogs/${response.data.id}`)

@@ -16,7 +16,7 @@ export const publishReply=async (token:string,reply:string,commentId:string,setU
     }
     try{
 
-    const response = await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/replies",body,{headers})
+    const response = await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/replies",body,{withCredentials:true,headers})
     console.log("reply is published...")
     
     setUserReplies(response.data.replies)

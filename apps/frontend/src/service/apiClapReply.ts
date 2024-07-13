@@ -10,7 +10,7 @@ export const clapReplyOnce=async (token:string,replyId:string,setClapped:Dispatc
         "id":replyId,
     }
     try{
-        const response = await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/replies",body,{headers})
+        const response = await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/replies",body,{withCredentials:true,headers})
         console.log("rspon",response.data)
         setClapped(response.data.claps)
     }catch(e){

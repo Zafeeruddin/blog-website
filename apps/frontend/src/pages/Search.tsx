@@ -3,17 +3,23 @@ import { blog } from "../utils/types"
 import { Blog } from "../components/Blog"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { allBlogs, isSearch, searchBlog } from "../store/atoms/user"
+import { useNavigate } from "react-router-dom"
 
 export const SearchBlogs=()=>{
     const [filteredBlogs,setFilteredBlogs]=useState<blog[] | null>(null)
     const blogs = useRecoilValue(allBlogs) 
     const search = useRecoilValue(searchBlog)
     const [isSearchBlog,]=useRecoilState(isSearch)
+    const navigate = useNavigate()
 
     useEffect(()=>{
         console.log("filtered blogs",filteredBlogs)
+        if(search===""){
+            navigate("/blogs")
+        }
         const newBlogs = blogs.filter(blog => blog.title.toLowerCase().includes(search.toLowerCase()))
         setFilteredBlogs(newBlogs)
+        
     },[isSearchBlog,search])
 
     return (

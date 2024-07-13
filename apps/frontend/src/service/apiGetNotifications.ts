@@ -12,6 +12,7 @@ export const getNotification=async (setUserNotifications:SetterOrUpdater<Notific
         if(replies && replies.length===0 && comments.length===0){
             console.log("notifications not in")
             // setAreNotifications(false)
+            setAreNotifications(false)
             return
         }else{
             setAreNotifications(true)

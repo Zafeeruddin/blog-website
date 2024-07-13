@@ -21,6 +21,11 @@ export const Comments=()=>{
         console.log("getting comments")   
         getComments(token,blog,setUserComments);
         console.log("setted comments",userComments)
+
+        return () =>{
+            setUserComments([])
+        }
+
     },[blog])
 
     return (

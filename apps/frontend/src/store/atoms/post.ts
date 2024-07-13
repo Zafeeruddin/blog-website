@@ -32,7 +32,7 @@ export const defaultComments=selector<comment[]>({
         }
         console.log("vlog id",blog.id)
         console.log("getting comments")
-        const response = await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",{headers})
+        const response = await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",{withCredentials:true})
         
         console.log("comments are",response.data)
          return response.data
