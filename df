@@ -1,0 +1,65 @@
+[33mc566039[m[33m ([m[1;36mHEAD -> [m[1;32mwork[m[33m, [m[1;31morigin/work[m[33m)[m HEAD@{0}: commit: added readme
+[33ma8c1c22[m HEAD@{1}: commit: fixed build
+[33m9881799[m HEAD@{2}: commit: Added r2 images, loaders, fixed gAuth, sticky layout
+[33m971406f[m HEAD@{3}: commit: added be
+[33m309cef2[m HEAD@{4}: commit: added be
+[33m3fd0439[m HEAD@{5}: commit: added be
+[33mfc8d4c3[m HEAD@{6}: commit: added be
+[33mac2ef6e[m HEAD@{7}: commit: added be
+[33m1edaa5a[m HEAD@{8}: commit: added be
+[33m2aa88b2[m HEAD@{9}: commit: added be
+[33m4c93e13[m HEAD@{10}: commit: added be
+[33m8e6fb98[m HEAD@{11}: commit: added be
+[33ma782541[m HEAD@{12}: commit: added cd for backend
+[33m5276d5b[m HEAD@{13}: commit: added cd for backend
+[33md524623[m HEAD@{14}: commit: added cd for backend
+[33m4e14747[m HEAD@{15}: commit: added cd for backend
+[33m78abc3f[m HEAD@{16}: commit: removed dist
+[33m9cfca59[m HEAD@{17}: commit: removed dist
+[33m664ff02[m HEAD@{18}: commit: Added cd
+[33m1a02e5c[m HEAD@{19}: commit: Added cd
+[33m378aefc[m HEAD@{20}: commit: Added cd
+[33md9c5a7e[m HEAD@{21}: commit: Added cd
+[33m798a439[m HEAD@{22}: commit: Added cd to aws s3 bucket
+[33m37e6b32[m HEAD@{23}: commit: Added cd to aws s3 bucket
+[33m9313d8e[m HEAD@{24}: commit: Added cd to aws s3 bucket
+[33m64b8538[m HEAD@{25}: commit: Added cd to aws s3 bucket
+[33mf2e3aae[m HEAD@{26}: commit: Added cd to aws s3 bucket
+[33maa86a36[m HEAD@{27}: commit: Added cd to aws s3 bucket
+[33m3317ee8[m HEAD@{28}: commit: Added cd
+[33md837251[m HEAD@{29}: commit: Added cd
+[33m3dce7c0[m HEAD@{30}: commit: Added cd
+[33m110485b[m HEAD@{31}: commit: Added docker file and compose
+[33m009a592[m HEAD@{32}: commit: Added Docker file
+[33m746b4c9[m HEAD@{33}: commit: changed yml
+[33m89e392e[m HEAD@{34}: commit: changed yml
+[33mba9c8b8[m HEAD@{35}: commit: changed yml
+[33maf05011[m HEAD@{36}: commit: changed yml
+[33m25e6d9f[m HEAD@{37}: commit: added
+[33m93b67a0[m HEAD@{38}: commit: added yml
+[33m64b5d5f[m[33m ([m[1;32mmai[m[33m)[m HEAD@{39}: checkout: moving from main to work
+[33mdf6f8a4[m[33m ([m[1;32mmain[m[33m)[m HEAD@{40}: checkout: moving from work to main
+[33m64b5d5f[m[33m ([m[1;32mmai[m[33m)[m HEAD@{41}: checkout: moving from main to work
+[33mdf6f8a4[m[33m ([m[1;32mmain[m[33m)[m HEAD@{42}: checkout: moving from work to main
+[33m64b5d5f[m[33m ([m[1;32mmai[m[33m)[m HEAD@{43}: commit: check
+[33m053ca02[m HEAD@{44}: commit: added show pass
+[33m16167f4[m HEAD@{45}: commit: Added ci pipeline
+[33m5dc5c67[m HEAD@{46}: commit: Added skeleton fixed common layout
+[33m72a8113[m HEAD@{47}: commit: FIxed protected routes
+[33m4b0b6ee[m HEAD@{48}: commit: Added common layout to avoid re-render
+[33mb6e5550[m HEAD@{49}: commit: Fixed bugs to notifications. skeletons,images added
+[33m22868ff[m HEAD@{50}: commit: Added filtered blogs, saved blogs
+[33m953b9f6[m HEAD@{51}: reset: moving to HEAD
+[33m953b9f6[m HEAD@{52}: reset: moving to HEAD
+[33m953b9f6[m HEAD@{53}: commit: added editor and spinner
+[33m514826a[m HEAD@{54}: commit: added trending blogs
+[33m4651455[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{55}: commit: pj
+[33m976fdcd[m HEAD@{56}: checkout: moving from main to work
+[33mdf6f8a4[m[33m ([m[1;32mmain[m[33m)[m HEAD@{57}: merge origin/main: Merge made by the 'ort' strategy.
+[33m976fdcd[m HEAD@{58}: merge work: Fast-forward
+[33m6251da7[m HEAD@{59}: checkout: moving from work to main
+[33m976fdcd[m HEAD@{60}: commit: added zod with turborepo
+[33m6251da7[m HEAD@{61}: checkout: moving from main to work
+[33m6251da7[m HEAD@{62}: commit: feat(create-turbo): apply package-manager transform
+[33mee7c234[m HEAD@{63}: commit: feat(create-turbo): apply official-starter transform
+[33m5796b7b[m HEAD@{64}: commit (initial): feat(create-turbo): create basic
