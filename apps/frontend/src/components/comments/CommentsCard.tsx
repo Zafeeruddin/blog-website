@@ -21,6 +21,7 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
     const [currentComment,setCurrentComment]=useRecoilState(currentCommentId)
     const [currentReplies,setCurrentReplies]=useRecoilState(replies)
     const setReplyUsername=useSetRecoilState(usernameReply)
+    const [showReplies,setShowReplies] = useState(false)
 
     const giveReply=()=>{
         setCurrentComment(commentId);
@@ -75,8 +76,8 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
                 {!cancel && currentComment===commentId && <div className="mt-4 ml-2 mr-4 pr-10 pl-10 border-l-4">
                     <CommentBox isMain={false}/>
                 </div> }
-                {  commentReply.length!==0 && commentId===currentComment && 
-                <div className="border-l-2 border-gray-300 ml-6">
+                {  commentReply.length!==0 && commentId===currentComment && showReplies &&
+                <div className="border-l-2 border-gray-300 ml-6" onClick={()=>setShowReplies(!showReplies)}>
                     {Array.isArray(commentReply) && commentReply.map(reply=>{
                         return <Replies  key={reply.id} reply={reply}/>
                     })}

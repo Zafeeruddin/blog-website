@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { publishComment } from "../../utils/postComment"
 import { publishReply } from "../../service/apiPostReply"
 import ClipLoader from "react-spinners/ClipLoader";
+import { toast } from "sonner"
 
 
 export const CommentBox=({isMain}:{isMain:boolean})=>{
@@ -35,6 +36,7 @@ export const CommentBox=({isMain}:{isMain:boolean})=>{
     }
 
     const send=()=>{
+        // const load = toast.loading("loading")
         if(ref.current){
             ref.current.value=""
         }
@@ -42,10 +44,13 @@ export const CommentBox=({isMain}:{isMain:boolean})=>{
         if(isMain){
             setLoadingComment(true)
             sendComment()
+            toast(<div className="pl-5">Comment added</div>)
         }else{
             setLoadingReply(true)
             console.log("loaidng now ",loadingReply)
+
             sendReply()
+            toast(<div className="pl-5">Reply added</div>)
         }
     }
 
