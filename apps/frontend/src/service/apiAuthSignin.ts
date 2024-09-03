@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios"
 import { NavigateFunction } from "react-router-dom";
 import { SetterOrUpdater } from "recoil"
 import { toast } from "sonner";
-
+import Cookies from "js-cookie"
 
 export const userSignIn=async (email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>)=>{
   let loadingToastId; 
@@ -62,6 +62,10 @@ export const userSignOut=async(setUserAuth:SetterOrUpdater<boolean>)=>{
       toast.dismiss(loading)
       toast.success(response.data)
       setUserAuth(false)
+      
+      localStorage.removeItem('recoil-persist');  // This assumes the default key used by recoil-persist
+      Cookies.remove('token');
+
     }
   }catch(E){
     toast.error("Error signing out")

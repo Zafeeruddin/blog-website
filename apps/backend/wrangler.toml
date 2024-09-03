@@ -5,6 +5,9 @@ compatibility_flags = [ "nodejs_compat" ]
 
 
 [vars]
+UPSTASH_REDIS_REST_TOKEN = "AbUuAAIjcDExZjU0NmEwYWMwYTk0OWM3YmJiOTU0YzU2NTZkMDdkZnAxMA"
+UPSTASH_REDIS_REST_URL = "https://prime-buzzard-46382.upstash.io"
+LIST_KEY= "notifications"
 ACCESS_KEY_ID="08d2c3c50aa0632c38b09d1b22115800"
 secretAccessKey="580695da00afd83f184b65a478b1933ba651de23c57f4922aadff80d3f47b215"
 endpoint="https://cd7ff564fa8b6a378e331b4edae7a57d.r2.cloudflarestorage.com"

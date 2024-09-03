@@ -2,23 +2,56 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { formatDate } from "../utils/formatDate"
 import { useNavigate } from "react-router-dom"
 import { Notification, UnifiedNotification } from "../utils/types"
-import {  unifiedNotificationsAtom } from "../store/atoms/user"
-import { useRecoilState, useSetRecoilState } from "recoil"
+import {  notifications, tokenAtom, unifiedNotificationsAtom } from "../store/atoms/user"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { openBlog } from "../service/apiFetchBlog"
 import { blogOpen } from "../store/atoms/post"
+import { handleComment,handleReply } from "../utils/addResponse"
 
 export const NotificationCard=({notification}:{notification:Notification})=>{
     const [unifiedNotification,setUnifiedNotification]=useRecoilState<UnifiedNotification[]>(unifiedNotificationsAtom)
-    
+    const token = useRecoilValue(tokenAtom)
+    const setNotifcation= useSetRecoilState(notifications)
+
+    // create a ws connection
+    useEffect(()=>{
+        console.log("reday to connect")
+        const ws = new WebSocket('wss://backend.mohammed-xafeer.workers.dev/ws');
+
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+            ws.send('Hello from client!');
+            ws.send(token)
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Message from server:', event.data);
+            try{
+                const data = JSON.parse(event.data)
+                if(data.replyCount!=undefined){
+                    handleComment(event.data,setNotifcation)
+                }else{
+                    handleReply(event.data,setNotifcation)
+                }
+            }catch(e){
+                console.error("Error parsing websocker message",e)
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        };
+    },[])
 
     useEffect(()=>{
-        console.log("notifications are ",notification)
-        console.log("unified notifications are",unifiedNotification)
-        if (notification.replies.length!=0 || notification.replies.length!=0){
-            console.log("ready to unite")
+        if (notification.comments.length!=0 || notification.replies.length!=0){
             transformNotification(notification,setUnifiedNotification)
         }
-    },[])
+    },[notification])
 
     
     

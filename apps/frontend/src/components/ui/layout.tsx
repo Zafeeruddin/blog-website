@@ -64,10 +64,11 @@ export const Layout=()=>{
         console.log("notitficaiton now",userNotifications)
         const getNotifications=async ()=>{
             await  getNotification(setUserNotifications,setAreNotifications)
+            console.log("notification in",areNotificationsIn)
             console.log("unified Notificaitons are ",unifiedNotification)
-            if(unifiedNotification.length===0){
-                setAreNotifications(false)
-            }
+            // if(unifiedNotification.length===0){
+            //     setAreNotifications(false)
+            // }
             setLoading(false)
         }
         getNotifications()

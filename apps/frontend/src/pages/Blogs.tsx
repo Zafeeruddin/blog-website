@@ -1,20 +1,28 @@
 import {  useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import {  allBlogs, tokenAtom } from "../store/atoms/user"
+import {  allBlogs, notifications, tokenAtom, } from "../store/atoms/user"
 import { Blog } from "../components/Blog"
-import { blog,  } from "../utils/types"
+import { blog, comment, Reply,  } from "../utils/types"
 import { getAllBlogs } from "../service/apiFetchBlogs"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { blogOpen } from "../store/atoms/post"
 import { handleNotificationAtom, handleProfileAtom } from "../store/atoms/handles"
 import { List } from "../components/ui/skeletons/listBlogs"
+import { handleComment,handleReply } from "../utils/addResponse"
+
+
+// client.ts
+import { hc } from 'hono/client'
+import app from "../../../backend/src/index"
+
 
 export const Blogs=()=>{
     const token=useRecoilValue(tokenAtom)
     const [blogs,setBlogs]=useRecoilState(allBlogs)
     const [trendingBlogs,setTrendingBlogs]=useState<blog[]>([])
     const [loading,setLoading]=useState(true)
+    const [,setNotifcation]= useRecoilState(notifications)
     // Close all handles if clicked outside
     const setHandleNotification=useSetRecoilState(handleNotificationAtom)
     const setHandleProfile= useSetRecoilState(handleProfileAtom)
@@ -22,6 +30,47 @@ export const Blogs=()=>{
         setHandleNotification(false)
         setHandleProfile(false)
     }
+
+    // create a ws connection
+    useEffect(()=>{
+        const client = hc<typeof app>('http://localhost:8787')
+        // @ts-ignore
+        const ws = client.ws.$ws(0)
+    
+        console.log("reday to connect now",ws)
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+            ws.send(JSON.stringify({type:"token",payload:token}))
+
+        };
+
+        ws.onmessage = (event:any) => {
+            console.log('Message from server:', event.data);
+            
+            try{
+                const data: Reply|comment = JSON.parse(event.data)
+                console.log("data got is " + event.data)
+                
+                if(data && "reply" in data){
+                    console.log("should be replied ")
+                    handleReply(event.data,setNotifcation)
+                }else if(data && "comment" in data){
+                    handleComment(event.data,setNotifcation)
+                }
+            }catch(e){
+                console.error("Error parsing websocker message",e)
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        ws.onerror = (error:any) => {
+        console.error('WebSocket error:', error);
+        };
+    },[])
+
 
     // Fetch blogs
     useEffect(() => {

@@ -11,14 +11,14 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     console.log("isAuth",isAuth)
 
     const getUserSession = async ()=>{
-        const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog",{withCredentials:true})
-        if(response.status===401){
-            setIsAuth(false)
+        // const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog",{withCredentials:true})
+        // if(response.status===401){
+            // setIsAuth(false)
             navigate("/signin")
             return
-        }
-        setIsAuth(true)
-        return
+        // }
+        // setIsAuth(true)
+        // return
     }
 
     useEffect(()=>{

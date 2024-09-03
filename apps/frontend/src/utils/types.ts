@@ -24,7 +24,7 @@ export interface Notification{
     "replies":Reply[]
 }
 
-export interface comment{
+export type comment={
     id:string,
     comment:string,
     user:string,
@@ -36,7 +36,7 @@ export interface comment{
 }
 
 
-export interface Reply{
+export type Reply={
     "id": string,
     "reply": string,
     "user": string,

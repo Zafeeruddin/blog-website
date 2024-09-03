@@ -6,7 +6,6 @@ const {persistAtom} = recoilPersist()
 export const allBlogs=atom<blog[]>({
     key:"allBlogs",
     default:[],
-    effects_UNSTABLE:[persistAtom]
 })
 
 
@@ -142,7 +141,7 @@ export const unifiedNotificationsAtom=atom<UnifiedNotification[]>({
 export const areNotifications = atom<boolean>({
     key:"notificationIn",
     default:false,
-    effects_UNSTABLE:[persistAtom]
+    // effects_UNSTABLE:[persistAtom]
 })
 
 export const isSearch = atom<boolean>({
