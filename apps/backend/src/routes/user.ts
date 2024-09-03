@@ -386,11 +386,35 @@ try{
 
   userRouter.put("/getNotification",async(c)=>{
     const userId=c.get("id")
+    const body = await c.req.json()
+    const responseId= body.responseId
+    const isComment= body.isComment
+
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-    console.log("id being ",userId)
+    
 
+
+    if(isComment){
+        const updateComment = await prisma.comments.update({
+            where:{
+                id:responseId,
+            },
+            data:{
+                flagNotified:true
+            }
+        })
+    }else{
+        const updateReply = await prisma.comments.update({
+            where:{
+                id:responseId,
+            },
+            data:{
+                flagNotified:true
+            }
+        })
+    }
     const getNotifications=await prisma.notification.findUnique({
         where:{
             userId
@@ -399,33 +423,33 @@ try{
     if(!getNotifications){
         return c.json("No Notifications exists")
     }
+    if(!getNotifications){
+        console.log("inside no not")
+        c.status(404)
+        return c.json("No Notifications exists")
+    }
+    console.log("inside noti in not")
 
-
-    const updateComments = await prisma.comments.updateMany({
-        where:{
-            notificationId:getNotifications.id
-        },data:{
-            flagNotified:true
-        }
-    })
-
-    
-    const updateReplies = await prisma.replies.updateMany({
-        where:{
-            notificationId:getNotifications.id
-        },data:{
-            flagNotified:true
-        }
-    })
-    const updatedNotifications = await prisma.comments.findMany({
+    const getComments=await prisma.comments.findMany({
         where:{
             notificationId:getNotifications.id
         }
     })
-    return c.json(updatedNotifications)
-  })
+    console.log("comment in not",getComments)
 
-  import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+    const getReplies=await prisma.replies.findMany({
+        where:{
+            notificationId:getNotifications.id
+        }
+    })
+    console.log("f are",getReplies)
+    c.status(200)
+    return c.json({comments:getComments,replies:getReplies})
+
+ })
+
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
   
 userRouter.get("/pre-signed-url", async(c)=>{
