@@ -33,7 +33,7 @@ export const Blogs=()=>{
 
     // create a ws connection
     useEffect(()=>{
-        const client = hc<typeof app>('http://localhost:8787')
+        const client = hc<typeof app>('https://backend.mohammed-xafeer.workers.dev')
         // @ts-ignore
         const ws = client.ws.$ws(0)
     

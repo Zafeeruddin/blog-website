@@ -6,22 +6,22 @@ import { TfiWrite } from "react-icons/tfi"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
-import { areNotifications, isAuthenticated, isSearch, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
-import { NotificationCard } from "../Notification"
-import { updateNotification } from "../../service/apiUpdateNotifications"
+import { areNotifications, isAuthenticated, isSearch, notifiationCount, notifications, searchBlog, tokenAtom, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
+import { NotificationCard, transformNotification } from "../Notification"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
 import { userSignOut } from "../../service/apiAuthSignin"
-
+import Noty from "./NotyIcon"
 
 export const Layout=()=>{
     const navigate=useNavigate()
     const [handleProfile,setHandleProfile]=useRecoilState(handleProfileAtom)
     const [handleNotification,setHandleNotification]=useRecoilState(handleNotificationAtom)
     const username=useRecoilValue(usernameAtom)
-    const [token]=useRecoilState(tokenAtom)
+    // const [token]=useRecoilState(tokenAtom)
     const [userNotifications,setUserNotifications ]=useRecoilState(notifications)
-    const [handleUpdate,setHandleUpdate]=useState(false)
-    const unifiedNotification = useRecoilValue(unifiedNotificationsAtom)
+    // const [handleUpdate,setHandleUpdate]=useState(false)
+    const [unifiedNotification,setUnifiedNotification] = useRecoilState(unifiedNotificationsAtom)
+    const setNotificationCount = useSetRecoilState(notifiationCount)
     const [loading,setLoading]=useState(true)
     const [searchBlogs,setSearchBlog] = useRecoilState(searchBlog)
     const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
@@ -66,6 +66,8 @@ export const Layout=()=>{
             await  getNotification(setUserNotifications,setAreNotifications)
             console.log("notification in",areNotificationsIn)
             console.log("unified Notificaitons are ",unifiedNotification)
+            transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
+            console.log("updated the notifi ations")
             // if(unifiedNotification.length===0){
             //     setAreNotifications(false)
             // }
@@ -88,18 +90,18 @@ export const Layout=()=>{
         }  
     },[searchBlogs])
 
-    const updateNotifications=()=>{
-        if(!areNotificationsIn){
-            return
-        }
-        console.log("user notificaitons",userNotifications)
-        if(!handleUpdate){
-            console.log("in the notifications",handleUpdate)
-            setHandleUpdate(true)
-            console.log("setting notificaiton to be true",handleNotification)
-            updateNotification(token)
-        }
-    }
+    // const updateNotifications=()=>{
+    //     if(!areNotificationsIn){
+    //         return
+    //     }
+    //     console.log("user notificaitons",userNotifications)
+    //     // if(!handleUpdate){
+        //     console.log("in the notifications",handleUpdate)
+        //     setHandleUpdate(true)
+        //     console.log("setting notificaiton to be true",handleNotification)
+        //     updateNotification(token)
+        // }
+    // }
 
     const clickProfile=()=>{
         if(handleNotification && !handleProfile){
@@ -119,7 +121,7 @@ export const Layout=()=>{
             setHandleProfile(false)
         }
         setHandleNotification(!handleNotification); 
-        updateNotifications();   
+        // updateNotifications();   
     }
 
     return (
@@ -152,8 +154,10 @@ export const Layout=()=>{
         
         <div className="cursor-pointer mt-1" onClick={clickNotification}>
             { handleNotification ?
+                // <Noty width={300} color={"#ffff00"} count={10}/>:
                 <IoMdNotifications className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/> :   
-                <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
+                <Noty width={30} color={"#000000"}/>
+                // <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
             }
         { handleNotification && !loading && 
             <div className={`shadow-2xl rounded-lg p-1 w-2/3 lg:w-1/3 md:w-1/2   ${areNotificationsIn ? " h-80" :" h-20 w-80 flex justify-center content-center" }   overflow-auto  right-4  absolute top-16 bg-gray-200`}> 

@@ -21,7 +21,10 @@ export const searchBlog=atom<string>({
     effects_UNSTABLE:[persistAtom]
 })
 
-
+export const notifiationCount = atom<number>({
+    key:"notificaitonCount",
+    default:0
+})
 export  const usernameAtom=atom<string>({
     key:"username",
     default:"",

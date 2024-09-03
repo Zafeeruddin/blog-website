@@ -21,22 +21,26 @@ export  const putImage = async (blogId:string,file:File)=>{
 
 export const getImage = async (blogId:string):(Promise<string | undefined>)=>{
     const url = await fetchUrl(blogId,"GET")
-    const response = await axios.get(url,{
-        headers:{
-            "Content-Type":blogId
-        }
-    })
-    if (response.status===200){
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
+    try{
+        const response = await axios.get(url,{
+            headers:{
+                "Content-Type":blogId
+            }
+        })
+        if (response.status===200){
+            const response = await axios.get(url, { responseType: 'arraybuffer' });
 
-    if (response.status === 200) {
-        // Convert the image data to a Blob object
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        // Create an object URL for the image
-        const imageUrl = URL.createObjectURL(blob);
-        return imageUrl;
-    } else {
-        throw new Error(`Failed to fetch image: ${response.statusText}`);
-    }
+        if (response.status === 200) {
+            // Convert the image data to a Blob object
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            // Create an object URL for the image
+            const imageUrl = URL.createObjectURL(blob);
+            return imageUrl;
+        } else {
+            throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
+        }
+    }catch(e){
+        console.log("Error fetching image", e)
     }
 }

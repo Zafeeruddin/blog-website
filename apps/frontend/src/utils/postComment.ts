@@ -15,8 +15,8 @@ export const publishComment=async (token:string,blog:blog,comment:string,setUser
     }
     console.log("comment id ",blog.id)
     try{
-    // const response = await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",body,{withCredentials:true,headers})
-    const response = await axios.post("http://127.0.0.1:8787/api/v1/blog/post/comments",body,{withCredentials:true,headers})
+    const response = await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",body,{withCredentials:true,headers})
+    // const response = await axios.post("http://127.0.0.1:8787/api/v1/blog/post/comments",body,{withCredentials:true,headers})
     console.log("comment is published...")
     
     setUserComments(response.data)

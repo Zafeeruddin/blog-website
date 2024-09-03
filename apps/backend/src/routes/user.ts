@@ -395,8 +395,7 @@ try{
     }).$extends(withAccelerate())
     
 
-
-    if(isComment){
+    if(isComment===true){
         const updateComment = await prisma.comments.update({
             where:{
                 id:responseId,
@@ -406,7 +405,7 @@ try{
             }
         })
     }else{
-        const updateReply = await prisma.comments.update({
+        const updateReply = await prisma.replies.update({
             where:{
                 id:responseId,
             },
