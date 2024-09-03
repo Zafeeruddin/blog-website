@@ -21,6 +21,7 @@ model User{
   name      String
   password  String?
   googleId  String? @unique
+  googleImage String? @unique
   posts     Post[]
   savedPosts String[]
   likedPosts String[]

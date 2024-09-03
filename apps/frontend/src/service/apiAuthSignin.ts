@@ -4,7 +4,7 @@ import { SetterOrUpdater } from "recoil"
 import { toast } from "sonner";
 import Cookies from "js-cookie"
 
-export const userSignIn=async (email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>)=>{
+export const userSignIn=async (email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>,setGoogleImage:SetterOrUpdater<string>)=>{
   let loadingToastId; 
   console.log("signnin")
   try{
@@ -19,6 +19,7 @@ export const userSignIn=async (email:string,password:string,setUsername:SetterOr
           setUsername(response.data.name)
           console.log("token being set", response.data.token)
           setUserAuth(true)
+          setGoogleImage(response.data.googleImage)
           navigate("/blogs")
         }else{
           console.log("throwing err",response.data.e)
@@ -87,9 +88,10 @@ export const isUserAuth =async ()=>{
 
 }
 
-export const googleSignIn =async (setToken:SetterOrUpdater<string>,googleToken:string,googleId:string,email:string,name:string)=>{
+export const googleSignIn =async (setToken:SetterOrUpdater<string>,googleToken:string,googleId:string,email:string,name:string,googleImage:string)=>{
   console.log("ready to sing in")
-    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/googleAuth",{googleToken:googleToken,googleId:googleId,email:email,name:name},{withCredentials:true})
+  console.log("googleImage is",googleImage)
+    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/googleAuth",{googleToken:googleToken,googleId:googleId,email:email,name:name,googleImage:googleImage},{withCredentials:true})
     console.log("response after google",response.data)
     setToken(response.data.token)
     return

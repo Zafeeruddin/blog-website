@@ -6,7 +6,7 @@ import { TfiWrite } from "react-icons/tfi"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
-import { areNotifications, isAuthenticated, isSearch, notifiationCount, notifications, searchBlog, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
+import { areNotifications, imageAtom, isAuthenticated, isSearch, notifiationCount, notifications, searchBlog, unifiedNotificationsAtom, usernameAtom } from "../../store/atoms/user"
 import { NotificationCard, transformNotification } from "../Notification"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
 import { userSignOut } from "../../service/apiAuthSignin"
@@ -32,6 +32,8 @@ export const Layout=()=>{
 	const [scrollingDown, setScrollingDown] = useState(false);
     // const [clickedOutside,setClickedOutside] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
+    const [googleImage,]=useRecoilState(imageAtom)
+
 
     const debounce = (func: any, delay: any) => {
 		let timeoutId: any;
@@ -156,7 +158,7 @@ export const Layout=()=>{
             { handleNotification ?
                 // <Noty width={300} color={"#ffff00"} count={10}/>:
                 <IoMdNotifications className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/> :   
-                <Noty width={30} color={"#000000"}/>
+                <Noty width={30} color={"#a1a1aa"}/>
                 // <IoMdNotificationsOutline className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/>
             }
         { handleNotification && !loading && 
@@ -169,7 +171,11 @@ export const Layout=()=>{
 
         <div onClick={clickProfile} className=" mt-1 items-center space-x-1 relative z-50 cursor-pointer">
             <div className="bg-gray-800 text-white rounded-full h-8 w-8 lg:w-10 lg:h-10  flex items-center justify-center">
-                <span className="uppercase">{username[0]}</span>
+                {
+                    googleImage && googleImage.length>0 ?
+                        <img className="rounded-full" src={googleImage}></img> 
+                        :<span className="uppercase">{username[0]}</span>
+                }
             </div>
 
             {handleProfile && 

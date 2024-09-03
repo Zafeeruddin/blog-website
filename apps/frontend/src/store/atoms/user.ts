@@ -31,6 +31,11 @@ export  const usernameAtom=atom<string>({
     effects_UNSTABLE:[persistAtom]
 })
 
+export const imageAtom=atom({
+    key:"googleImageId",
+    default:""
+})
+
 export  const emailAtom=atom({
     key:"email",
     default:"",

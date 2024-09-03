@@ -1,6 +1,6 @@
 
 import { useRecoilState, useSetRecoilState } from "recoil"
-import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
+import { emailAtom, imageAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user"
 import {loginParams} from "@repo/types/types"
 import { Suspense, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -22,6 +22,7 @@ export default function Signin() {
   const navigate=useNavigate()
   const setAuth= useSetRecoilState(isAuthenticated)
   const [passwordVisible,setPasswordVisible]=useState(false)
+  const [,setGoogleImage]=useRecoilState(imageAtom)
 
 
   const login = useGoogleLogin({
@@ -39,9 +40,12 @@ useEffect(() => {
                   }
               })
               .then((res) => {
-                  googleSignIn(setToken,user.access_token,res.data.id,res.data.email,res.data.name)
+                console.log("inside gImage",res.data.picture)
+                  googleSignIn(setToken,user.access_token,res.data.id,res.data.email,res.data.name,res.data.picture)
                   // setGProfile(res.data);
+
                   console.log("response is",res.data)
+                  setGoogleImage(res.data.picture)
                   setUsername(res.data.given_name)
                   setAuth(true)
                   console.log("set auth now treu",setAuth)
@@ -67,7 +71,7 @@ useEffect(() => {
       toast.error(refinedMessage)
       return 
     }
-    await userSignIn(email,password,setUsername,setToken,navigate,setAuth)
+    await userSignIn(email,password,setUsername,setToken,navigate,setAuth,setGoogleImage)
   }
 
 //   const logOut = () => {
