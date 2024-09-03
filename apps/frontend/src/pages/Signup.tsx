@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom"
 import { userSignUp } from "../service/apiAuthSignup.js"
 import { signupParams } from "@repo/types/types"
 import { toast } from "sonner"
+import { sendOtp } from "../service/apiSendOtp.js"
+import esm from "html-react-parser"
+import { useState } from "react"
 
 
 export default function Signup() {
@@ -16,6 +19,7 @@ export default function Signup() {
   const [email,setEmail]=useRecoilState(emailAtom)
   const setToken=useSetRecoilState(tokenAtom)
   const navigate=useNavigate()
+  const [success,setSuccess]= useState(false)
 
   const sendUser=async ()=>{
     console.log("sigining in" )
@@ -25,16 +29,17 @@ export default function Signup() {
       password:password,
       
     })
-    console.log("us " + username + "emal " + email + "pass" + password)
-    console.log("parse msg",parseUser.success)
     if(!parseUser.success){
       console.log("erros",parseUser.error.errors)
       let refinedMessage = parseUser.error.errors[0]?.message
       toast.error(refinedMessage)
       return 
     }
-    await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
-
+    navigate("/otp")
+    await sendOtp(email,setSuccess)
+    if(success){
+      await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
+    }
     
     //setInterval(()=>{setMessage("")},3000)
      

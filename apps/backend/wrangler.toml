@@ -5,6 +5,9 @@ compatibility_flags = [ "nodejs_compat" ]
 
 
 [vars]
+MJ_APIKEY_PUBLIC="27efa8d73c7d46ea39fa371220276269"
+MJ_APIKEY_PRIVATE="98d42ec38856564b1b2263f0ac741ca9"
+
 UPSTASH_REDIS_REST_TOKEN = "AbUuAAIjcDExZjU0NmEwYWMwYTk0OWM3YmJiOTU0YzU2NTZkMDdkZnAxMA"
 UPSTASH_REDIS_REST_URL = "https://prime-buzzard-46382.upstash.io"
 LIST_KEY= "notifications"

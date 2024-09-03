@@ -5,14 +5,15 @@ import { Hono } from 'hono'
 import { decode, verify,sign } from 'hono/jwt'
 import {signupParams,loginParams} from "@repo/types/types"
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
-
 export const userRouter = new Hono<{
     Bindings:{
       DATABASE_URL:string,
       JWT_SECRET:string,
       endpoint:string,
       ACCESS_KEY_ID:string,
-      secretAccessKey:string
+      secretAccessKey:string,
+      MJ_APIKEY_PUBLIC:string,
+      MJ_APIKEY_PRIVATE:string
     },
     Variables:{
         key:CryptoKey,
@@ -477,7 +478,6 @@ try{
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
-import { use } from 'hono/jsx'
   
 userRouter.get("/pre-signed-url", async(c)=>{
 
@@ -507,3 +507,7 @@ async function fetchUrl(blogId:string, method: "PUT" | "GET") {
    const url = await fetchUrl(blogId,method)
     return c.json(url)
   })
+
+//   userRouter.post("/sendOTP", async (c) => {
+//     return c.json("not it exists")
+// })

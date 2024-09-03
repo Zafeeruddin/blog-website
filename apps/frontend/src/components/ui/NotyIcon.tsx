@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { notifiationCount } from "../../store/atoms/user";
 
-export default function Noty({ width, color }:{width:any,color:any}) {
+export default function Noty({ width }:{width:any,color:any}) {
   const userNotificationCount=useRecoilValue(notifiationCount)
   return (
     <div>
