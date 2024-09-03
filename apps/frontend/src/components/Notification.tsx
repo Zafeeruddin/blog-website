@@ -72,7 +72,7 @@ export const NotificationCard=({notification}:{notification:Notification})=>{
 const NotificationBar=({content,postId,user,date,isComment,flagNotified,commentId}:{content:string,postId:string,user:string,date:Date,isComment:boolean,flagNotified:boolean,commentId:string})=>{
     const [duration,setDuration]=useState("")
     const token = useRecoilValue(tokenAtom)
-    const [response,setResponse] = useState<string>()
+    const [,setResponse] = useState<string>()
     const [userNotificaiton,setUserNotifcations]= useRecoilState(notifications)
     const [,setUnifiedNotification] = useRecoilState(unifiedNotificationsAtom)
     const [,setAreNotifications] = useRecoilState(areNotifications)
