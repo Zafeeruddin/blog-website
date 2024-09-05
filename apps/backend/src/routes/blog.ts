@@ -6,6 +6,7 @@ import { postParams } from "@repo/types/types"
 import { getCookie } from "hono/cookie"
 import sendMessageToUser from "../services/notifyRealTIme"
 import { Redis } from "@upstash/redis/cloudflare"
+import { R2Bucket } from "@cloudflare/workers-types"
 export const blogRouter=new Hono<{
     Bindings:{
         JWT_SECRET:string,

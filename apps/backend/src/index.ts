@@ -69,9 +69,6 @@ app.get('/ws', upgradeWebSocket((c) => {
          
         }
       },
-      onClose: (evt: CloseEvent,ws:WSContext) => {
-        // console.log('Connection closed')    
-      },
     }
   })
 )

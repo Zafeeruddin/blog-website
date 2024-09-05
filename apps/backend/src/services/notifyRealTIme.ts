@@ -7,7 +7,7 @@ export default function sendMessageToUser(userId: string, response: comment | re
     console.log("Hello from user, the user id is " + userId+" and comment: " + response)
     const connection = clients.get(userId);
     for (let [idx,ws] of clients.entries()){
-      console.log("Client: " + idx )
+      console.log("Client: " + idx  + ws)
       // console.log("connection " + )
     }
     upgradeWebSocket((c) => {

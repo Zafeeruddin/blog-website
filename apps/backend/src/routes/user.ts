@@ -1,4 +1,4 @@
-import {PrismaClient,Prisma} from '@prisma/client/edge'
+import {PrismaClient} from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 //import { createHash, randomBytes } from 'crypto'
 import { Hono } from 'hono'
@@ -424,7 +424,7 @@ try{
     
 
     if(isComment===true){
-        const updateComment = await prisma.comments.update({
+         await prisma.comments.update({
             where:{
                 id:responseId,
             },
@@ -433,7 +433,7 @@ try{
             }
         })
     }else{
-        const updateReply = await prisma.replies.update({
+         await prisma.replies.update({
             where:{
                 id:responseId,
             },
@@ -478,7 +478,6 @@ try{
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
-import { checkEmail } from '../services/checkEmail'
   
 userRouter.get("/pre-signed-url", async(c)=>{
 
