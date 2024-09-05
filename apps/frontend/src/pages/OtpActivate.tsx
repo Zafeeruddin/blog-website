@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, AlertCircle } from 'lucide-react';
+import {  AlertCircle } from 'lucide-react';
 import { verifyOtp } from '../service/apiVerifyOtp';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { sendOtp } from '../service/apiSendOtp';
-import { emailAtom } from '../store/atoms/user';
-import { useRecoilState } from 'recoil';
-import { number, z } from 'zod';
+import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from '../store/atoms/user';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { userSignUp } from '../service/apiAuthSignup';
 
 export default function OTPActivation() {
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState<any>();
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [, setSuccess] = useState(false);
   const navigate = useNavigate()
   const [email]=useRecoilState(emailAtom)
+  const setAuth= useSetRecoilState(isAuthenticated)
+  const setToken=useSetRecoilState(tokenAtom)
+  const [username,setUsername]=useRecoilState(usernameAtom)
+  const [password,]=useRecoilState(passwordAtom);
+
 
 
   useEffect(() => {
@@ -33,23 +38,22 @@ export default function OTPActivation() {
 
   const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const otpParams = z.object({
-        number:z.number().max(6).min(6)
-    })
-
-    const parseOtp = otpParams.safeParse({
-        otp
-    })
-
-    if(!parseOtp.success){
-        toast.error("OTP length must be 6")
-        return
+    console.log("otp is ",otp)
+    let OTP
+    if(otp){
+      OTP = parseInt(otp)
+    }
+    if(!OTP || OTP && OTP.toString().length!=6){
+      console.log("otp is " + otp + " len ")
+      toast.error("OTP length must be 6")
+      return
     }
     // This is where you'd typically send the OTP to your backend for verification
-    await verifyOtp(parseInt(otp),setSuccess)
-    if (success===true) { // Replace with actual OTP verification logic
+    
+    const isOTP = await verifyOtp(OTP,setSuccess)
+    if (isOTP===true) { // Replace with actual OTP verification logic
         toast.success("Account activated")
+        await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
         navigate("/blogs")
     } else {
       toast.error("Otp doesn't match")
@@ -58,24 +62,13 @@ export default function OTPActivation() {
 
   const handleResend =async () => {
     // This is where you'd typically trigger a new OTP to be sent
-    await sendOtp(email,setSuccess)
+    await sendOtp(email)
     setTimer(30);
     setCanResend(false);
     setError('');
     // Add logic here to resend OTP
   };
 
-  if (success) {
-    return (
-      <div className="max-w-md mx-auto mt-8 p-4 bg-green-100 border border-green-400 rounded-lg text-green-700">
-        <div className="flex items-center">
-          <CheckCircle className="h-5 w-5 mr-2" />
-          <h2 className="text-lg font-semibold">Success!</h2>
-        </div>
-        <p className="mt-2">Your account has been activated. You can now start blogging!</p>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
@@ -85,7 +78,7 @@ export default function OTPActivation() {
           <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Enter OTP</label>
           <input
             id="otp"
-            type="text"
+            type="number"
             placeholder="Enter the 6-digit OTP"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}

@@ -59,9 +59,11 @@ userRouter.post("/sendOTP", async (c) => {
     }
 });
 
-userRouter.get("/checkOTP",async (c)=>{
+userRouter.post("/checkOTP",async (c)=>{
+    
     const otp = getOTP()
     const body = await c.req.json()
+    console.log("otp is",body.otp)
     if (body.otp===otp){
         c.status(202)
         return c.json("Welcome to blogging world")

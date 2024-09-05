@@ -478,6 +478,7 @@ try{
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
+import { checkEmail } from '../services/checkEmail'
   
 userRouter.get("/pre-signed-url", async(c)=>{
 
@@ -508,6 +509,49 @@ async function fetchUrl(blogId:string, method: "PUT" | "GET") {
     return c.json(url)
   })
 
-//   userRouter.post("/sendOTP", async (c) => {
-//     return c.json("not it exists")
-// })
+userRouter.post("/checkEmail",async (c)=>{
+    console.log("inside check")
+    const body= await c.req.json()
+    const email = body.email
+    const prisma=new PrismaClient({
+        datasourceUrl:c.env.DATABASE_URL
+    }).$extends(withAccelerate())
+    // @ts-ignore
+    // const isEmail=await checkEmail(email,prisma)
+    let isEmailNumber;
+    try{
+        const isUser= await prisma.user.findUnique({
+            where:{
+                email
+            }
+        })
+        console.log("inside check aigin",isUser)
+
+        if(!isUser){
+            isEmailNumber= 0
+        }else{
+            if(isUser.googleId && isUser.password){
+                isEmailNumber=1
+            }else if(isUser.password && !isUser.googleId){
+                isEmailNumber=2
+            }else if(!isUser.password && isUser.googleId){
+                isEmailNumber=3
+            }
+        }
+        console.log("Is Email == ",isEmailNumber)
+        if( isEmailNumber === 0 || isEmailNumber === 3){
+            c.status(200)
+            console.log("0 3")
+            return c.json("Proceed")
+        }else if(isEmailNumber === 1 || isEmailNumber === 2 ){
+            console.log("1 or 2")
+            c.status(400)
+            return c.json("DO notProceed")
+        }else{
+            return c.json("Error")
+        }
+    }catch(e){
+        console.log("Error ",e)
+        return c.json({"e":e})
+    }
+})
