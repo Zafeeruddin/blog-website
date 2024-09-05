@@ -4,18 +4,23 @@ import { withAccelerate } from "@prisma/extension-accelerate"
 import { decode, verify } from "hono/jwt"
 import { postParams } from "@repo/types/types"
 import { getCookie } from "hono/cookie"
+import sendMessageToUser from "../services/notifyRealTIme"
+import { Redis } from "@upstash/redis/cloudflare"
 export const blogRouter=new Hono<{
     Bindings:{
         JWT_SECRET:string,
         DATABASE_URL:string,
         MY_BUCKET:R2Bucket,
-        AUTH_SECRET:string
+        AUTH_SECRET:string,
+        UPSTASH_REDIS_REST_TOKEN:string,
+        UPSTASH_REDIS_REST_URL:string
     },
     Variables:{
         id:string,
         blogId:string
     }
 }>()
+
 
 
 //Middleware for verification of tokens
@@ -200,7 +205,8 @@ blogRouter.get("/blogs/bulk",async (c)=>{
                 author:{
                     select:{
                         id:true,
-                        name:true
+                        name:true,
+                        googleImage:true
                     }
                 }
             }
@@ -388,6 +394,13 @@ blogRouter.put("/like",async(c)=>{
 })
 
 blogRouter.post("/post/comments",async(c)=>{
+    console.log("getting clietn")
+    const redis = new Redis({
+        url: c.env.UPSTASH_REDIS_REST_URL ,
+        token:c.env.UPSTASH_REDIS_REST_TOKEN
+    })
+
+    console.log("got clietn")
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
@@ -412,9 +425,6 @@ blogRouter.post("/post/comments",async(c)=>{
         if(!blog){
             return c.json("blog doesn't exists")
         }
-
-        
-
         const getAuthor = await prisma.user.findUnique({
             where:{
                 id:blog.authorId
@@ -423,13 +433,17 @@ blogRouter.post("/post/comments",async(c)=>{
         if(!getAuthor){
             return c.json("Invalid User")
         }
-        const getAuthorNotifications= await prisma.notification.findUnique({
+        let getAuthorNotifications= await prisma.notification.findUnique({
             where:{
                 userId:getAuthor.id
             }
         })
         if(!getAuthorNotifications){
-            return c.json("unable to get notifications")
+            getAuthorNotifications = await prisma.notification.create({
+                data:{
+                    userId:getAuthor.id
+                }
+            })
         }
         const comment=await prisma.comments.create({
             data:{
@@ -437,7 +451,7 @@ blogRouter.post("/post/comments",async(c)=>{
                 postId:blog.id,
                 userId:user.id,
                 notificationId:getAuthorNotifications.id,
-                user:getAuthor.name
+                user:user.name
             }
         })
 
@@ -453,6 +467,12 @@ blogRouter.post("/post/comments",async(c)=>{
                 postId:blog.id
             }
         })
+        const qItem = {
+            authorId: getAuthor.id,
+            response: comment
+        }
+        await redis.lpush("notifications",JSON.stringify(qItem))
+        sendMessageToUser(getAuthor.id,comment)
         return c.json(comments)
     }catch(e){
         return c.json({e})
@@ -638,7 +658,6 @@ blogRouter.put("/post/replies",async(c)=>{
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-
     try{
         const comment=await prisma.comments.findUnique({
             where:{

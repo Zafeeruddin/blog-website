@@ -19,29 +19,49 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
     const [clapped,setClapped]=useState(clap)
     const commentReply=useRecoilValue(replies)
     const [currentComment,setCurrentComment]=useRecoilState(currentCommentId)
-    const [currentReplies,setCurrentReplies]=useRecoilState(replies)
+    const [,setCurrentReplies]=useRecoilState(replies)
     const setReplyUsername=useSetRecoilState(usernameReply)
+    const [showReplies,setShowReplies] = useState(false)
+    const [prevCommentId,setPrevCommentId]=useState("")
 
     const giveReply=()=>{
+        console.log("cancel was ",cancel)
         setCurrentComment(commentId);
         setReplyUsername(user)
         console.log("now current id",currentComment)
         setCancel(!cancel)
+        console.log("cancel is ",cancel)
     }
     useEffect(()=>{
         formatDate(date,setDuration)
     },[])
 
 
-     const getReplies= ()=>{
-        // setHanleReplies(!handleReplies)
-        // if(handleReplies){
+    const getReplies=async ()=>{
+        setPrevCommentId(currentComment)
+        setCurrentComment(commentId)
+    // setHanleReplies(!handleReplies)
+    // if(handleReplies){
+        console.log("comment id now ",commentId)
+        console.log("prev comm id ", prevCommentId)
+
+
+        if(prevCommentId===commentId){
+            if(showReplies===true){
+                console.log("Ur clicking same")
+                setShowReplies(false)
+            }else{
+                console.log("OTher is open and u click something else")
+                setCurrentReplies([])
+                await fetchReplies(token,commentId,setCurrentReplies)
+                setShowReplies(true)
+            }
+        }else{
+            console.log("Fetching normal replies")
             setCurrentReplies([])
-            console.log("replies are",currentReplies)
-            setCurrentComment(commentId)
-            console.log("fetching replies...",commentId)
-            fetchReplies(token,currentComment,setCurrentReplies)
-        // }
+            await fetchReplies(token,commentId,setCurrentReplies)
+            setShowReplies(true)
+        }
     }
     
     const callClap=()=>{
@@ -75,8 +95,8 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
                 {!cancel && currentComment===commentId && <div className="mt-4 ml-2 mr-4 pr-10 pl-10 border-l-4">
                     <CommentBox isMain={false}/>
                 </div> }
-                {  commentReply.length!==0 && commentId===currentComment && 
-                <div className="border-l-2 border-gray-300 ml-6">
+                {  commentReply.length!==0 && commentId===currentComment && showReplies &&
+                <div className="border-l-2 border-gray-300 ml-6" onClick={()=>setShowReplies(!showReplies)}>
                     {Array.isArray(commentReply) && commentReply.map(reply=>{
                         return <Replies  key={reply.id} reply={reply}/>
                     })}

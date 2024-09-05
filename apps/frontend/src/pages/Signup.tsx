@@ -1,43 +1,72 @@
 
 import Label from "../components/ui/label.js"
-import { useRecoilState, useSetRecoilState } from "recoil"
-import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from "../store/atoms/user.js"
+import { useRecoilState } from "recoil"
+import { emailAtom,  passwordAtom, usernameAtom } from "../store/atoms/user.js"
 
 import { useNavigate } from "react-router-dom"
-import { userSignUp } from "../service/apiAuthSignup.js"
 import { signupParams } from "@repo/types/types"
 import { toast } from "sonner"
+import { sendOtp } from "../service/apiSendOtp.js"
+import { useState } from "react"
+import { verifyEmail } from "../service/apiVerifyEmial.js"
 
 
 export default function Signup() {
-  const setAuth= useSetRecoilState(isAuthenticated)
   const [username,setUsername]=useRecoilState(usernameAtom)
   const [password,setPassword]=useRecoilState(passwordAtom);
   const [email,setEmail]=useRecoilState(emailAtom)
-  const setToken=useSetRecoilState(tokenAtom)
   const navigate=useNavigate()
+  const [success,]= useState(false)
 
+  
   const sendUser=async ()=>{
-    console.log("sigining in" )
+    console.log("sigining up" ,email)
+    let isOTP;
     const parseUser=signupParams.safeParse({
       username:username,
       email:email,
       password:password,
       
     })
-    console.log("us " + username + "emal " + email + "pass" + password)
-    console.log("parse msg",parseUser.success)
     if(!parseUser.success){
+      console.log("unscuc")
       console.log("erros",parseUser.error.errors)
-      let refinedMessage = parseUser.error.errors[0]?.message
-      toast.error(refinedMessage)
+      let refinedMessage = parseUser.error.errors[0]
+      let message = refinedMessage?.message.replace("String","")
+      let param = refinedMessage?.path[0] as string
+      if(param=="email"){
+        console.log("param is ")
+        toast.error( message )
+      }else{
+        toast.error(param + message )
+      }
+      setEmail("")
+      setUsername("")
+      setPassword("")
       return 
+  }else if(parseUser.success){
+    let loadingToastId = toast.loading("Checking email...")
+    const proceed =await verifyEmail(email)
+    console.log("proceed is ",proceed)
+    if(proceed===true){
+      console.log("proeceeding ")
+      toast.dismiss(loadingToastId)
+      isOTP= await sendOtp(email)
+    }else{
+      toast.dismiss(loadingToastId)
+      toast.error("Email already signed up")
+      return
     }
-    await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
-
-    
-    //setInterval(()=>{setMessage("")},3000)
-     
+  }
+  console.log("success is ",success)
+    if(isOTP){
+      navigate("/otp")
+      return
+    }else{
+      toast.error("Something went wrong")
+      return
+    }
+    //setInterval(()=>{setMessage("")},3000)     
   }
   return (
     <div className="flex max-w-4xl mx-auto my-12">

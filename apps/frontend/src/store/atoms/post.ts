@@ -2,15 +2,19 @@ import { atom, selector, useRecoilValue } from "recoil"
 import {  tokenAtom } from "./user"
 import axios from "axios"
 import { Reply, blog, comment } from "../../utils/types"
+import {recoilPersist} from "recoil-persist"
+const {persistAtom} = recoilPersist()
 
 export  const titleAtom=atom({
     key:"title",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 export  const contentAtom=atom({
     key:"content",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 
@@ -18,7 +22,8 @@ const date=new Date()
 
 export const blogOpen=atom<blog>({
     key:"openBlog",
-    default:{authorId:"",title:"",content:"",published:true,id:"",date:date,likes:0, author:{name:"",id:""}}
+    default:{authorId:"",title:"",content:"",published:true,id:"",date:date,likes:0, author:{name:"",id:""}},
+    effects_UNSTABLE:[persistAtom]
 })
 
 
@@ -43,12 +48,14 @@ export const defaultComments=selector<comment[]>({
 
 export const comments=atom<comment[]>({
     key:"comments",
-    default:defaultComments
+    default:defaultComments,
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const replies=atom<Reply[]>({
     key:"replies",
-    default:[]
+    default:[],
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const currentCommentId=atom<string>({

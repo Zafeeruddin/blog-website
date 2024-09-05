@@ -16,7 +16,7 @@ export const Replies=({reply}:{reply:Reply})=>{
     },[])
 
     const callClap=()=>{
-         clapReplyOnce(token,reply.id,setClaps)    
+         clapReplyOnce(token,reply.id,reply.commentId,setClaps)    
     }
 
     return (

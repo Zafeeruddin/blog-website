@@ -9,7 +9,8 @@ export type blog={
     date:Date,
     author:{
         name:string,
-        id:string
+        id:string,
+        googleImage:string
     }
 }
 
@@ -24,7 +25,7 @@ export interface Notification{
     "replies":Reply[]
 }
 
-export interface comment{
+export type comment={
     id:string,
     comment:string,
     user:string,
@@ -32,11 +33,12 @@ export interface comment{
     date:Date,
     claps:number,
     postId:string,  
-    replyCount:number
+    replyCount:number,
+    googleImage:string
 }
 
 
-export interface Reply{
+export type Reply={
     "id": string,
     "reply": string,
     "user": string,
@@ -46,6 +48,7 @@ export interface Reply{
     "commentId": string,
     "date": Date,
     "notificationId": string,
+    "googleImage":string
 }
 
 

@@ -7,8 +7,9 @@ import { toast } from "sonner";
 export const userSignUp=async (username:string,email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>)=>{
   let loadingToastId;  
   try{
+
         loadingToastId = toast.loading("Signing up...");
-        const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/user/signup",{name:username,email:email,password:password},{withCredentials:true})
+        const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/signup`,{name:username,email:email,password:password},{withCredentials:true})
         if(response.data.token){
           toast.dismiss(loadingToastId);
           toast.success("Sign-in successful");

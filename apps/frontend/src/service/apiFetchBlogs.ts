@@ -9,7 +9,7 @@ export const getAllBlogs=async (token:string,setBlogs:SetterOrUpdater<blog[]>)=>
     //   };
     try{
         console.log("token value",token )
-        const getBlogs=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/blogs/bulk",{withCredentials:true})
+        const getBlogs=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/blogs/bulk`,{withCredentials:true})
         const response=getBlogs.data  
         setBlogs(response)
         console.log("response",response)

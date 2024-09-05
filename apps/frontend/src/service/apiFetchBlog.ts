@@ -10,7 +10,7 @@ export const openBlog=async (blogId:string,setOpenBlog:SetterOrUpdater<blog>,nav
         const response=await axios.get(`https://backend.mohammed-xafeer.workers.dev/api/v1/blog/${blogId}`,{withCredentials:true})
         console.log("blog got is ",response.data)
         setOpenBlog(response.data)
-        navigate(isComment ? `/blogs/${response.data.id}#${commentId}` :  `/blogs/${response.data.id}`)
+        navigate(isComment ? `/blogs/${response.data.id}#comments` :  `/blogs/${response.data.id}`)
     }catch(e){
         return
     }

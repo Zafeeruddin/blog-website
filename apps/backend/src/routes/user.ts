@@ -5,14 +5,15 @@ import { Hono } from 'hono'
 import { decode, verify,sign } from 'hono/jwt'
 import {signupParams,loginParams} from "@repo/types/types"
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
-
 export const userRouter = new Hono<{
     Bindings:{
       DATABASE_URL:string,
       JWT_SECRET:string,
       endpoint:string,
       ACCESS_KEY_ID:string,
-      secretAccessKey:string
+      secretAccessKey:string,
+      MJ_APIKEY_PUBLIC:string,
+      MJ_APIKEY_PRIVATE:string
     },
     Variables:{
         key:CryptoKey,
@@ -24,7 +25,7 @@ export const userRouter = new Hono<{
 //Middleware for verification of tokens
 userRouter.use("/getNotification",async (c,next)=>{
                             
-    var token= c.req.header("Authorization") || getCookie(c,"token") || ""
+    var token=  getCookie(c,"token") || c.req.header("Authorization")  || ""
     console.log("token in auth",token)
     if(!token){
         c.status(401)
@@ -41,6 +42,7 @@ userRouter.use("/getNotification",async (c,next)=>{
             }
 
             const decodedToken= decode(token)
+            console.log("id set is",decodedToken.payload.id)
             c.set("id",decodedToken.payload.id as string)
            await next()
         }catch(e){
@@ -123,7 +125,7 @@ userRouter.use('/signup',async (c,next)=>{
     const decodedPassword=decoder.decode(myDigest)
     console.log("passwrod to be ", new Uint8Array(myDigest))
   
-
+    
   
     try {
         //easier way triying
@@ -144,6 +146,19 @@ userRouter.use('/signup',async (c,next)=>{
                 }
             })
         }
+
+        const getNotification = await prisma.notification.findUnique({
+            where:{
+                userId:user.id
+            }
+        })
+        if(!getNotification){
+            await prisma.notification.create({
+                data:{
+                    userId:user.id
+                }
+            })
+    }
         const payload={
                 id:user.id,
                 exp:Math.floor(Date.now()/1000)+60*60*24
@@ -152,14 +167,8 @@ userRouter.use('/signup',async (c,next)=>{
         const token= await sign(payload,c.env.JWT_SECRET)
         console.log("token",token)
 
-        await prisma.notification.create({
-            data:{
-                userId:user.id
-            }
-        })
 
         setCookie(c,"token",token,{
-            httpOnly:true,
             path:"/",
             sameSite:"None",
             secure:true
@@ -188,6 +197,7 @@ userRouter.use('/signup',async (c,next)=>{
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
 
+    const googleImage = body.googleImage
     try{
         let user=await prisma.user.findUnique({
         where:{
@@ -201,11 +211,18 @@ userRouter.use('/signup',async (c,next)=>{
                 googleId:body.googleId,
                 name:body.name,
             }})
-            await prisma.notification.create({
-                data:{
+            const getNotification = await prisma.notification.findUnique({
+                where:{
                     userId:user.id
                 }
             })
+            if(!getNotification){
+                await prisma.notification.create({
+                    data:{
+                        userId:user.id
+                    }
+                })
+        }
         }else{
             if (!user.googleId){
                 user = await prisma.user.update({
@@ -218,6 +235,30 @@ userRouter.use('/signup',async (c,next)=>{
                 })
             }
         }
+        if(!user.googleId){
+            console.log("no google")
+            return
+        }
+        if(user.googleImage ){
+            if(googleImage!=user.googleImage){
+                await prisma.user.update({
+                    where:{
+                        googleId:user.googleId
+                    },data:{
+                        googleImage
+                    }
+                })
+            }
+        }else{
+            await prisma.user.update({
+                where:{
+                    googleId:user.googleId
+                },data:{
+                    googleImage
+                }
+            })
+            console.log("updated the image")
+        }
         const payload={
             id:user.id,
             exp:Math.floor(Date.now()/1000)+60*60*24
@@ -226,7 +267,6 @@ userRouter.use('/signup',async (c,next)=>{
         const token= await sign(payload,c.env.JWT_SECRET)
         console.log("token",token)
         setCookie(c,"token",token,{
-            httpOnly:true,
             path:"/",
             sameSite:"None",
             secure:true
@@ -237,12 +277,15 @@ userRouter.use('/signup',async (c,next)=>{
         return c.json({
             msg:"Signup successfully",
             "token":token,
-            "name": user.name
+            "name": user.name,
+            "googleImage":user.googleImage
         })
     }catch(e){
         return c.json({msg:"Email already exists",e:e})
     }
   })
+
+
   
 userRouter.post("/signin",async (c)=>{
     const body=await c.req.json()
@@ -294,7 +337,6 @@ try{
 
     const token=await sign({id:getUser.id},c.env.JWT_SECRET)
     setCookie(c,"token",token,{
-        httpOnly:true,
         path:"/",
         sameSite:"None",
         secure:true
@@ -304,7 +346,8 @@ try{
     return c.json({
         msg:"Signup successfully",
         "token":token,
-        "name": getUser.name
+        "name": getUser.name,
+        "googleImage":getUser.googleImage
     })
 }catch(e){
     return c.json({msg:"Email already exists",e:e})
@@ -315,10 +358,10 @@ try{
 
   userRouter.post("/signout",async(c)=>{
     deleteCookie(c, 'token', {
-		path: '/',
-		sameSite: 'None',
-		secure: true,
-		// domain: `${c.env.Domain}`,
+
+        path:"/",
+        sameSite:"None",
+        secure:true,
 	});
     c.status(200)
     return c.json("Signed out successfully")
@@ -332,37 +375,73 @@ try{
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
     
-    const getNotifications=await prisma.notification.findUnique({
-        where:{
-            userId:userId
+    try{
+        const getNotifications=await prisma.notification.findUnique({
+            where:{
+                userId:userId
+            }
+        })
+        if(!getNotifications){
+            console.log("inside no not")
+            c.status(404)
+            return c.json("No Notifications exists")
         }
-    })
-    if(!getNotifications){
-        return c.json("No Notifications exists")
+        console.log("inside noti in not")
+
+        const getComments=await prisma.comments.findMany({
+            where:{
+                notificationId:getNotifications.id
+            }
+        })
+        console.log("comment in not",getComments)
+
+
+        const getReplies=await prisma.replies.findMany({
+            where:{
+                notificationId:getNotifications.id
+            }
+        })
+        console.log("f are",getReplies)
+        c.status(200)
+        return c.json({comments:getComments,replies:getReplies})
+
+    } catch(e){
+        console.log("error",e)
+        return c.json({"error":e})
     }
-
-    const getComments=await prisma.comments.findMany({
-        where:{
-            notificationId:getNotifications.id
-        }
-    })
-
-    const getReplies=await prisma.replies.findMany({
-        where:{
-            notificationId:getNotifications.id
-        }
-    })
-    return c.json({comments:getComments,replies:getReplies})
   })
 
 
   userRouter.put("/getNotification",async(c)=>{
     const userId=c.get("id")
+    const body = await c.req.json()
+    const responseId= body.responseId
+    const isComment= body.isComment
+
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-    console.log("id being ",userId)
+    
 
+    if(isComment===true){
+        const updateComment = await prisma.comments.update({
+            where:{
+                id:responseId,
+            },
+            data:{
+                flagNotified:true
+            }
+        })
+    }else{
+        const updateReply = await prisma.replies.update({
+            where:{
+                id:responseId,
+            },
+            data:{
+                flagNotified:true
+            }
+        })
+    }
     const getNotifications=await prisma.notification.findUnique({
         where:{
             userId
@@ -371,34 +450,35 @@ try{
     if(!getNotifications){
         return c.json("No Notifications exists")
     }
+    if(!getNotifications){
+        console.log("inside no not")
+        c.status(404)
+        return c.json("No Notifications exists")
+    }
+    console.log("inside noti in not")
 
-
-    const updateComments = await prisma.comments.updateMany({
-        where:{
-            notificationId:getNotifications.id
-        },data:{
-            flagNotified:true
-        }
-    })
-
-    
-    const updateReplies = await prisma.replies.updateMany({
-        where:{
-            notificationId:getNotifications.id
-        },data:{
-            flagNotified:true
-        }
-    })
-    const updatedNotifications = await prisma.comments.findMany({
+    const getComments=await prisma.comments.findMany({
         where:{
             notificationId:getNotifications.id
         }
     })
-    return c.json(updatedNotifications)
-  })
+    console.log("comment in not",getComments)
 
-  import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+    const getReplies=await prisma.replies.findMany({
+        where:{
+            notificationId:getNotifications.id
+        }
+    })
+    console.log("f are",getReplies)
+    c.status(200)
+    return c.json({comments:getComments,replies:getReplies})
+
+ })
+
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
+import { checkEmail } from '../services/checkEmail'
   
 userRouter.get("/pre-signed-url", async(c)=>{
 
@@ -428,3 +508,50 @@ async function fetchUrl(blogId:string, method: "PUT" | "GET") {
    const url = await fetchUrl(blogId,method)
     return c.json(url)
   })
+
+userRouter.post("/checkEmail",async (c)=>{
+    console.log("inside check")
+    const body= await c.req.json()
+    const email = body.email
+    const prisma=new PrismaClient({
+        datasourceUrl:c.env.DATABASE_URL
+    }).$extends(withAccelerate())
+    // @ts-ignore
+    // const isEmail=await checkEmail(email,prisma)
+    let isEmailNumber;
+    try{
+        const isUser= await prisma.user.findUnique({
+            where:{
+                email
+            }
+        })
+        console.log("inside check aigin",isUser)
+
+        if(!isUser){
+            isEmailNumber= 0
+        }else{
+            if(isUser.googleId && isUser.password){
+                isEmailNumber=1
+            }else if(isUser.password && !isUser.googleId){
+                isEmailNumber=2
+            }else if(!isUser.password && isUser.googleId){
+                isEmailNumber=3
+            }
+        }
+        console.log("Is Email == ",isEmailNumber)
+        if( isEmailNumber === 0 || isEmailNumber === 3){
+            c.status(200)
+            console.log("0 3")
+            return c.json("Proceed")
+        }else if(isEmailNumber === 1 || isEmailNumber === 2 ){
+            console.log("1 or 2")
+            c.status(400)
+            return c.json("DO notProceed")
+        }else{
+            return c.json("Error")
+        }
+    }catch(e){
+        console.log("Error ",e)
+        return c.json({"e":e})
+    }
+})

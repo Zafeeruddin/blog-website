@@ -1,15 +1,18 @@
 import {  useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { tokenAtom, usernameAtom } from "../../store/atoms/user"
-import {  blogOpen, comments, currentCommentId, replies, userComment, usernameReply } from "../../store/atoms/post"
+import {  blogOpen, cancelComment, comments, currentCommentId, replies, userComment, usernameReply } from "../../store/atoms/post"
 import { useEffect, useRef, useState } from "react"
 import { publishComment } from "../../utils/postComment"
 import { publishReply } from "../../service/apiPostReply"
 import ClipLoader from "react-spinners/ClipLoader";
+import { toast } from "sonner"
 
 
 export const CommentBox=({isMain}:{isMain:boolean})=>{
     const user=useRecoilValue(usernameAtom)
     const [cancel,setCancel]=useState(false)
+    const [,setCancelReply]=useRecoilState(cancelComment)
+
     const [write, setWrite]=useState(false)
     const token=useRecoilValue(tokenAtom)
     const blog= useRecoilValue(blogOpen)
@@ -34,18 +37,23 @@ export const CommentBox=({isMain}:{isMain:boolean})=>{
        setLoadingReply(false)
     }
 
-    const send=()=>{
+    const send=async ()=>{
+        // const load = toast.loading("loading")
         if(ref.current){
             ref.current.value=""
         }
 
         if(isMain){
             setLoadingComment(true)
-            sendComment()
+            await sendComment()
+            toast(<div className="pl-5">Comment added</div>)
         }else{
             setLoadingReply(true)
             console.log("loaidng now ",loadingReply)
-            sendReply()
+
+            await sendReply()
+            toast(<div className="pl-5">Reply added</div>)
+            setCancelReply(true)
         }
     }
 

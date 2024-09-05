@@ -1,42 +1,58 @@
 import axios from "axios";
 import { atom, selector, useRecoilValue } from "recoil";
 import {  Notification, UnifiedNotification, blog } from "../../utils/types";
-
+import {recoilPersist} from "recoil-persist"
+const {persistAtom} = recoilPersist()
 export const allBlogs=atom<blog[]>({
     key:"allBlogs",
-    default:[]
+    default:[],
 })
 
 
 export const filteredBlogs=atom<blog[]>({
     key:"filterBlogs",
-    default:[]
+    default:[],
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const searchBlog=atom<string>({
     key:"search",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
-
+export const notifiationCount = atom<number>({
+    key:"notificaitonCount",
+    default:0
+})
 export  const usernameAtom=atom<string>({
     key:"username",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
+})
+
+export const imageAtom=atom<string>({
+    key:"googleImageId",
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 export  const emailAtom=atom({
     key:"email",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 export  const passwordAtom=atom({
     key:"password",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const tokenAtom=atom({
     key:"atom",
-    default:""
+    default:"",
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const defaultSavedBlogs=selector<string[]>({
@@ -80,18 +96,21 @@ export const defaultLikedBlogs=selector<string[]>({
 
 export const likedBlogs=atom<string[]>({
     key:"likedBlogs",
-    default:defaultLikedBlogs
+    default:defaultLikedBlogs,
+    effects_UNSTABLE:[persistAtom]
 })
 
 
 export const savedBlogs=atom<string[]>({
     key:"savedBlogs",
-    default:defaultSavedBlogs
+    default:defaultSavedBlogs,
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const filtered=atom<blog[]>({
     key:"filteredBlogs",
-    default:[]
+    default:[],
+    effects_UNSTABLE:[persistAtom]
 })
 
 
@@ -117,18 +136,21 @@ export const getUserNotifications=selector<Notification>({
 
 export const notifications=atom<Notification>({
     key:"notification",
-    default:getUserNotifications
+    default:getUserNotifications,
+    effects_UNSTABLE:[persistAtom]
 })
 
 export const unifiedNotificationsAtom=atom<UnifiedNotification[]>({
     key:"unifiedNotificaiton",
-    default:[]
+    default:[],
+    effects_UNSTABLE:[persistAtom]
 })
 
 
 export const areNotifications = atom<boolean>({
     key:"notificationIn",
-    default:false
+    default:false,
+    // effects_UNSTABLE:[persistAtom]
 })
 
 export const isSearch = atom<boolean>({
@@ -161,5 +183,6 @@ export const fetchUser=selector<boolean>({
 
 export const isAuthenticated = atom<boolean>({
     key:"isAuth",
-    default:fetchUser
+    default:fetchUser,
+    effects_UNSTABLE:[persistAtom]
 })

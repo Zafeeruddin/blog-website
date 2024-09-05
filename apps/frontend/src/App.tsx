@@ -12,6 +12,7 @@ import { FilteredPosts } from "./pages/FilteredPosts";
 import { SearchBlogs } from "./pages/Search";
 import ProtectedRoute from "./components/Protected";
 import { Layout } from "./components/ui/layout";
+import OTPActivation from "./pages/OtpActivate";
 // import { isAuthenticated } from "./store/atoms/user";
 
 export default function App(){
@@ -28,6 +29,7 @@ export default function App(){
               <Route path="/filteredBlogs" element={<FilteredPosts />} />
               <Route path="/search" element={<SearchBlogs />} />
             </Route>
+            <Route path="/otp" element={<OTPActivation/>}/>
             <Route path="/write" element={<ProtectedRoute><Write /></ProtectedRoute>} />
             <Route path="/stats" element={<BlogStats />} />
             <Route path="/signup" element={<Signup />} />
