@@ -22,7 +22,7 @@ const date=new Date()
 
 export const blogOpen=atom<blog>({
     key:"openBlog",
-    default:{authorId:"",title:"",content:"",published:true,id:"",date:date,likes:0, author:{name:"",id:""}},
+    default:{authorId:"",title:"",content:"",published:true,id:"",date:date,likes:0, author:{name:"",id:"",googleImage:""}},
     effects_UNSTABLE:[persistAtom]
 })
 
