@@ -9,7 +9,8 @@ export type blog={
     date:Date,
     author:{
         name:string,
-        id:string
+        id:string,
+        googleImage:string
     }
 }
 
@@ -32,7 +33,8 @@ export type comment={
     date:Date,
     claps:number,
     postId:string,  
-    replyCount:number
+    replyCount:number,
+    googleImage:string
 }
 
 
@@ -46,6 +48,7 @@ export type Reply={
     "commentId": string,
     "date": Date,
     "notificationId": string,
+    "googleImage":string
 }
 
 

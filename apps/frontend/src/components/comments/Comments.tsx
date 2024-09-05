@@ -31,7 +31,7 @@ export const Comments=()=>{
     return (
         <> 
             {/* Comments Section */}
-            <div className="lg:p-10 md:p-10  shadow-xl mt-8">
+            <div className="lg:p-10 md:p-10  shadow-xl mt-8" id="comments">
                 <div>
                     <div className="flex justify-between m-2 ">
                         <div className="text-lg font-bold">Responses ({userComments.length})</div>

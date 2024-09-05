@@ -10,6 +10,7 @@ import { Comments } from "../components/comments/Comments";
 import { OpenBlogSkeleton } from "../components/ui/skeletons/blogs";
 import { getImage } from "../service/apiPutImage";
 import { ClipLoader } from "react-spinners";
+import { GetProfile } from "../components/user/getProfile";
 
 export const OpenBlog=()=>{
     const [loading,setLoading]=useState(true)
@@ -27,7 +28,15 @@ export const OpenBlog=()=>{
     const [isImage,setIsImage]=useState(false)
     const [imageUrl,setImageUrl] = useState<string | null>(null)
 
-
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (hash) {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      }, [blog]);
     useEffect(() => {
         const checkImage = async () => {
         try {
@@ -49,6 +58,7 @@ export const OpenBlog=()=>{
             setImageUrl("")
         }
     }, []);
+
     // Convert date into '5 May, 2024' format
     useEffect(()=>{
         const newDate=new Date(blog.date)
@@ -130,7 +140,7 @@ export const OpenBlog=()=>{
                 <div className="text-4xl md:text-2xl lg:text-5xl font-serif font-bold mb-10 text-slate-950 ">{blog.title}</div>
                 <div className="mb-4  flex items-center space-x-4 pb-10 border-b">
                         <div className="bg-gray-500 text-white rounded-full h-16 w-16 text-4xl flex items-center justify-center"> 
-                            <span className="uppercase">{blog.author?blog.author.name[0] : "A"}</span>
+                            <GetProfile gProfile={blog.author.googleImage} username={blog.author.name}></GetProfile>
                         </div>
                         <div>
                             <div className="font-sans text-lg text-slate-950 capitalize">{blog.author ? blog.author.name:  "Ananoymous"}</div>
@@ -169,7 +179,6 @@ export const OpenBlog=()=>{
                   }}
                 >{ReactHTMLParser(blog.content)}</div>
                 <Comments ></Comments>
-                {/* <div className=" md:text-lg lg:text-lg text-sm" dangerouslySetInnerHTML={{__html:blog.content}}/> */}
             </div>
 
                 }</>

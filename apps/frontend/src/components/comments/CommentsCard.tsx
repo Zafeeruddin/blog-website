@@ -62,20 +62,6 @@ export const CommentsCard=({commentId,user,date,comment,clap,replyCount}:{  comm
             await fetchReplies(token,commentId,setCurrentReplies)
             setShowReplies(true)
         }
-        //     if(showReplies===true && prevCommentId===commentId){
-        //         setShowReplies(false)
-        //         return
-        //     }
-        //     if(commentId!=prevCommentId){
-        //         setCurrentReplies([])
-        //         await fetchReplies(token,commentId,setCurrentReplies)
-        //     }
-        //     console.log("replies are",currentReplies)
-        //     setCurrentComment(commentId)
-        //     setPrevCommentId(currentComment)
-        //     console.log("fetching replies...",commentId)
-        //     setShowReplies(true)
-        // // }
     }
     
     const callClap=()=>{

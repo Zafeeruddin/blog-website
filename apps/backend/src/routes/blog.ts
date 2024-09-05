@@ -205,7 +205,8 @@ blogRouter.get("/blogs/bulk",async (c)=>{
                 author:{
                     select:{
                         id:true,
-                        name:true
+                        name:true,
+                        googleImage:true
                     }
                 }
             }
@@ -657,7 +658,6 @@ blogRouter.put("/post/replies",async(c)=>{
     const prisma=new PrismaClient({
         datasourceUrl:c.env.DATABASE_URL
     }).$extends(withAccelerate())
-
     try{
         const comment=await prisma.comments.findUnique({
             where:{

@@ -11,6 +11,7 @@ import { NotificationCard, transformNotification } from "../Notification"
 import { handleNotificationAtom, handleProfileAtom } from "../../store/atoms/handles"
 import { userSignOut } from "../../service/apiAuthSignin"
 import Noty from "./NotyIcon"
+import { GetProfile } from "../user/getProfile"
 
 export const Layout=()=>{
     const navigate=useNavigate()
@@ -54,6 +55,7 @@ export const Layout=()=>{
 	}, 80);
 
 	useEffect(() => {
+        console.log("üser image is ",googleImage)
 		window.addEventListener('scroll', debouncedHandleScroll);
 		return () => {
 			window.removeEventListener('scroll', debouncedHandleScroll);
@@ -92,19 +94,6 @@ export const Layout=()=>{
         }  
     },[searchBlogs])
 
-    // const updateNotifications=()=>{
-    //     if(!areNotificationsIn){
-    //         return
-    //     }
-    //     console.log("user notificaitons",userNotifications)
-    //     // if(!handleUpdate){
-        //     console.log("in the notifications",handleUpdate)
-        //     setHandleUpdate(true)
-        //     console.log("setting notificaiton to be true",handleNotification)
-        //     updateNotification(token)
-        // }
-    // }
-
     const clickProfile=()=>{
         if(handleNotification && !handleProfile){
             setHandleNotification(false)
@@ -123,7 +112,6 @@ export const Layout=()=>{
             setHandleProfile(false)
         }
         setHandleNotification(!handleNotification); 
-        // updateNotifications();   
     }
 
     return (
@@ -171,11 +159,7 @@ export const Layout=()=>{
 
         <div onClick={clickProfile} className=" mt-1 items-center space-x-1 relative z-50 cursor-pointer">
             <div className="bg-gray-800 text-white rounded-full h-8 w-8 lg:w-10 lg:h-10  flex items-center justify-center">
-                {
-                    googleImage && googleImage.length>0 ?
-                        <img className="rounded-full" src={googleImage}></img> 
-                        :<span className="uppercase">{username[0]}</span>
-                }
+                <GetProfile gProfile={googleImage} username={username}/>
             </div>
 
             {handleProfile && 

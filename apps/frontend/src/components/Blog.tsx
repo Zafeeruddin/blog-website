@@ -9,6 +9,7 @@ import { MdBookmarkAdd } from "react-icons/md"
 import { blogType } from "../utils/types"
 import { openBlog } from "../service/apiFetchBlog"
 import { getImage } from "../service/apiPutImage"
+import { GetProfile } from "./user/getProfile"
 
 
 export const Blog=({blog}:blogType)=>{
@@ -37,7 +38,7 @@ export const Blog=({blog}:blogType)=>{
             const headers={
                 "Authorization":token
             }
-            const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save",{id:blog.id,saved:true},{headers})
+            const response=await axios.put(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/save`,{id:blog.id,saved:true},{headers,withCredentials:true})
             console.log("data",response.data)
             setBookMarkBlogs(response.data)
             setMessage("Saved Blog!") 
@@ -86,7 +87,7 @@ export const Blog=({blog}:blogType)=>{
            <div className="lg:m-12 lg:pr-4 lg:pl-4 md:m-10 md:pr-4 md:pl-4 m-2 mb-4 mt-8 border-b pb-4 " >
                 <div className="mb-4 flex items-center space-x-4">
                     <div className="bg-gray-500 text-white rounded-full h-8 w-8 flex items-center justify-center"> 
-                        <span className="uppercase">{blog.author.name ? blog.author.name[0] : "A"}</span>
+                        <GetProfile gProfile={blog.author.googleImage} username={blog.author.name}></GetProfile>
                     </div>
                     <div className="font-serif text-lg text-slate-950">{blog.author.name}</div>
                     <div className="flex justify-center content-center mb-2 text-gray-400">.</div>
