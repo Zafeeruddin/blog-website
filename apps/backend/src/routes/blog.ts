@@ -591,7 +591,7 @@ blogRouter.post("/post/replies",async(c)=>{
         }
 
         // Add notification to the commentator
-        const createReply = await prisma.replies.create({
+        await prisma.replies.create({
             data:{
                 reply:body.reply,
                 commentId:getComment.id,

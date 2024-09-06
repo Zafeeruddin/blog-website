@@ -4,7 +4,7 @@ import { userRouter } from "./routes/user";
 import { cors } from "hono/cors";
 import { upgradeWebSocket } from 'hono/cloudflare-workers'
 import { verifyToken } from "./services/getUser";
-import { WSContext } from "hono/ws";
+// import { WSContext } from "hono/ws";
 import {Redis} from "@upstash/redis/cloudflare"
 import "./routes/mail"
 
