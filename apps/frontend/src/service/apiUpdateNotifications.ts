@@ -4,13 +4,6 @@ import { SetterOrUpdater } from "recoil"
 import { transformNotification } from "../components/Notification"
 import { Dispatch, SetStateAction } from "react"
 
-// export const updateNotification=async (token:string)=>{
-//     const headers={
-//         "Authorization":token,
-//     }
-//     const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/user/getNotification",{withCredentials:true,headers})
-//     console.log("noitifcaitons updated",response.data) 
-// }
 
 export const updateNotification=async (token:string,id:string,isComment:boolean,setAreNotifications:SetterOrUpdater<boolean>,setUserNotifications:SetterOrUpdater<Notification>,userNotifications:Notification,setUnifiedNotification:Dispatch<SetStateAction<UnifiedNotification[]>>,setNotificationCount:SetterOrUpdater<number>)=>{
     const headers={
