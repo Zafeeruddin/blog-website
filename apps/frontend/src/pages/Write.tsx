@@ -41,7 +41,7 @@ export const Write = () => {
         "Authorization":token
     }
     try{
-    const response=await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post",{title:title,content:content},{withCredentials:true,headers})
+    const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post`,{title:title,content:content},{withCredentials:true,headers})
     const data=response.data
     console.log(data.error? data.error :"")
     console.log("data",data.status)

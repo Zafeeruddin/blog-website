@@ -7,7 +7,7 @@ export const getComments=async (token:string,blog:blog,setUserComments:SetterOrU
         "Authorization":token,
         "id":blog.id
     }
-    const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",{withCredentials:true,headers})
+    const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post/comments`,{withCredentials:true,headers})
     console.log("comments whne blog ",response.data)
     if(!Array.isArray(response.data)){
         return 
