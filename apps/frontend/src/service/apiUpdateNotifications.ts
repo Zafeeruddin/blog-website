@@ -21,24 +21,27 @@ export const updateNotification=async (token:string,id:string,isComment:boolean,
         "isComment":isComment
     }
     console.log("erady to updatae " + id + " bool: " + isComment )
-    const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/user/getNotification",body,{withCredentials:true,headers})
-    // const response=await axios.put("http://127.0.0.1:8787/api/v1/user/getNotification",body,{withCredentials:true,headers})
-    console.log("noitifcaitons updated",response.data) 
-    if(response.data){
-        const replies:Reply[]=response.data.replies
-        const comments:comment[]=response.data.comments
-        console.log("repsonse in notificaitons",response.data)
-        // console.log("before",areNotifications)
-        if(replies && replies.length===0 && comments.length===0){
-            console.log("notifications not in")
-            // setAreNotifications(false)
-            setAreNotifications(false)
-            return
-        }else{
-            setAreNotifications(true)
-            await setUserNotifications(response.data)
-            console.log("ready to transform")
-            transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
+    try{
+        const response=await axios.put(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/getNotification`,body,{withCredentials:true,headers})
+        console.log("noitifcaitons updated",response.data) 
+        if(response.data){
+            const replies:Reply[]=response.data.replies
+            const comments:comment[]=response.data.comments
+            console.log("repsonse in notificaitons",response.data)
+            // console.log("before",areNotifications)
+            if(replies && replies.length===0 && comments.length===0){
+                console.log("notifications not in")
+                // setAreNotifications(false)
+                setAreNotifications(false)
+                return
+            }else{
+                setAreNotifications(true)
+                await setUserNotifications(response.data)
+                console.log("ready to transform")
+                transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
+            }
         }
+    }catch(e){
+        console.log(e)
     }
 }

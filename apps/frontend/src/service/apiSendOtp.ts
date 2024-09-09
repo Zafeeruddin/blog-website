@@ -4,7 +4,7 @@ import { toast } from "sonner"
 export const sendOtp=async (email:string)=>{
     let loadingToastId = toast.loading("Sending OTP...")
     try{
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_LOCAL_URL}/api/v1/user/sendOTP`,{email},{withCredentials:true})
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/sendOTP`,{email},{withCredentials:true})
         console.log("status is ",response.status)
         console.log("json si ",response.data)
         if (response.status===201){

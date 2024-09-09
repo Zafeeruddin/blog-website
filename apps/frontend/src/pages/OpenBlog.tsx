@@ -84,7 +84,7 @@ export const OpenBlog=()=>{
     useEffect(()=>{
         console.log("triggerd",bookmark)
         const saveBlog=async ()=>{
-            const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save",{id:blog.id,saved:bookmark},{withCredentials:true,headers})
+            const response=await axios.put(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/save`,{id:blog.id,saved:bookmark},{withCredentials:true,headers})
             console.log("data",response.data)
             setNewBookmarks(response.data)
             setLoadBookmark(false)
@@ -104,7 +104,7 @@ export const OpenBlog=()=>{
 
         const updateLikePosts=async ()=>{
             console.log("ready to like",blog.likes)
-            const response=await axios.put("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/like",{id:blog.id,liked:like},{withCredentials:true,headers})
+            const response=await axios.put(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/like`,{id:blog.id,liked:like},{withCredentials:true,headers})
             const data=response.data
             console.log("new likes",data)
             setNewLikeBlogs(data.posts)

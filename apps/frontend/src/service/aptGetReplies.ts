@@ -10,7 +10,7 @@ export const fetchReplies = async (token:string,commentId:string,setCurrentRepli
             "Authorization": token,
             "id": commentId
         };
-        const response = await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/replies", {withCredentials:true,headers:headers});
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post/replies`, {withCredentials:true,headers:headers});
         if (!Array.isArray(response.data)) {
             return;
         }

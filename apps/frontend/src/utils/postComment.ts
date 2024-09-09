@@ -4,8 +4,6 @@ import { blog, comment } from "./types"
 
 
 export const publishComment=async (token:string,blog:blog,comment:string,setUserComments:SetterOrUpdater<comment[]>)=>{
-
-    console.log("ready to publish")
     const headers={
         "Authorization":token,
     }
@@ -15,12 +13,8 @@ export const publishComment=async (token:string,blog:blog,comment:string,setUser
     }
     console.log("comment id ",blog.id)
     try{
-    const response = await axios.post("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/post/comments",body,{withCredentials:true,headers})
-    // const response = await axios.post("http://127.0.0.1:8787/api/v1/blog/post/comments",body,{withCredentials:true,headers})
-    console.log("comment is published...")
-    
-    setUserComments(response.data)
-    console.log("rspon",response.data)
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post/comments`,body,{withCredentials:true,headers})   
+        setUserComments(response.data)
     }catch(e){
         console.log(e)
     }

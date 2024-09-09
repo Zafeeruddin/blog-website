@@ -32,6 +32,7 @@ export default function Signin() {
 
 useEffect(() => {
       if (user) {
+        let loadingToastId= toast.loading("Signing in...")
           console.log("user cred",user)
           axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
                   headers: {
@@ -43,7 +44,8 @@ useEffect(() => {
                 console.log("inside gImage",res.data.picture)
                   googleSignIn(setToken,user.access_token,res.data.id,res.data.email,res.data.name,res.data.picture)
                   // setGProfile(res.data);
-
+                  toast.dismiss(loadingToastId)
+                  toast.success("Signed in successfully")
                   console.log("response is",res.data)
                   setGoogleImage(res.data.picture)
                   setUsername(res.data.given_name)

@@ -63,7 +63,7 @@ export const defaultSavedBlogs=selector<string[]>({
             //     "Authorization":get(tokenAtom)
             // }
             // https://backend.mohammed-xafeer.workers.dev
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/save/posts",{withCredentials:true})
+            const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/save/posts`,{withCredentials:true})
             console.log("response data",response.data)
             return response.data
         }catch(e){
@@ -83,7 +83,7 @@ export const defaultLikedBlogs=selector<string[]>({
             // const headers={
             //     "Authorization":get(tokenAtom)
             // }
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog/like/posts",{withCredentials:true})
+            const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/like/posts`,{withCredentials:true})
             console.log("liked are",response.data)
             return response.data
         }catch(e){
@@ -121,7 +121,7 @@ export const getUserNotifications=selector<Notification>({
     get:async ()=>{
         try{
             
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/user/getNotification",{withCredentials:true})
+            const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/getNotification`,{withCredentials:true})
             console.log("notifications are ",response.data)
             const isArray= Array.isArray(response.data)
             if(isArray){
@@ -165,7 +165,7 @@ export const fetchUser=selector<boolean>({
             const headers={
                 "Authorization":get(tokenAtom)
             }
-            const response=await axios.get("https://backend.mohammed-xafeer.workers.dev/api/v1/blog",{withCredentials:true,headers})
+            const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog`,{withCredentials:true,headers})
             if (response.status==401){
                 return false
             }else{

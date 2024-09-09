@@ -33,7 +33,7 @@ export const Blogs=()=>{
 
     // create a ws connection
     useEffect(()=>{
-        const client = hc<typeof app>('https://backend.mohammed-xafeer.workers.dev')
+        const client = hc<typeof app>(`${import.meta.env.VITE_BACKEND_PROD_URL}`)
         // @ts-ignore
         const ws = client.ws.$ws(0)
     
@@ -129,7 +129,7 @@ const TrendBlog=({blog}:{blog:blog})=>{
             Authorization:token
         }
         try{
-            const response=await axios.get(`https://backend.mohammed-xafeer.workers.dev/api/v1/blog/${blogId}`,{withCredentials:true,headers})
+            const response=await axios.get(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/${blogId}`,{withCredentials:true,headers})
             console.log("blog got is ",response.data)
             setOpenBlog(response.data)
             navigate(`/blogs/${response.data.id}`)
