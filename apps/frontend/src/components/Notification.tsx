@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { formatDate } from "../utils/formatDate"
 import { useNavigate } from "react-router-dom"
 import {  Notification, UnifiedNotification } from "../utils/types"
-import {  areNotifications, notifiationCount, notifications, tokenAtom, unifiedNotificationsAtom } from "../store/atoms/user"
+import {  allBlogs, areNotifications, notifiationCount, notifications, tokenAtom, unifiedNotificationsAtom } from "../store/atoms/user"
 import { SetterOrUpdater, useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { openBlog } from "../service/apiFetchBlog"
 import { blogOpen } from "../store/atoms/post"
@@ -14,6 +14,7 @@ export const NotificationCard=({notification}:{notification:Notification})=>{
     const token = useRecoilValue(tokenAtom)
     const setUserNotifcations= useSetRecoilState(notifications)
     const setNotificationCount= useSetRecoilState(notifiationCount)
+    
     // create a ws connection
     useEffect(()=>{
         console.log("reday to connect")
@@ -52,7 +53,7 @@ export const NotificationCard=({notification}:{notification:Notification})=>{
         if (notification.comments.length!=0 || notification.replies.length!=0){
             transformNotification(notification,setUnifiedNotification,setNotificationCount)
         }
-    },[notification])
+    },[notification,allBlogs])
 
     
     
