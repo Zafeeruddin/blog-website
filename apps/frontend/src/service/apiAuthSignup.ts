@@ -17,6 +17,7 @@ export const userSignUp=async (username:string,email:string,password:string,setU
           setUsername(response.data.name)
           console.log("token being set", response.data.token)
           setUserAuth(true)
+          console.log("id ...................",response.data.id)
           setUserId(response.data.id)
           navigate("/blogs")
         }else{
