@@ -116,7 +116,7 @@ export const savedBlogs=atom<string[]>({
 
 export const myBlogs=atom<string[]>({
     key:"myBlogs",
-    default:defaultSavedBlogs,
+    default:[],
     effects_UNSTABLE:[persistAtom]
 })
 
