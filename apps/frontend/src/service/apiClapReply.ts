@@ -11,7 +11,7 @@ export const clapReplyOnce=async (token:string,replyId:string,commentId:string,s
         "commentId":commentId
     }
     try{
-        const response = await axios.put(`${import.meta.env.VITE_BACKEND_LOCAL_URL}/api/v1/blog/post/replies`,body,{withCredentials:true,headers})
+        const response = await axios.put(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post/replies`,body,{withCredentials:true,headers})
         console.log("rspon",response.data)
         setClapped(response.data.claps)
     }catch(e){

@@ -33,7 +33,6 @@ app.get('/ws', upgradeWebSocket((c) => {
     return {
       async onMessage(event, ws) {
         // const response = JSON.parse(event.data)
-        console.log(`Message from client: ${event.data}`)
         const message = JSON.parse(event.data as string);
         if(message.type==="token"){
           const token = message.payload

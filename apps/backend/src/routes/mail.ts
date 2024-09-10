@@ -1,3 +1,4 @@
+import { Redis } from "@upstash/redis/cloudflare";
 import {  getOTP, setOTP } from "../services/declarations";
 import { userRouter } from "./user";
 
@@ -9,7 +10,12 @@ function generateOTP() {
 userRouter.post("/sendOTP", async (c) => {
     try {
         const body = await c.req.json()
+        const redis = new Redis({
+            url:c.env.UPSTASH_REDIS_REST_URL,
+            token:c.env.UPSTASH_REDIS_REST_TOKEN
+        })
         const otp = generateOTP()
+        await redis.rpush("otp",otp)
         const reciepientEmail= body.email
         console.log("otp is ",otp)
         setOTP(otp)
@@ -61,8 +67,14 @@ userRouter.post("/sendOTP", async (c) => {
 
 userRouter.post("/checkOTP",async (c)=>{
     
-    const otp = getOTP()
+    const redis = new Redis({
+        url:c.env.UPSTASH_REDIS_REST_URL,
+        token:c.env.UPSTASH_REDIS_REST_TOKEN
+    })
+    
+    // const otp = getOTP()
     const body = await c.req.json()
+    let otp =await redis.lpop("otp")
     console.log("otp is",body.otp)
     if (body.otp===otp){
         c.status(202)

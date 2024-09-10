@@ -13,7 +13,9 @@ export const userRouter = new Hono<{
       ACCESS_KEY_ID:string,
       secretAccessKey:string,
       MJ_APIKEY_PUBLIC:string,
-      MJ_APIKEY_PRIVATE:string
+      MJ_APIKEY_PRIVATE:string,
+      UPSTASH_REDIS_REST_URL:string,
+      UPSTASH_REDIS_REST_TOKEN:string
     },
     Variables:{
         key:CryptoKey,
