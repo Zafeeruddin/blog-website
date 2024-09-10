@@ -147,12 +147,11 @@ useEffect(() => {
       </div>
       <div className="hidden ml-12 space-y-4 lg:block w-80">
         <blockquote className="text-lg font-semibold italic text-gray-600">
-          “The customer service I received was exceptional. The support team went above and beyond to address my
-          concerns.”
+          “Time moves on regardless of your exertion; the only forfeiture in withholding your best is yourself.”
         </blockquote>
         <div className="space-y-1">
-          <div className="text-lg font-semibold">Jules Winnfield</div>
-          <div className="text-sm text-gray-500">CEO, Acme Inc</div>
+          <div className="text-lg font-semibold">Random</div>
+          <div className="text-sm text-gray-500">CEO, CodeSphere</div>
         </div>
       </div>
     </div>
