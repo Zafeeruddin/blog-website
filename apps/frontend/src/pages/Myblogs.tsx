@@ -1,17 +1,14 @@
 import {  useRecoilState, useRecoilValue } from "recoil"
-import {  allBlogs, imageAtom, myBlogs, tokenAtom, userIdAtom, usernameAtom } from "../store/atoms/user"
+import {  allBlogs, imageAtom, userIdAtom, usernameAtom } from "../store/atoms/user"
 import { FaLock } from "react-icons/fa"
 import { Blog } from "../components/Blog"
 import { useEffect, useState } from "react"
 import { blog } from "../utils/types"
 import { GetProfile } from "../components/user/getProfile"
-import { getAllBlogs } from "../service/apiFetchBlogs"
 
 export const Myblogs=()=>{
-    const myBlogsTitles=useRecoilValue(myBlogs)
     const [filteredBlogs,setFilteredBlogs]=useState<blog[]>([])
-    const [blogs,setBlogs]=useRecoilState(allBlogs)
-    const token = useRecoilValue(tokenAtom)
+    const [blogs,]=useRecoilState(allBlogs)
     const [userId,] = useRecoilState(userIdAtom)
     const googleImage = useRecoilValue(imageAtom)
     const username=useRecoilValue(usernameAtom)
