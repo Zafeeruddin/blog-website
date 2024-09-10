@@ -90,7 +90,7 @@ export const isUserAuth =async ()=>{
 export const googleSignIn =async (setToken:SetterOrUpdater<string>,googleToken:string,googleId:string,email:string,name:string,googleImage:string)=>{
   console.log("ready to sing in")
   console.log("googleImage is",googleImage)
-    const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/googleAuth`,{googleToken:googleToken,googleId:googleId,email:email,name:name,googleImage:googleImage})
+    const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/googleAuth`,{googleToken:googleToken,googleId:googleId,email:email,name:name,googleImage:googleImage},{withCredentials:true})
     console.log("response after google",response.data)
     setToken(response.data.token)
     return
