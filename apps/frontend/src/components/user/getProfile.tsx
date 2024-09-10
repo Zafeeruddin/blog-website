@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-export const GetProfile=({gProfile,username}:{gProfile:string,username:string})=>{
+export const GetProfile=({gProfile,username}:{gProfile:string | undefined,username:string})=>{
     useEffect(()=>{
         console.log("gprofile is",gProfile)
         console.log("usernmae is",username)

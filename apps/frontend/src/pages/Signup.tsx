@@ -40,9 +40,6 @@ export default function Signup() {
       }else{
         toast.error(param + message )
       }
-      setEmail("")
-      setUsername("")
-      setPassword("")
       return 
   }else if(parseUser.success){
     let loadingToastId = toast.loading("Checking email...")

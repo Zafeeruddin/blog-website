@@ -181,7 +181,8 @@ userRouter.use('/signup',async (c,next)=>{
         return c.json({
             msg:"Signup successfully",
             "token":token,
-            "name": user.name
+            "name": user.name,
+            id:user.id
         })
     }    
     catch(e){
@@ -280,7 +281,8 @@ userRouter.use('/signup',async (c,next)=>{
             msg:"Signup successfully",
             "token":token,
             "name": user.name,
-            "googleImage":user.googleImage
+            "googleImage":user.googleImage,
+            "id":user.id
         })
     }catch(e){
         return c.json({msg:"Email already exists",e:e})
@@ -349,7 +351,8 @@ try{
         msg:"Signup successfully",
         "token":token,
         "name": getUser.name,
-        "googleImage":getUser.googleImage
+        "googleImage":getUser.googleImage,
+        "id":getUser.id
     })
 }catch(e){
     return c.json({msg:"Email already exists",e:e})
@@ -383,6 +386,8 @@ try{
                 userId:userId
             }
         })
+        console.log("notifications are",getNotifications)
+        console.log("is id ",userId)
         if(!getNotifications){
             console.log("inside no not")
             c.status(404)
@@ -480,6 +485,7 @@ try{
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand, S3Client,GetObjectCommand } from "@aws-sdk/client-s3";
+import { use } from 'hono/jsx'
   
 userRouter.get("/pre-signed-url", async(c)=>{
 

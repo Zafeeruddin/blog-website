@@ -3,6 +3,7 @@ import { FaSignOutAlt } from "react-icons/fa"
 import { IoMdNotifications } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
+import { RiMediumFill } from "react-icons/ri";
 import { Outlet, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
@@ -170,10 +171,15 @@ export const Layout=()=>{
                     <IoBookmarks className="mt-1 mr-3 " />
                     <div>Saved Blogs</div>
                 </div>
+                <div onClick={()=>navigate("/myblogs")} className="hover:text-slate-950  rounded-lg border-b pb-2 mb-1 p-2 pl-3 flex">
+                    <RiMediumFill className="mt-1 mr-2 w-5 h-5"/>
+                    <div>My Blogs</div>
+                </div>
                 <div onClick={signUserOut} className=" rounded-lg p-2 pl-3 flex hover:text-slate-950 cursor-pointer">
                     <FaSignOutAlt  className="mt-1 mr-3"/>
                     <div>Sign Out</div>
                 </div>
+                
             </div>}
 
         </div>
