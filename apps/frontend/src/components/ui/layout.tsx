@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { FaSignOutAlt } from "react-icons/fa"
+import {  FaSignOutAlt } from "react-icons/fa"
 import { IoMdNotifications } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
@@ -126,7 +126,8 @@ export const Layout=()=>{
         
         <div className="flex items-center">
             {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" /> */}
-            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xsxis-a7S4ExWfMQ3fQd4_dv230UjtY5bA&s" alt="Logo" />
+            {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xsxis-a7S4ExWfMQ3fQd4_dv230UjtY5bA&s" alt="Logo" /> */}
+            <RiMediumFill className="w-12 h-12 cursor-pointer"  onClick={()=>navigate("/blogs")}/>
 
         </div>
     
