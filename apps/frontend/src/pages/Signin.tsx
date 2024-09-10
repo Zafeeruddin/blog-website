@@ -32,34 +32,44 @@ export default function Signin() {
 });
 
 useEffect(() => {
-      if (user) {
-        let loadingToastId= toast.loading("Signing in...")
-          console.log("user cred",user)
-          axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-                  headers: {
-                      Authorization: `Bearer ${user.access_token}`,
-                      Accept: 'application/json'
-                  }
-              })
-              .then((res) => {
-                console.log("inside gImage",res.data.picture)
-                  googleSignIn(setToken,user.access_token,res.data.id,res.data.email,res.data.name,res.data.picture)
-                  // setGProfile(res.data);
-                  toast.dismiss(loadingToastId)
-                  toast.success("Signed in successfully")
-                  console.log("response is",res.data)
-                  setGoogleImage(res.data.picture)
-                  setUsername(res.data.given_name)
-                  setAuth(true)
-                  setUserId(res.data.id)
-                  console.log("set auth now treu",setAuth)
-                  toast.success("Sign-in successful")
+  const signInWithGoogle = async () => {
+    if (user) {
+      let loadingToastId = toast.loading("Signing in...");
+      console.log("user cred", user);
 
-                  navigate("/blogs")
-                })
-              .catch((err) => console.log(err));
+      try {
+        const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+          headers: {
+            Authorization: `Bearer ${user.access_token}`,
+            Accept: 'application/json'
+          }
+        });
+
+        console.log("inside gImage", res.data.picture);
+
+        await googleSignIn(setToken, user.access_token, res.data.id, res.data.email, res.data.name, res.data.picture);
+
+        toast.dismiss(loadingToastId);
+        toast.success("Signed in successfully");
+
+        console.log("response is", res.data);
+        setGoogleImage(res.data.picture);
+        setUsername(res.data.given_name);
+        setAuth(true);
+        setUserId(res.data.id);
+
+        console.log("set auth now true", setAuth);
+        navigate("/blogs");
+      } catch (err) {
+        toast.dismiss(loadingToastId);
+        toast.error("Something went wrong");
+        console.log(err);
       }
-  },[ user ]);
+    }
+  };
+
+  signInWithGoogle();
+}, [user]);
 
 
   const sendUser=async ()=>{
