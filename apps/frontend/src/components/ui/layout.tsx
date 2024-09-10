@@ -144,7 +144,7 @@ export const Layout=()=>{
         <div className="flex justify-end lg:space-x-8 space-x-4">   
         <TfiWrite className={`w-5 h-5 lg:w-7 lg:h-7 text-gray-400 mt-2 cursor-pointer hover:text-gray-800`} onClick={()=>navigate("/write")}></TfiWrite>
         
-        <div className="cursor-pointer mt-1" onClick={clickNotification}>
+        <div className="cursor-pointer mt-1 " onClick={clickNotification}>
             { handleNotification ?
                 // <Noty width={300} color={"#ffff00"} count={10}/>:
                 <IoMdNotifications className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/> :   

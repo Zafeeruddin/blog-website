@@ -14,12 +14,12 @@ export default function Noty({ width }:{width:any,color:any}) {
            color: "white",
            display: "inline",
            padding: "3px 5px",
-           borderRadius: "30px"
+           borderRadius: "30px",
         }}>{userNotificationCount}</div> : null}
 
         <svg
           viewBox="0 0 24 24"
-          className=" fill-gray-400 r-hkyrab r-4qtqp9 r-yyyyoo r-lwhw9o r-dnmrzs r-bnwqim r-1plcrui r-lrvibr  hover:fill-gray-800"
+          className=" fill-gray-400 r-hkyrab r-4qtqp9 r-yyyyoo r-lwhw9o r-dnmrzs r-bnwqim r-1plcrui r-lrvibr  hover:fill-gray-800 lg:w-10 lg:h-10 md:w-7 md:h-7 "
           width={width}
           fill=""
         >
