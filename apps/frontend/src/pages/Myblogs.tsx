@@ -1,29 +1,45 @@
 import {  useRecoilState, useRecoilValue } from "recoil"
-import {  allBlogs, imageAtom, myBlogs, userIdAtom, usernameAtom } from "../store/atoms/user"
+import {  allBlogs, imageAtom, myBlogs, tokenAtom, userIdAtom, usernameAtom } from "../store/atoms/user"
 import { FaLock } from "react-icons/fa"
 import { Blog } from "../components/Blog"
 import { useEffect, useState } from "react"
 import { blog } from "../utils/types"
 import { GetProfile } from "../components/user/getProfile"
+import { getAllBlogs } from "../service/apiFetchBlogs"
 
 export const Myblogs=()=>{
     const myBlogsTitles=useRecoilValue(myBlogs)
     const [filteredBlogs,setFilteredBlogs]=useState<blog[]>([])
-    const blogs=useRecoilValue(allBlogs)
+    const [blogs,setBlogs]=useRecoilState(allBlogs)
+    const token = useRecoilValue(tokenAtom)
     const [userId,] = useRecoilState(userIdAtom)
     const googleImage = useRecoilValue(imageAtom)
     const username=useRecoilValue(usernameAtom)
 
-    useEffect(()=>{
-        if (myBlogsTitles.length===0){
-            const newBlogs:blog[] = []
-            setFilteredBlogs(newBlogs)
-        }else{
-            console.log("saved are",myBlogsTitles)
-            const newBlogs = blogs.filter(blog => userId===blog.authorId);
-            setFilteredBlogs(newBlogs);
-        }
-    },[blogs,myBlogs])
+    useEffect(() => {
+        console.log("ready to take blogs",userId)
+        const newBlogs = blogs.filter(blog => userId===blog.authorId);
+        setFilteredBlogs(newBlogs);
+        console.log("filtered blogs",filteredBlogs)
+        // if(blogs.length!=0){
+        //     console.log("blogs in",blogs)
+        //     return
+        // }
+        // // Function to fetch all blogs
+        // const getBlogs = async () => {
+        //     // Replace with actual fetch call
+        //     await getAllBlogs(token,setBlogs);
+        //     const newBlogs = blogs.filter(blog => userId===blog.authorId);
+        //     console.log("saved are",myBlogsTitles)
+        //     console.log("fileterd blogs ",filteredBlogs)
+        //     console.log("blogs ",blogs)
+        //     setFilteredBlogs(newBlogs);
+        // };
+        // // Call the function to fetch blogs
+        // getBlogs();     
+    }, []);
+
+
     return(
         <div className="">
             <div className="flex lg:pl-32 md:pl-32 md:pt-20 lg:pt-20 lg:w-2/3">

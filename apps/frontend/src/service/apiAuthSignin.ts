@@ -87,11 +87,16 @@ export const isUserAuth =async ()=>{
 
 }
 
-export const googleSignIn =async (setToken:SetterOrUpdater<string>,googleToken:string,googleId:string,email:string,name:string,googleImage:string)=>{
+export const googleSignIn =async (setToken:SetterOrUpdater<string>,googleToken:string,googleId:string,email:string,name:string,googleImage:string,setUserId:SetterOrUpdater<string>)=>{
   console.log("ready to sing in")
   console.log("googleImage is",googleImage)
+  try{
     const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/user/googleAuth`,{googleToken:googleToken,googleId:googleId,email:email,name:name,googleImage:googleImage},{withCredentials:true})
     console.log("response after google",response.data)
+    setUserId(response.data.id)
     setToken(response.data.token)
     return
+  }catch(e){
+    console.log(e)
+  }
 }

@@ -276,7 +276,7 @@ userRouter.use('/signup',async (c,next)=>{
         })
         c.header("Authorization",token)
         c.status(201)
-        console.log("header set",c.req.header("Authorization"))
+        console.log("user sending  set",user.id)
         return c.json({
             msg:"Signup successfully",
             "token":token,

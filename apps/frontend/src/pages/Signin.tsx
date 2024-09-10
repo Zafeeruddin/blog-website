@@ -45,9 +45,9 @@ useEffect(() => {
           }
         });
 
-        console.log("inside gImage", res.data.picture);
+        console.log("id ...........", res.data);
 
-        await googleSignIn(setToken, user.access_token, res.data.id, res.data.email, res.data.name, res.data.picture);
+        await googleSignIn(setToken, user.access_token, res.data.id, res.data.email, res.data.name, res.data.picture,setUserId);
 
         toast.dismiss(loadingToastId);
         toast.success("Signed in successfully");
@@ -56,7 +56,6 @@ useEffect(() => {
         setGoogleImage(res.data.picture);
         setUsername(res.data.given_name);
         setAuth(true);
-        setUserId(res.data.id);
 
         console.log("set auth now true", setAuth);
         navigate("/blogs");
