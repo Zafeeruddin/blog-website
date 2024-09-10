@@ -1,11 +1,16 @@
 // import prisma from "../../db"
 
 export const checkEmail = async (prisma:any,email:string)=>{
-    const isEmail= await prisma.user.findUnique({
-        where:{
-            email
-        }
-    })
+    let isEmail;
+    try{
+        isEmail= await prisma.user.findUnique({
+            where:{
+                email
+            }
+        })
+    }catch(e){
+        console.log(e)
+    }
     if(!isEmail){
         return 0
     }else{
