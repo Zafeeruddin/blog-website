@@ -45,7 +45,6 @@ useEffect(() => {
           }
         });
 
-        console.log("id ...........", res.data);
 
         await googleSignIn(setToken, user.access_token, res.data.id, res.data.email, res.data.name, res.data.picture,setUserId);
 
