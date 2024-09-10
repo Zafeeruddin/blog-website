@@ -27,6 +27,7 @@ export const Write = () => {
   const [file,setFile ]= useState<undefined | File>()
   const [url,setUrl] = useState<string>("")
   const [loading ,setLoading] = useState(false)
+
   const handleFileChange = (e:any)=>{
     const file = e.target.files[0];
     if (file) {
@@ -41,30 +42,32 @@ export const Write = () => {
         "Authorization":token
     }
     try{
-    const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post`,{title:title,content:content},{withCredentials:true,headers})
-    const data=response.data
-    console.log(data.error? data.error :"")
-    console.log("data",data.status)
-    console.log("data",data)
-
-    if(response.status===200){
+      const response=await axios.post(`${import.meta.env.VITE_BACKEND_PROD_URL}/api/v1/blog/post`,{title:title,content:content},{withCredentials:true,headers})
+      const data=response.data
+      console.log(data.error? data.error :"")
+      console.log("data",data.status)
       console.log("data",data)
-      toast.success("Blog Posted!")
-      console.log("url is ", data.url)
-      refTitle.current?.value==""
-      if(data.blogId && file){
-        await putImage(data.blogId,file)
-        const url = await getImage(response.data.blogId)
-        console.log("url is ",url)
-        if(url){
-          setUrl(url)
+
+      if(response.status===200){
+        console.log("data",data)
+        toast.success("Blog Posted!")
+        console.log("url is ", data.url)
+        refTitle.current?.value==""
+        if(data.blogId && file){
+          await putImage(data.blogId,file)
+          const url = await getImage(response.data.blogId)
+          console.log("url is ",url)
+          if(url){
+            setUrl(url)
+          }
+          // navigate(`/${data.blogId}`)
         }
       }
+    
+    }catch(E){
+      console.log(E)
+      toast.error("Error publishing the blog")
     }
-  
-  }catch(E){
-    console.log(E)
-  }
     setLoading(false)
   }
   return (
@@ -91,32 +94,47 @@ export const Write = () => {
 
     </div>
  
-
-<div className={`lg:p-20  lg:pl-40 lg:pr-40 border   p-1 h-screen `}>
-  <div className="p-1 border-solid border-gray-500  text-2xl lg:text-4xl font-sans font-bold ">
+    <div className="lg:px-40 lg:py-20 p-4 h-screen border border-gray-300 bg-white shadow-lg rounded-lg">
+  <div className="mb-6">
     <textarea
       ref={refTitle}
-      onChange={(e)=>{setTitle(e.target.value); }}
+      onChange={(e) => setTitle(e.target.value)}
       placeholder="Tell Your Story..."
-      className="border  resize-none  focus:outline-none focus:border-transparent focus:ring-0 focus:ring-transparent px-4 py-2 h-full w-full "
+      className="w-full text-3xl lg:text-5xl font-sans font-bold border-b border-gray-300 py-4 px-2 focus:outline-none focus:ring-0 resize-none"
     />
   </div>
-  <input onChange={handleFileChange}  type="file" name="file"></input>
-  <img src={url}></img>
-  <div className="p-1 h-full">
-    <div className=' justify-center w-full '>
-          <ReactQuill
-            ref={quillRef}
-            onChange={(content)=>{setContent(content);console.log(content);}}
-            theme='snow'
-            modules={modules}
-            formats={formats}
-            placeholder='Write Your Content'
-            className='h-56'
-            />
-        </div>
+
+  <div className="mb-4">
+    <input 
+      type="file" 
+      name="file" 
+      onChange={handleFileChange} 
+      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+    />
   </div>
-</div>   
+
+  {url && (
+    <div className="mb-6">
+      <h3 className="text-lg font-semibold mb-2">Blog Thumbnail</h3>
+      <div className="border border-gray-300 p-4 rounded-lg shadow-sm bg-gray-50">
+        <img src={url} alt="Thumbnail Preview" className="w-full h-auto rounded-md object-cover" />
+      </div>
+    </div>
+  )}
+
+  <div className="mb-6">
+    <ReactQuill
+      ref={quillRef}
+      onChange={(content) => { setContent(content); console.log(content); }}
+      theme="snow"
+      modules={modules}
+      formats={formats}
+      placeholder="Write Your Content"
+      className="h-64"
+    />
+  </div>
+</div>
+   
 </>
   );
 };

@@ -70,7 +70,9 @@ export const Layout=()=>{
             await  getNotification(setUserNotifications,setAreNotifications)
             console.log("notification in",areNotificationsIn)
             console.log("unified Notificaitons are ",unifiedNotification)
-            transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
+            if(areNotificationsIn){
+                transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
+            }
             console.log("updated the notifi ations")
             // if(unifiedNotification.length===0){
             //     setAreNotifications(false)
