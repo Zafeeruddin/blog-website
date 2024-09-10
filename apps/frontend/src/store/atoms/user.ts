@@ -31,6 +31,12 @@ export  const usernameAtom=atom<string>({
     effects_UNSTABLE:[persistAtom]
 })
 
+export  const userIdAtom=atom<string>({
+    key:"userId",
+    default:"",
+    effects_UNSTABLE:[persistAtom]
+})
+
 export const imageAtom=atom<string>({
     key:"googleImageId",
     default:"",
@@ -106,6 +112,14 @@ export const savedBlogs=atom<string[]>({
     default:defaultSavedBlogs,
     effects_UNSTABLE:[persistAtom]
 })
+
+
+export const myBlogs=atom<string[]>({
+    key:"myBlogs",
+    default:defaultSavedBlogs,
+    effects_UNSTABLE:[persistAtom]
+})
+
 
 export const filtered=atom<blog[]>({
     key:"filteredBlogs",

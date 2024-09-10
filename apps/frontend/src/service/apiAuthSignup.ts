@@ -4,7 +4,7 @@ import { SetterOrUpdater } from "recoil"
 import { toast } from "sonner";
 
 
-export const userSignUp=async (username:string,email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>)=>{
+export const userSignUp=async (username:string,email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>,setUserId:SetterOrUpdater<string>)=>{
   let loadingToastId;  
   try{
 
@@ -17,6 +17,7 @@ export const userSignUp=async (username:string,email:string,password:string,setU
           setUsername(response.data.name)
           console.log("token being set", response.data.token)
           setUserAuth(true)
+          setUserId(response.data.id)
           navigate("/blogs")
         }else{
           console.log("throwing err",response.data)

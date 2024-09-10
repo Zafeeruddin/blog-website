@@ -4,7 +4,7 @@ import { SetterOrUpdater } from "recoil"
 import { toast } from "sonner";
 import Cookies from "js-cookie"
 
-export const userSignIn=async (email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>,setGoogleImage:SetterOrUpdater<string>)=>{
+export const userSignIn=async (email:string,password:string,setUsername:SetterOrUpdater<string>,setToken:SetterOrUpdater<string>,navigate:NavigateFunction,setUserAuth:SetterOrUpdater<boolean>,setGoogleImage:SetterOrUpdater<string>,setUserId:SetterOrUpdater<string>)=>{
   let loadingToastId; 
   console.log("signnin")
   try{
@@ -18,6 +18,7 @@ export const userSignIn=async (email:string,password:string,setUsername:SetterOr
           console.log("token being set", response.data.token)
           setUserAuth(true)
           setGoogleImage(response.data.googleImage)
+          setUserId(response.data.id)
           navigate("/blogs")
         }else{
           console.log("throwing err",response.data.e)

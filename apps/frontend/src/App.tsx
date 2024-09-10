@@ -13,6 +13,7 @@ import { SearchBlogs } from "./pages/Search";
 import ProtectedRoute from "./components/Protected";
 import { Layout } from "./components/ui/layout";
 import OTPActivation from "./pages/OtpActivate";
+import { Myblogs } from "./pages/Myblogs";
 // import { isAuthenticated } from "./store/atoms/user";
 
 export default function App(){
@@ -28,7 +29,9 @@ export default function App(){
               <Route path="/blogs/:id" element={<Suspense fallback={<div>loading...</div>}><OpenBlog /></Suspense>} />
               <Route path="/filteredBlogs" element={<FilteredPosts />} />
               <Route path="/search" element={<SearchBlogs />} />
+              <Route path="/myblogs" element={<Myblogs></Myblogs>}/>
             </Route>
+
             <Route path="/otp" element={<OTPActivation/>}/>
             <Route path="/write" element={<ProtectedRoute><Write /></ProtectedRoute>} />
             <Route path="/stats" element={<BlogStats />} />

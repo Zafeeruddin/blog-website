@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import { FaSignOutAlt } from "react-icons/fa"
+import {  FaSignOutAlt } from "react-icons/fa"
 import { IoMdNotifications } from "react-icons/io"
 import { IoBookmarks } from "react-icons/io5"
 import { TfiWrite } from "react-icons/tfi"
+import { RiMediumFill } from "react-icons/ri";
 import { Outlet, useNavigate } from "react-router-dom"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { getNotification } from "../../service/apiGetNotifications"
@@ -125,7 +126,8 @@ export const Layout=()=>{
         
         <div className="flex items-center">
             {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5A60gUrqhUV6go5-qfph4kwQ-pfV4Ip5Ngw&s" alt="Logo" /> */}
-            <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xsxis-a7S4ExWfMQ3fQd4_dv230UjtY5bA&s" alt="Logo" />
+            {/* <img className="w-12 cursor-pointer" onClick={()=>navigate("/blogs")}  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4xsxis-a7S4ExWfMQ3fQd4_dv230UjtY5bA&s" alt="Logo" /> */}
+            <RiMediumFill className="w-12 h-12 cursor-pointer"  onClick={()=>navigate("/blogs")}/>
 
         </div>
     
@@ -144,7 +146,7 @@ export const Layout=()=>{
         <div className="flex justify-end lg:space-x-8 space-x-4">   
         <TfiWrite className={`w-5 h-5 lg:w-7 lg:h-7 text-gray-400 mt-2 cursor-pointer hover:text-gray-800`} onClick={()=>navigate("/write")}></TfiWrite>
         
-        <div className="cursor-pointer mt-1" onClick={clickNotification}>
+        <div className="cursor-pointer mt-1 " onClick={clickNotification}>
             { handleNotification ?
                 // <Noty width={300} color={"#ffff00"} count={10}/>:
                 <IoMdNotifications className={`w-7 h-7 text-gray-400 bg-white lg:w-10 lg:h-10 hover:text-gray-800`}/> :   
@@ -170,10 +172,15 @@ export const Layout=()=>{
                     <IoBookmarks className="mt-1 mr-3 " />
                     <div>Saved Blogs</div>
                 </div>
+                <div onClick={()=>navigate("/myblogs")} className="hover:text-slate-950  rounded-lg border-b pb-2 mb-1 p-2 pl-3 flex">
+                    <RiMediumFill className="mt-1 mr-2 w-5 h-5"/>
+                    <div>My Blogs</div>
+                </div>
                 <div onClick={signUserOut} className=" rounded-lg p-2 pl-3 flex hover:text-slate-950 cursor-pointer">
                     <FaSignOutAlt  className="mt-1 mr-3"/>
                     <div>Sign Out</div>
                 </div>
+                
             </div>}
 
         </div>

@@ -4,7 +4,7 @@ import { verifyOtp } from '../service/apiVerifyOtp';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { sendOtp } from '../service/apiSendOtp';
-import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, usernameAtom } from '../store/atoms/user';
+import { emailAtom, isAuthenticated, passwordAtom, tokenAtom, userIdAtom, usernameAtom } from '../store/atoms/user';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { userSignUp } from '../service/apiAuthSignup';
 
@@ -20,6 +20,7 @@ export default function OTPActivation() {
   const setToken=useSetRecoilState(tokenAtom)
   const [username,setUsername]=useRecoilState(usernameAtom)
   const [password,]=useRecoilState(passwordAtom);
+  const [,setUserId] = useRecoilState(userIdAtom)
 
 
 
@@ -53,7 +54,7 @@ export default function OTPActivation() {
     const isOTP = await verifyOtp(OTP,setSuccess)
     if (isOTP===true) { // Replace with actual OTP verification logic
         toast.success("Account activated")
-        await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth)
+        await userSignUp(username,email,password,setUsername,setToken,navigate,setAuth,setUserId)
         navigate("/blogs")
     } else {
       toast.error("Otp doesn't match")
