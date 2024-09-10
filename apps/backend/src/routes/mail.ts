@@ -1,5 +1,5 @@
 import { Redis } from "@upstash/redis/cloudflare";
-import {  getOTP, setOTP } from "../services/declarations";
+import {   setOTP } from "../services/declarations";
 import { userRouter } from "./user";
 
 function generateOTP() {
