@@ -16,35 +16,34 @@ import OTPActivation from "./pages/OtpActivate";
 import { Myblogs } from "./pages/Myblogs";
 import { isAuthenticated } from "./store/atoms/user";
 
-const RootRoute = () => {
+const AuthRouter = () => {
   const auth = useRecoilValue(isAuthenticated);
-  return auth ? <Navigate to="/blogs" replace /> : <Layout />;
+  return auth ? <Navigate to="/blogs" replace /> : <Navigate to="/signin" replace />;
 };
 
 export default function App() {
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
+      <RecoilRoot>
         <Toaster richColors />
-        <RecoilRoot>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<RootRoute />} />
-              <Route path="blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs /></Suspense>} />
-              <Route path="blogs/:id" element={<Suspense fallback={<div>loading...</div>}><OpenBlog /></Suspense>} />
-              <Route path="filteredBlogs" element={<FilteredPosts />} />
-              <Route path="search" element={<SearchBlogs />} />
-              <Route path="myblogs" element={<Myblogs />} />
-            </Route>
+        <Routes>
+          <Route path="/" element={<AuthRouter />} />
+          
+          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+            <Route path="blogs" element={<Suspense fallback={<div>loading...</div>}><Blogs /></Suspense>} />
+            <Route path="blogs/:id" element={<Suspense fallback={<div>loading...</div>}><OpenBlog /></Suspense>} />
+            <Route path="filteredBlogs" element={<FilteredPosts />} />
+            <Route path="search" element={<SearchBlogs />} />
+            <Route path="myblogs" element={<Myblogs />} />
+            <Route path="write" element={<Write />} />
+            <Route path="stats" element={<BlogStats />} />
+          </Route>
 
-            <Route path="/otp" element={<OTPActivation />} />
-            <Route path="/write" element={<ProtectedRoute><Write /></ProtectedRoute>} />
-            <Route path="/stats" element={<BlogStats />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/signin" element={<Signin />} />
-          </Routes>
-        </RecoilRoot>
-      </BrowserRouter>
-    </>
+          <Route path="/otp" element={<OTPActivation />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<Signin />} />
+        </Routes>
+      </RecoilRoot>
+    </BrowserRouter>
   );
 }
