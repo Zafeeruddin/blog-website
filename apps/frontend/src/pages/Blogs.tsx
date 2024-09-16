@@ -1,9 +1,8 @@
 import {  useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
-import {  allBlogs, notifications, tokenAtom, } from "../store/atoms/user"
+import {   notifications, tokenAtom, } from "../store/atoms/user"
 import { Blog } from "../components/Blog"
 import { blog, comment, Reply,  } from "../utils/types"
-import { getAllBlogs } from "../service/apiFetchBlogs"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { blogOpen } from "../store/atoms/post"
@@ -15,13 +14,16 @@ import { handleComment,handleReply } from "../utils/addResponse"
 // client.ts
 import { hc } from 'hono/client'
 import app from "../../../backend/src/index"
+import { useBlogs } from "../hooks/useBlogs"
 
 
 export const Blogs=()=>{
     const token=useRecoilValue(tokenAtom)
-    const [blogs,setBlogs]=useRecoilState(allBlogs)
+    // const [blogs,setBlogs]=useRecoilState(allBlogs)
+     const { blogs,loading } = useBlogs(); // Use the custom hook
+
+
     const [trendingBlogs,setTrendingBlogs]=useState<blog[]>([])
-    const [loading,setLoading]=useState(true)
     const [,setNotifcation]= useRecoilState(notifications)
     // Close all handles if clicked outside
     const setHandleNotification=useSetRecoilState(handleNotificationAtom)
@@ -74,25 +76,23 @@ export const Blogs=()=>{
 
     // Fetch blogs
     useEffect(() => {
-        console.log("ready to take blogs")
-        if(blogs.length!=0){
-            console.log("blogs in",blogs)
-            setLoading(false)
-            return
-        }
+        // if(blogs.length!=0){
+        //     setLoading(false)
+        //     return
+        // }
         // Function to fetch all blogs
-        const getBlogs = async () => {
-            // Replace with actual fetch call
-            await getAllBlogs(token,setBlogs);
-            setLoading(false)        
-        };
-        // Call the function to fetch blogs
-        getBlogs();     
+        // const getBlogs = async () => {
+        //     // Replace with actual fetch call
+        //     await getAllBlogs(setBlogs);
+        //     setLoading(false)        
+        // };
+        // // Call the function to fetch blogs
+        // getBlogs();     
     }, []);
 
     // Sort blogs for setting trending blogs
     useEffect(() => {
-        if (blogs.length > 0) {
+        if (blogs && blogs.length > 0) {
             const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
             setTrendingBlogs(sortedBlogs.slice(0, 3));
         }
