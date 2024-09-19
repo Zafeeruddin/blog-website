@@ -56,7 +56,7 @@ export const Blog=({blog}:blogType)=>{
                 setImageUrl(url)
                 setIsImage(true)
             }else{
-                setIsImage(true)
+                setIsImage(false)
             }
         } catch (error) {
             setIsImage(false);

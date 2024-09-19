@@ -22,17 +22,16 @@ export const Layout=()=>{
     // const [token]=useRecoilState(tokenAtom)
     const [userNotifications,setUserNotifications ]=useRecoilState(notifications)
     // const [handleUpdate,setHandleUpdate]=useState(false)
-    const [unifiedNotification,setUnifiedNotification] = useRecoilState(unifiedNotificationsAtom)
+    const [,setUnifiedNotification] = useRecoilState(unifiedNotificationsAtom)
     const setNotificationCount = useSetRecoilState(notifiationCount)
     const [loading,setLoading]=useState(true)
     const [searchBlogs,setSearchBlog] = useRecoilState(searchBlog)
     const [areNotificationsIn,setAreNotifications] = useRecoilState(areNotifications)
-    const [isSearchBlog,setIsSearch]=useRecoilState(isSearch)
+    const [,setIsSearch]=useRecoilState(isSearch)
     const setUserAuth = useSetRecoilState(isAuthenticated)
     const [prevScrollPos, setPrevScrollPos] = useState(0);
 	const [visible, setVisible] = useState(true);
 	const [scrollingDown, setScrollingDown] = useState(false);
-    // const [clickedOutside,setClickedOutside] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const [googleImage,]=useRecoilState(imageAtom)
 
@@ -56,7 +55,6 @@ export const Layout=()=>{
 	}, 80);
 
 	useEffect(() => {
-        console.log("üser image is ",googleImage)
 		window.addEventListener('scroll', debouncedHandleScroll);
 		return () => {
 			window.removeEventListener('scroll', debouncedHandleScroll);
@@ -66,32 +64,21 @@ export const Layout=()=>{
 
         // Fetch notifications
     useEffect(()=>{
-        console.log("notitficaiton now",userNotifications)
         const getNotifications=async ()=>{
             await  getNotification(setUserNotifications,setAreNotifications)
-            console.log("notification in",areNotificationsIn)
-            console.log("unified Notificaitons are ",unifiedNotification)
             if(areNotificationsIn){
                 transformNotification(userNotifications,setUnifiedNotification,setNotificationCount)
             }
-            console.log("updated the notifi ations")
-            // if(unifiedNotification.length===0){
-            //     setAreNotifications(false)
-            // }
             setLoading(false)
         }
         getNotifications()
-        console.log("check in ",areNotificationsIn)
-        console.log("getting notifciations with",userNotifications)
     },[])
 
     // change to search blog
     useEffect(()=>{
         if(searchBlogs===""){
             setIsSearch(false)
-            console.log("now ",isSearchBlog)
         }else{
-            console.log("now ",isSearchBlog)
             setIsSearch(true)
             navigate("/search")
         }  
@@ -110,7 +97,6 @@ export const Layout=()=>{
     }
 
     const clickNotification=()=>{
-        console.log("condition",areNotificationsIn)
         if(handleProfile && !handleNotification){
             setHandleProfile(false)
         }
