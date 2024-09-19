@@ -55,8 +55,6 @@ useEffect(() => {
         setGoogleImage(res.data.picture);
         setUsername(res.data.given_name);
         setAuth(true);
-
-        console.log("set auth now true", setAuth);
         navigate("/blogs");
       } catch (err) {
         toast.dismiss(loadingToastId);
